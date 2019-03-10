@@ -1,0 +1,29 @@
+#include <QQmlEngine>
+
+#include "population.h"
+
+
+Population::Population() :
+    nbGenerations(0), nbObjectiveFunctions(0)
+{ }
+
+QVariant Population::getIndividualProperty(int generation, int cluster, int index, int property) const 
+{
+    
+    
+}
+
+int Population::getNbGenerations() const
+{
+    return nbGenerations;
+}
+
+int Population::getNbObjectiveFunctions() const
+{
+    return nbObjectiveFunctions;
+}
+
+Generation* Population::getGenerations(int index) const
+{
+    return &generations[index];
+}

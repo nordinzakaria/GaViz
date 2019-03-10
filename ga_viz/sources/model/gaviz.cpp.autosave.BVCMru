@@ -1,0 +1,65 @@
+#include "gaviz.h"
+
+#include <QDebug>
+
+GAViz::GAViz(QQmlApplicationEngine *engine) : QObject(engine)
+{
+    this->engine = engine;
+    parser = new Parser();
+    population = new Population();
+
+    customPalette = new QPalette();
+    customPalette->setColor(QPalette::Active, QPalette::Window, QColor("#000000"));
+    customPalette->setColor(QPalette::Active, QPalette::WindowText, QColor("#ffffff"));
+    customPalette->setColor(QPalette::Active, QPalette::Base, QColor("#000000"));
+    customPalette->setColor(QPalette::Active, QPalette::AlternateBase, QColor("#00ffff"));
+    customPalette->setColor(QPalette::Inactive, QPalette::ToolTipBase, QColor("#000000"));
+    customPalette->setColor(QPalette::Inactive, QPalette::ToolTipText, QColor("#ffffff"));
+    customPalette->setColor(QPalette::Active, QPalette::Text, QColor("#ffffff"));
+    customPalette->setColor(QPalette::Active, QPalette::ButtonText, QColor("#ffffff"));
+    customPalette->setColor(QPalette::Active, QPalette::BrightText, QColor("#ffff00"));
+    customPalette->setColor(QPalette::Active, QPalette::Light, QColor("#222222"));
+    customPalette->setColor(QPalette::Active, QPalette::Midlight, QColor("#444444"));
+    customPalette->setColor(QPalette::Active, QPalette::Button, QColor("#333333"));
+    customPalette->setColor(QPalette::Active, QPalette::Mid, QColor("#dddddd"));
+    customPalette->setColor(QPalette::Active, QPalette::Dark, QColor("#555555"));
+    customPalette->setColor(QPalette::Active, QPalette::Shadow, QColor("#000000"));
+}
+
+void GAViz::readGAFile(QUrl fileUrl)
+{
+    population = new Population();
+    parser->parseFile(fileUrl, population);
+}
+
+void GAViz::doneParsingHeader(bool success)
+{
+    if (success)
+    {
+        emit doneLoadingHeader(true, population->getNbCustomers(), population->getNbGenerations(), population->getNbClusters(), population->getNbIndividualsPerGeneration(), population->getNbObjectiveFunctions());
+
+    }
+    else
+        emit doneLoadingHeader(false, 0, 0, 0, 0, 0);
+}
+
+void GAViz::doneParsingGeneration(int id, bool success)
+{
+    if (success)
+        emit generationProgress((double)id/(double)population->getNbGenerations());
+    else
+        emit doneLoadingHeader(false, 0, 0, 0, 0, 0);
+}
+
+void GAViz::doneParsingPopulation(bool success)
+{
+    if (success)
+    {
+         (*engine).rootContext()->setContextProperty("population", population);
+         emit doneLoadingPopulation(true);
+    }
+    else
+    {
+         emit doneLoadingPopulation(false);
+    }
+}

@@ -1,0 +1,88 @@
+import QtQuick 2.0
+import QtQuick.Controls 2.3
+import QtQuick.Layouts 1.3
+import QtQuick.Shapes 1.0
+import QtQuick.Dialogs 1.0
+
+import gaviz 1.0
+
+Frame {
+    id: altPopulationView
+
+    property int minZoomValue: 30.0
+    property int maxZoomValue: 40.0
+    property int nbGenerations: height / minZoomValue
+    property int nbIndividuals: width / minZoomValue
+
+    property int individualSpacing: 10
+    property int individualWidth: zoomValue
+    property int individualRadius: individualWidth
+
+    MouseArea {
+        anchors.fill: parent
+        acceptedButtons: Qt.LeftButton | Qt.RightButton
+
+        onWheel: {
+            if (wheel.modifiers & Qt.ControlModifier) {
+                zoomValue += wheel.angleDelta.y / 120
+               }
+        }
+        onPressAndHold: {
+            altpopulationDialog.open()
+        }
+    }
+
+    FileDialog {
+        id: altpopulationDialog
+        title: "Please choose a file"
+        folder: shortcuts.home
+        modality: Qt.NonModal
+        selectExisting : false
+        nameFilters: [ "Image files (*.jpg *.png)", "All files (*)" ]
+
+        onAccepted: {
+            altPopulationView.grabToImage(function(result) {
+                                       result.saveToFile(altpopulationDialog.fileUrl);
+                                   });
+        }
+    }
+
+    ListView {      // table
+        id: poptable
+        anchors.fill: parent
+        interactive: false
+        orientation: ListView.Vertical
+
+        model: nbGenerations
+
+        clip: true
+
+        delegate: ListView {    // table row
+            id: generationRow
+            width: parent.width
+            height: individualWidth
+
+            interactive: false
+            orientation: ListView.Horizontal
+
+            model: nbIndividuals
+            property int generationIndex: firstGeneration + index
+
+            delegate: 
+        }
+    }
+
+    function getGeneStyle(gen, clus, ind, gene)
+    {
+        var val = gaviz.getGene(gen, clus, ind, gene)
+        var maxval = gaviz.getGeneMax()
+        var minval = gaviz.getGeneMin()
+
+        var col = populationView.rgb(minval, maxval, val)
+
+        //console.log("min geneval is "+minval+", max is "+maxval)
+        //console.log("for val " + val + " from index "+gene+", rgb is "+col)
+        return col
+    }
+
+}

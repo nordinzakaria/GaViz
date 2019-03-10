@@ -1,0 +1,109 @@
+import QtQuick 2.0
+import QtQuick.Controls 2.3
+import QtQuick.Dialogs 1.0
+import QtQuick.Layouts 1.3
+
+Page {
+    id: menuPage
+
+    ColumnLayout {
+        anchors.fill: parent
+        spacing: 20
+
+        Item {
+            Layout.fillHeight: true
+        }
+
+        Label {
+            id: title
+            anchors.horizontalCenter: parent.horizontalCenter
+            Layout.bottomMargin: 20
+
+            text: "GA VIZ"
+            font.pixelSize: 30
+        }
+
+        Button {
+            id: dialogButton
+            anchors.horizontalCenter: parent.horizontalCenter
+
+            text: "Load file"
+
+            onClicked: fileDialog.open()
+        }
+
+        Button {
+            id: quitButton
+            anchors.horizontalCenter: parent.horizontalCenter
+
+            text: "Quit"
+
+            onClicked: Qt.quit()
+        }
+
+        ProgressBar {
+            id: progressBar
+            anchors.horizontalCenter: parent.horizontalCenter
+            Layout.preferredWidth: 0.7 * parent.width
+
+            value: 0
+
+            Label {
+                id: progressPercentage
+                anchors.top: parent.bottom
+                visible: false
+            }
+        }
+
+        Label {
+            id: fileInfo
+            anchors.horizontalCenter: parent.horizontalCenter
+            Layout.preferredHeight: 0.5 * parent.height
+            horizontalAlignment: Text.AlignHCenter
+        }
+    }
+
+    FileDialog {
+        id: fileDialog
+        title: "Please choose a file"
+        folder: shortcuts.home
+        modality: Qt.NonModal
+
+        onAccepted: {
+            readGATimer.start()
+        }
+    }
+
+    Timer {
+        id: readGATimer
+        interval: 1000
+        running: false
+        repeat: false
+        onTriggered: gaviz.readGAFile(fileDialog.fileUrl)
+    }
+
+    Connections {
+        target: gaviz
+        onDoneLoadingHeader: {
+            if (success)
+            {
+                fileInfo.text = ""
+                fileInfo.text += "Population info:\n"
+                fileInfo.text += "\nNumber of Generations : " + nbGenerations
+                fileInfo.text += "\nNumber of Clusters : " + nbClusters
+                fileInfo.text += "\nNumber of Objective Functions : " + nbObjectiveFunctions
+            }
+            else
+                fileInfo.text = "Failed to read file header"
+        }
+
+        onDoneLoadingPopulation: {
+            if(success)
+            {
+                pages.push(vizPage)
+            }
+            else
+                fileInfo.text = "Failed to load file"
+        }
+    }
+}

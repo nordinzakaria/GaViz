@@ -1,0 +1,253 @@
+#include <QFile>
+#include <QUrl>
+#include <QDebug>
+#include <vector>
+
+#include "parser.h"
+
+Parser::Parser()
+{
+
+}
+
+void Parser::parseFile(QUrl fileUrl, Population* population)
+{
+    this->fileUrl = fileUrl;
+    this->population = population;
+    start();
+}
+
+void Parser::run()
+{
+    QFile *data = new QFile(fileUrl.toString(QUrl::RemoveScheme));
+    if (data->open(QFile::ReadOnly))
+    {
+        QTextStream *out = new QTextStream(data);
+        out->
+    }
+    else
+    {
+        emit doneParsingHeader(false);
+    }
+}
+
+
+void Parser::parseFileHeader(QTextStream* out, Population* population)
+{
+    int nbCustomers = 0;
+    int nbPopulations = 0;
+    int nbGenerations = 0;
+    int nbClusters = 0;
+    int nbIndividualsPerGeneration = 0;
+    int nbObjectiveFunctions = 0;
+
+    int i = 0;
+    QString name;
+    int value;
+
+    while (i < 6)
+    {
+        if (parseAttribute(out, &name, &value))
+        {
+            if (name != "" && value > -1)
+            {
+                if (name == "No. of Customers")
+                    nbCustomers = value;
+                else if (name == "No. of Populations")
+                    nbPopulations = value;
+                else if (name == "No. of Generations")
+                    nbGenerations = value;
+                else if (name == "No. of Clusters")
+                    nbClusters = value;
+                else if (name == "No. of Individuals")
+                    nbIndividualsPerGeneration = value;
+                else if (name == "No. of Objective Functions")
+                    nbObjectiveFunctions = value;
+                i++;
+            }
+        }
+        else
+        {
+            emit doneParsingHeader(false);
+            return;
+        }
+    }
+
+    population->setHeader(nbCustomers, nbGenerations, nbClusters, nbIndividualsPerGeneration, nbObjectiveFunctions);
+
+    emit doneParsingHeader(true);
+}
+
+bool Parser::parseAttribute(QTextStream *out, int *value)
+{
+    QString line = out->readLine();
+    if (out->atEnd())
+    {
+        return false;
+    }
+    int indexOfSeparator = line.indexOf(":");
+    if (indexOfSeparator > -1)
+    {
+        *value = line.mid(indexOfSeparator + 1).replace(QString("*"), QString("")).replace(QString("|"), QString("")).trimmed().toInt();
+    }
+    else
+    {
+        *value = -1;
+    }
+
+    return true;
+}
+
+bool Parser::parseAttribute(QTextStream *out, double *value)
+{
+    QString line = out->readLine();
+    if (out->atEnd())
+    {
+        return false;
+    }
+    int indexOfSeparator = line.indexOf(":");
+    if (indexOfSeparator > -1)
+    {
+        *value = line.mid(indexOfSeparator + 1).replace(QString("*"), QString("")).replace(QString("|"), QString("")).trimmed().toDouble();
+    }
+    else
+    {
+        *value = -1;
+    }
+
+    return true;
+}
+
+bool Parser::parseAttribute(QTextStream *out, QString* name, int *value)
+{
+    QString line = out->readLine();
+    if (out->atEnd())
+    {
+        return false;
+    }
+    int indexOfSeparator = line.indexOf(":");
+    if (indexOfSeparator > -1)
+    {
+        *name = line.left(indexOfSeparator).replace(QString("*"), QString("")).replace(QString("|"), QString("")).trimmed();
+        *value = line.mid(indexOfSeparator + 1).replace(QString("*"), QString("")).replace(QString("|"), QString("")).trimmed().toInt();
+    }
+    else
+    {
+        *name = "";
+        *value = -1;
+    }
+
+    return true;
+}
+
+bool Parser::parseParents(QTextStream *out, std::vector<int> *parents)
+{
+    QString line = out->readLine();
+    if (out->atEnd())
+    {
+        parents->push_back(-1);
+        parents->push_back(-1);
+        return false;
+    }
+    int indexOfSeparator = line.indexOf(":");
+    if (indexOfSeparator > -1)
+    {
+        QString values = line.mid(indexOfSeparator + 1).replace(QString("*"), QString("")).replace(QString("|"), QString("")).trimmed();
+        indexOfSeparator = values.indexOf(",");
+        parents->push_back(values.left(indexOfSeparator).toInt());
+        parents->push_back(values.mid(indexOfSeparator + 1).toInt());
+    }
+    else
+    {
+        parents->push_back(-1);
+        parents->push_back(-1);
+    }
+
+    return true;
+}
+
+bool Parser::parseRoute(QTextStream *out, std::vector<int> *values)
+{
+    out->readLine();
+    return true;
+}
+
+void Parser::parseIndividual(QTextStream *out, Population *population, int generation, int cluster, int indexInGeneration)
+{
+    int globalIndex;
+    parseAttribute(out, &globalIndex);
+    int nbRoutes;
+    parseAttribute(out, &nbRoutes);
+    std::vector<std::vector<int>> routes;
+    for(int i = 0; i < nbRoutes; i++)
+        parseRoute(out, &routes[i]);
+    double totalDistance;
+    parseAttribute(out, &totalDistance);
+    int nbMutations;
+    parseAttribute(out, &nbMutations);
+    int nbCrossovers;
+    parseAttribute(out, &nbCrossovers);
+    std::vector<int> parents;
+    parseParents(out, &parents);
+
+    population->addIndividual(generation-1, cluster, indexInGeneration, globalIndex, nbRoutes, totalDistance, nbMutations, nbCrossovers, parents[0], parents[1]);
+}
+
+void Parser::parseGeneration(QTextStream *out, Population *population, int generation)
+{
+    QString header;
+    int id;
+    int currentCluster = 0;
+    int currentIndividual = 0;
+    int parsedIndividuals = 0;
+
+    while(parsedIndividuals < population->getNbIndividualsPerGeneration())
+    {
+        if (!parseAttribute(out, &header, &id))
+        {
+            emit doneParsingGeneration(id, false);
+            return;
+        }
+        if (header == "Cluster")
+            currentCluster = id;
+        if (header == "Individual")
+        {
+            currentIndividual = id;
+            parseIndividual(out, population, generation, currentCluster, currentIndividual);
+            parsedIndividuals++;
+        }
+    }
+}
+
+void Parser::parsePopulation(QTextStream *out, Population *population)
+{
+    QString header;
+    int id;
+    while (header != "Population" || id != 1)
+    {
+        if (!parseAttribute(out, &header, &id))
+        {
+            emit doneParsingPopulation(false);
+            return;
+        }
+    }
+
+    int parsedGenerations = 0;
+
+    for(int i = 1; i <= population->getNbGenerations(); i++)
+    {
+        while (header != "Generation" || id != i)
+        {
+            if (!parseAttribute(out, &header, &id))
+            {
+                emit doneParsingGeneration(i, false);
+                return;
+            }
+        }
+        parseGeneration(out, population, i);
+        emit doneParsingGeneration(i, true);
+        parsedGenerations++;
+    }
+
+    emit doneParsingPopulation(true);
+}

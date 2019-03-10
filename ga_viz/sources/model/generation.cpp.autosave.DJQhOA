@@ -1,0 +1,59 @@
+#include "generation.h"
+
+#include <algorithm>
+#include <QDebug>
+
+Generation::Generation()
+{
+
+}
+
+Generation::Generation(int nbClusters)
+{
+    this->setNumClusters(nbClusters);
+}
+
+int Generation::size()
+{
+    int sum=0;
+    for (int i=0; i<this->getNumClusters(); i++)
+    {
+        sum += this->getCluster(i)->getSize();
+    }
+
+    return sum;
+}
+
+Individual* Generation::getIndividual(int index)
+{
+    int accindex=0;
+    for (int i=0; i<this->getNumClusters(); i++)
+    {
+        Subcluster *cluster = this->getCluster(i);
+        int sz = cluster->getSize();
+        if (index < accindex)
+        {
+            return cluster->getIndividual(index - accindex);
+        }
+        accindex += sz;        
+        
+    }
+    
+}
+
+void Generation::setNumClusters(int nbClusters)
+{
+    this->numclusters = nbClusters;
+    subclusters = new Subcluster[nbClusters];
+}
+
+Subcluster* Generation::getCluster(int index)
+{
+    return &subclusters[index];
+}
+
+int Generation::getNumClusters()
+{
+    return this->numclusters;
+}
+

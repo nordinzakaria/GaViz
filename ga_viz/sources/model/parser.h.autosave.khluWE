@@ -1,0 +1,24 @@
+#ifndef PARSER_H
+#define PARSER_H
+
+#include <QThread>
+#include <QTextStream>
+#include <QUrl>
+
+#include "population.h"
+
+class Parser
+{
+public:
+    Parser();
+    void parseFile(QUrl fileUrl);
+
+protected:
+    void run();
+
+private:
+    QUrl fileUrl;
+    Population* population;
+};
+
+#endif // PARSER_H

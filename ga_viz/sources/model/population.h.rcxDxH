@@ -1,0 +1,30 @@
+#ifndef POPULATION_H
+#define POPULATION_H
+
+#include "generation.h"
+#include <QVariant>
+
+class Population : public QObject
+{
+    Q_OBJECT
+
+public:
+    Population();
+    void setNumObjectivesFunctions(int num);
+    void setNumGenerations(int num);
+    void addIndividual(Individual &ind);
+
+    Q_INVOKABLE QVariant getIndividualProperty(int generation, int cluster, int index, int findex, int property) const;
+    Q_INVOKABLE int getNbGenerations() const;
+    Q_INVOKABLE int getMaxNbIndPerGeneration() const;
+    Q_INVOKABLE int getNbObjectiveFunctions() const;
+    Q_INVOKABLE Generation* getGenerations(int index) const;
+
+
+private:
+    int nbGenerations;
+    int nbObjectiveFunctions;
+    Generation* generations;
+};
+
+#endif // POPULATION_H
