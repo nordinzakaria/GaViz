@@ -44,6 +44,7 @@ Page {
             zoomValue = minZoomValue;
         if (zoomValue > maxZoomValue)
             zoomValue = maxZoomValue;
+        toolBar.zoomSlider.value = zoomValue
     }
 
     // Main ColumnLayout, containing all the elements listed above

@@ -6,10 +6,15 @@ import QtQuick.Dialogs 1.0
 import "../individual"
 import gaviz 1.0
 
+/* The AltPopulation Frame replaces the Population Frame when you zoom in enough
+    It displays the same set of coloured squares representing each individual, but more detailed :
+      - The square's border's colour corresponds to the one in the Population Frame
+      - Inside are to vertical rectangles representing each gene of the Individual
+*/
 Frame {
     id: altPopulationView
 
-    property int minZoomValue: 30.0
+    property int minZoomValue: 25.0
     property int maxZoomValue: 40.0
     property int nbGenerations: height / minZoomValue
     property int nbIndividuals: width / minZoomValue

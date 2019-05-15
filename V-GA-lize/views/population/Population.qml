@@ -4,10 +4,21 @@ import QtQuick.Layouts 1.3
 import QtQuick.Dialogs 1.0
 import gaviz 1.0
 
-Frame { // a visual frame
+/* The Population Frame is the first thing you will see on the Visualization Page
+    It displays a set of coloured squares representing each individual in a Generation :
+      - Each new line is a new Generation
+      - Squares that are the most on the left have the highest values in the generation
+
+    The colour of a square illustrates how close it is from the selected Minimum value :
+      - If the square is red, it is fairly over the Minimum ;
+      - If the square is blue, it is really close from the Minimum ;
+      - All the part that are not visible are in fact transparent squares, meaning that their value is below the Minimum.
+*/
+Frame {
     id: populationView
 
-    Flickable { // can be scrolled like in a touch-based UI
+    // The Flickable Item allows to move on the frame by maintaining the left mouse button
+    Flickable {
         id: canvasParent
         anchors.fill: parent
 
@@ -34,10 +45,13 @@ Frame { // a visual frame
             firstGeneration = canvasParent.contentY / zoomValue
         }
 
+
+
         ProgressBar {
             id: prgPop
             anchors.horizontalCenter: parent.horizontalCenter
             Layout.preferredWidth: 0.7 * parent.width
+            visible: false
 
             from: 0
             to: 100
@@ -50,6 +64,8 @@ Frame { // a visual frame
             }
         }
 
+
+
         Canvas {
             id: canvas
 
@@ -57,6 +73,7 @@ Frame { // a visual frame
             height: gaviz.getNbGenerations(selectedPopulation)
             renderStrategy: Canvas.Threaded
             renderTarget: Canvas.FramebufferObject
+
 
             transform: Scale { origin.x: 0; origin.y: 0; xScale: zoomValue; yScale: zoomValue }
             smooth: false
@@ -123,6 +140,10 @@ Frame { // a visual frame
 
             onClicked: {
                 individualView.selectIndividual(mouseY/zoomValue, mouseX/zoomValue)
+                individualView.canvas.requestPaint()
+                individualView.swipeV.currentIndex = 0
+                individualView.leftB.visible = false
+                individualView.rightB.visible = true
             }
 
             onPressAndHold: {
@@ -179,7 +200,7 @@ Frame { // a visual frame
         var score = gaviz.getIndividualProperty(selectedPopulation, g, c, i, f, IndividualProperty.Fitness)
         if (score >= minScore)
         {
-            return rgb(0, 1, score)
+            return rgb(minScore, minScore+5, score)
         }
 
         return Qt.rgba(0.0, 0.0, 0.0, 0.0)

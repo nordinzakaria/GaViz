@@ -18,6 +18,7 @@ import gaviz 1.0
 */
 RowLayout {
     Layout.maximumHeight: 0.07 * parent.height
+    property alias zoomSlider: zoomSlider
 /*
 TextField {
         id: generationSelector
@@ -75,7 +76,7 @@ TextField {
     */
     Tool{
         Label {
-            text: "Minimum Score"
+            text: "Wanted Quality"
         }
 
 
@@ -87,6 +88,7 @@ TextField {
             onValueChanged: {
                 populationView.forceActiveFocus()
                 populationView.repaintView()
+                minScore = value
             }
             onHoveredChanged: {
                 ToolTip.visible = hovered
@@ -149,6 +151,36 @@ TextField {
             }
         }
 
+    }
+
+    ToolSeparator{
+        Layout.fillHeight: true
+        Layout.rightMargin: 10
+        Layout.leftMargin: 10
+    }
+
+    // A Slider allowing to select and view the Zoom Value more precisely
+    Tool{
+        Label {
+            text: "Zoom Value"
+        }
+
+
+        Slider {
+            id: zoomSlider
+            from: 1
+            to: 40
+
+            onValueChanged: {
+                populationView.forceActiveFocus()
+                populationView.repaintView()
+                zoomValue = value
+            }
+            onHoveredChanged: {
+                ToolTip.visible = hovered
+                ToolTip.text = "Value : " + value
+            }
+        }
     }
 
     ToolSeparator{
