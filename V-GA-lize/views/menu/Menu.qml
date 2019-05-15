@@ -61,6 +61,7 @@ RowLayout{
                     id: view
                     Layout.fillHeight: true
                     Layout.fillWidth: true
+                    clip: true
 
                     // The "Help" Page
                     Label{
@@ -75,18 +76,6 @@ RowLayout{
                        text: qsTr("This is the About Page" + '\n'+
                                   "This page is not used yet.")
                     }
-
-                    onCurrentIndexChanged: {
-                        if(currentIndex === 0){
-                            about.visible = false
-                            help.visible = true
-                        }
-                        else{
-                            about.visible = true
-                            help.visible = false
-                        }
-                    }
-
                 }
 
                 // A PageIndicator showing on which of the two pages the user is

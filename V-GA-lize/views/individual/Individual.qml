@@ -5,12 +5,25 @@ import QtQuick.Shapes 1.0
 import QtQuick.Dialogs 1.0
 
 import gaviz 1.0
-
+import "../menu"
+/* The Individual Frame appears when you click on a square in the Population Frames
+    It contains :
+       - Two Labels on the left displaying the Generation and Number of the selected individual
+       - A SwipeView containing two pages :
+           - the first displays the individual and its parents (only if not from generation 0)
+           - the second displays the individual's value and an animated circle :
+               The colour has the same meaning than before (from red if over minimum, to blue if very close)
+               The circle is complete depending on how far over the minimum the value is
+       - A Frame displaying :
+           - The different values of the individual depending on the objective functions,
+           - Their Rank in the generation
+*/
 Frame {
     id: individualView
 
     Layout.fillWidth: true
     Layout.preferredHeight: 0.5 * parent.height
+    visible: true
 
     property int selectedFitness: 0
     property int selectedGeneration
@@ -24,6 +37,11 @@ Frame {
     property int parent1Rank: 0
     property double parent2Fitness: 0
     property int parent2Rank: 0
+
+    property alias canvas: mycanvas
+    property alias swipeV: swipeView
+    property alias leftB: buttonLeft
+    property alias rightB: buttonRight
 
     function selectIndividual(genIndex, indIndex)
     {
@@ -54,12 +72,34 @@ Frame {
         id: individualViewTopColumn
         anchors.fill: parent
 
-        Frame {
-            id: viewTitle
-            Label {
-                text: "INDIVIDUAL VIEW"
-                font.pixelSize: 24
+        RowLayout{
+            Layout.topMargin: -7
+            Frame {
+                id: viewTitle
+                Label {
+                    text: "INDIVIDUAL VIEW"
+                    font.pixelSize: 24
+                }
             }
+
+            Item{
+                Layout.fillWidth: true
+            }
+
+            MenuButton{
+                id : exitIndividual
+                trueIcon.source: "../../images/icons/image_part_004.png"
+
+                onClicked: individualView.visible = false
+                ToolTip.visible: hovered
+                ToolTip.text: "Close Individual View"
+            }
+        }
+
+        VerticalSeparator{
+            Layout.fillWidth: true
+            Layout.leftMargin: -11
+            Layout.rightMargin: -11
         }
 
         RowLayout {
@@ -95,12 +135,18 @@ Frame {
                     Layout.fillHeight: true
 
                     Button {
+                        id: buttonLeft
                         Layout.preferredWidth: 50
                         Layout.fillHeight: true
+                        visible: false
 
                         text: "<"
 
-                        onClicked: swipeView.currentIndex--
+                        onClicked: {
+                            swipeView.currentIndex--
+                            visible = false
+                            buttonRight.visible = true
+                        }
                     }
 
                     Frame {
@@ -116,79 +162,6 @@ Frame {
                             currentIndex: 0
 
                             Item {
-                                id: scoresPage
-
-                                Label {
-                                    text: "Scores view"
-                                }
-
-                                Canvas {
-                                    id: mycanvas
-                                    anchors.centerIn: parent
-                                    anchors.leftMargin: 0.5 * parent.width
-                                    width: parent.width
-                                    height: parent.height
-
-                                    // animation based on the value of this
-                                    property real animationProgress: 0
-
-                                    states: State {
-                                        when: individualView.visible == true
-                                        PropertyChanges { animationProgress: 1; target: mycanvas }
-                                    }
-                                    transitions: Transition {
-                                        NumberAnimation {
-                                            property: "animationProgress"
-                                            easing.type: Easing.InOutCubic
-                                            duration: 1000
-                                        }
-                                    }
-
-                                    onAnimationProgressChanged: requestPaint()
-
-                                    onPaint: {
-                                        var radius = 0.4*parent.height;
-                                        var lineWidth = 0.2*radius;
-                                        var ctx = getContext("2d");
-                                        ctx.reset();
-                                        // Resets the current path to a new path.
-                                        ctx.beginPath();
-                                        ctx.lineWidth= lineWidth;
-                                        ctx.strokeStyle = populationView.getFillStyle(selectedGeneration, 0, individualIndex, selectedFitness)
-                                        // object arc(real x, real y, real radius, real startAngle, real endAngle, bool anticlockwise)
-                                        ctx.arc(width/2, height/2, radius, 1.5*Math.PI, 1.5*Math.PI-2*Math.PI*animationProgress*individualFitness, true);
-                                        // Strokes the subpaths with the current stroke style.
-                                        ctx.stroke();
-                                    }
-                                }
-
-                                ColumnLayout {
-                                    anchors.verticalCenter: parent.verticalCenter
-                                    anchors.right: parent.horizontalCenter
-                                    anchors.rightMargin: mycanvas.width * 0.01
-
-                                    Repeater
-                                    {
-                                        model: gaviz.getNbObjectiveFunctions()
-
-                                            RowLayout {
-                                                Label {
-                                                    text: "Fitness: "+gaviz.getObjectiveFunction(index)
-                                                }
-                                                Item {
-                                                    Layout.fillWidth: true
-                                                }
-                                                Label {
-                                                    text: gaviz.getIndividualProperty(selectedPopulation, selectedGeneration, 0, individualIndex, index, IndividualProperty.Fitness)
-                                                }
-                                            }
-                                    }
-
-                                }
-                            }
-
-
-                            Item {
                                 id: genealogyPage
 
                                     Column { /* outer column */
@@ -199,6 +172,7 @@ Frame {
                                           color: "white"
                                           anchors.horizontalCenter: parent.horizontalCenter
                                           text: "Parents"
+                                          visible: parent1Index > -1
                                       }
                                       Row { /* inner row */
                                         anchors.horizontalCenter: parent.horizontalCenter
@@ -206,7 +180,7 @@ Frame {
 
                                         Rectangle {
                                             id: coloredParent1
-                                            visible: parent1Index != -1
+                                            visible: parent1Index > -1
                                             width: swipeframe.width / 4; height: swipeframe.height / 4;
                                             color: populationView.getFillStyle(selectedGeneration-1, 0, parent1Index, selectedFitness)
 
@@ -232,7 +206,7 @@ Frame {
                                             }
 
                                             MouseArea {
-                                                visible: parent1Index != -1
+                                                visible: parent1Index > -1
                                                 anchors.fill: parent
                                                 acceptedButtons: Qt.LeftButton
                                                 cursorShape: Qt.PointingHandCursor
@@ -246,7 +220,7 @@ Frame {
 
                                         Rectangle {
                                                 id: coloredParent2
-                                                visible: parent2Index != -1
+                                                visible: parent2Index > -1
 
                                                 width: swipeframe.width / 4; height: swipeframe.height / 4
                                                 color: populationView.getFillStyle(selectedGeneration-1, 0,
@@ -274,7 +248,7 @@ Frame {
                                                 }
 
                                                 MouseArea {
-                                                    visible: parent2Index != -1
+                                                    visible: parent2Index > -1
                                                     anchors.fill: parent
                                                     acceptedButtons: Qt.LeftButton
                                                     cursorShape: Qt.PointingHandCursor
@@ -331,6 +305,80 @@ Frame {
                                     }
                             }
 
+                            Item {
+                                id: scoresPage
+
+                                Label {
+                                    text: "Scores view"
+                                }
+
+                                Canvas {
+                                    id: mycanvas
+                                    anchors.centerIn: parent
+                                    anchors.leftMargin: 0.5 * parent.width
+                                    width: parent.width
+                                    height: parent.height
+
+                                    // animation based on the value of this
+                                    property real animationProgress: 0
+
+                                    states: State {
+                                        when: (buttonRight.visible === false || buttonLeft.visible === true)
+                                        PropertyChanges { animationProgress: 1; target: mycanvas }
+                                    }
+                                    transitions: Transition {
+                                        NumberAnimation {
+                                            property: "animationProgress"
+                                            easing.type: Easing.InOutCubic
+                                            duration: 1500
+                                        }
+                                    }
+
+                                    onAnimationProgressChanged: requestPaint()
+
+                                    onPaint: {
+                                        var radius = 0.4*parent.height;
+                                        var lineWidth = 0.2*radius;
+                                        var ctx = getContext("2d");
+                                        ctx.reset();
+                                        // Resets the current path to a new path.
+                                        ctx.beginPath();
+                                        ctx.lineWidth= lineWidth;
+                                        ctx.strokeStyle = populationView.getFillStyle(selectedGeneration, 0, individualIndex, selectedFitness)
+                                        // object arc(real x, real y, real radius, real startAngle, real endAngle, bool anticlockwise)
+                                        if(minScore === 0)
+                                            ctx.arc(width/2, height/2, radius, 1.5*Math.PI, 1.5*Math.PI-2*Math.PI*animationProgress*((individualFitness)-0.2), true);
+                                        else
+                                            ctx.arc(width/2, height/2, radius, 1.5*Math.PI, 1.5*Math.PI-2*Math.PI*animationProgress*((individualFitness/minScore)-0.2), true);
+                                        // Strokes the subpaths with the current stroke style.
+                                        ctx.stroke();
+                                    }
+                                }
+
+                                ColumnLayout {
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    anchors.right: parent.horizontalCenter
+                                    anchors.rightMargin: mycanvas.width * 0.01
+
+                                    Repeater
+                                    {
+                                        model: gaviz.getNbObjectiveFunctions()
+
+                                            RowLayout {
+                                                Label {
+                                                    text: "Fitness: "+gaviz.getObjectiveFunction(index)
+                                                }
+                                                Item {
+                                                    Layout.fillWidth: true
+                                                }
+                                                Label {
+                                                    text: gaviz.getIndividualProperty(selectedPopulation, selectedGeneration, 0, individualIndex, index, IndividualProperty.Fitness)
+                                                }
+                                            }
+                                    }
+
+                                }
+                            }                            
 
                             MouseArea {
                                    anchors.fill: parent
@@ -358,11 +406,18 @@ Frame {
                         }
 
                     Button {
+                        id: buttonRight
                         Layout.preferredWidth: 50
                         Layout.fillHeight: true
+                        visible: true
+
                         text: ">"
 
-                        onClicked: swipeView.currentIndex++
+                        onClicked: {
+                            swipeView.currentIndex++
+                            visible = false
+                            buttonLeft.visible = true
+                        }
                     }
 
                 }
