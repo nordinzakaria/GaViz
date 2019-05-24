@@ -1,3 +1,4 @@
+
 import QtQuick 2.0
 import QtQuick.Controls 2.3
 import QtQuick.Layouts 1.3
@@ -32,6 +33,8 @@ Page {
     property double maxZoomValue: 40.0
     property int firstGeneration: 1     // first row in view
     property int firstIndividual: 0     // first column in view
+    property double minLimit: 0.0
+    property double maxLimit: 100.0
     property double minScore: 0.0
     property bool showClusters: false
     property int selectedGeneration: 0

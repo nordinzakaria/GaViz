@@ -14,7 +14,7 @@ import gaviz 1.0
 Frame {
     id: altPopulationView
 
-    property int minZoomValue: 25.0
+    property int minZoomValue: 30.0
     property int maxZoomValue: 40.0
     property int nbGenerations: height / minZoomValue
     property int nbIndividuals: width / minZoomValue
@@ -51,68 +51,76 @@ Frame {
                                    });
         }
     }
-
-    ListView {      // table
-        id: poptable
+    ScrollView {
         anchors.fill: parent
-        interactive: false
-        orientation: ListView.Vertical
 
-        model: nbGenerations
+        ScrollBar.horizontal.policy: ScrollBar.AlwaysOn
+        ScrollBar.vertical.policy: ScrollBar.AlwaysOn
 
-        clip: true
+        contentHeight: parent.height
+        contentWidth: parent.width
 
-        delegate: ListView {    // table row
-            id: generationRow
-            width: parent.width
-            height: individualWidth
-
+        ListView {      // table
+            id: poptable
+            anchors.fill: parent
             interactive: false
-            orientation: ListView.Horizontal
+            orientation: ListView.Vertical
 
-            model: nbIndividuals
-            property int generationIndex: firstGeneration + index
+            model: nbGenerations
 
-            delegate: Rectangle {
-                id: individualRect
-                property int individualIndex: firstIndividual + index
+            clip: true
 
-                width: individualWidth - spacing/2
-                height: width
-                color: "black"
+            delegate: ListView {    // table row
+                id: generationRow
+                width: parent.width
+                height: individualWidth
 
-                Rectangle {
-                    id: coloredIndividualRect
+                interactive: false
+                orientation: ListView.Horizontal
 
-                    anchors.centerIn: parent
-                    width: individualWidth - individualSpacing * (zoomValue - minZoomValue) / (maxZoomValue - minZoomValue)
+                model: nbIndividuals
+                property int generationIndex: firstGeneration + index
+
+                delegate: Rectangle {
+                    id: individualRect
+                    property int individualIndex: firstIndividual + index
+
+                    width: individualWidth - spacing/2
                     height: width
-                    color: populationView.getFillStyle(generationIndex, 0, individualIndex, selectedFitness)
-
-                    property int currgen: generationRow.generationIndex
-                    property int currind: individualRect.individualIndex
-                    property int numgenes: gaviz.getIndividualProperty(selectedPopulation,
-                                                                       currgen, 0,
-                                                                       currind,
-                                                                       selectedFitness, IndividualProperty.NumGenes)
-                    property real gwidth : width * 0.9 / numgenes
-
-                    Row {
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        anchors.verticalCenter: parent.verticalCenter
-                        Repeater {
-                            id: genesrect
-                            model: coloredIndividualRect.numgenes
-                            Rectangle {
-                                width: coloredIndividualRect.gwidth
-                                height: coloredIndividualRect.height * 0.9
-                                color:getGeneStyle(coloredIndividualRect.currgen, 0,
-                                                   coloredIndividualRect.currind, index)
-                            }
-                         }
-                    }
+                    color: "black"
 
                     Rectangle {
+                        id: coloredIndividualRect
+
+                        anchors.centerIn: parent
+                        width: individualWidth - individualSpacing * (zoomValue - minZoomValue) / (maxZoomValue - minZoomValue)
+                        height: width
+                        color: populationView.getFillStyle(generationIndex, 0, individualIndex, selectedFitness)
+
+                        property int currgen: generationRow.generationIndex
+                        property int currind: individualRect.individualIndex
+                        property int numgenes: gaviz.getIndividualProperty(selectedPopulation,
+                                                                           currgen, 0,
+                                                                           currind,
+                                                                           selectedFitness, IndividualProperty.NumGenes)
+                        property real gwidth : width * 0.9 / numgenes
+
+                        Row {
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            anchors.verticalCenter: parent.verticalCenter
+                            Repeater {
+                                id: genesrect
+                                model: coloredIndividualRect.numgenes
+                                Rectangle {
+                                    width: coloredIndividualRect.gwidth
+                                    height: coloredIndividualRect.height * 0.9
+                                    color: getGeneStyle(coloredIndividualRect.currgen, 0,
+                                                        coloredIndividualRect.currind, index)
+                                }
+                            }
+                        }
+
+                        Rectangle {
                         id: highlightRect
                         visible: (selectedGeneration == generationIndex && selectedIndividual == individualIndex)
                         radius: width * (zoomValue - minZoomValue) / (maxZoomValue - minZoomValue)
@@ -120,20 +128,21 @@ Frame {
                         width: (individualWidth - individualSpacing * (zoomValue - minZoomValue) / (maxZoomValue - minZoomValue))
                         height: width
                         color: "black"
-                    }
+                        }
 
-                    MouseArea {
-                        anchors.fill: parent
-                        acceptedButtons: Qt.LeftButton | Qt.RightButton
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: {
-                            individualView.selectIndividual(generationIndex, individualIndex)
+                        MouseArea {
+                            anchors.fill: parent
+                            acceptedButtons: Qt.LeftButton | Qt.RightButton
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: {
+                                individualView.selectIndividual(generationIndex, individualIndex)
+                            }
                         }
                     }
                 }
+
+
             }
-
-
         }
     }
 
