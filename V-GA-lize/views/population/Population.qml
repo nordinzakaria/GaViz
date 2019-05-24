@@ -18,9 +18,11 @@ Frame {
     id: populationView
 
     // The Flickable Item allows to move on the frame by maintaining the left mouse button
-    Flickable {
+    ScrollView {
         id: canvasParent
         anchors.fill: parent
+        ScrollBar.horizontal.policy: ScrollBar.AlwaysOn
+        ScrollBar.vertical.policy: ScrollBar.AlwaysOn
 
         contentWidth: gaviz.getMaxNbIndPerGeneration() * zoomValue
         contentHeight: gaviz.getNbGenerations(selectedPopulation) * zoomValue
@@ -35,7 +37,7 @@ Frame {
             }
         }
 
-        onMovementEnded: updateCanvasPosition()
+        //onMovementEnded: updateCanvasPosition()
 
         function updateCanvasPosition()
         {

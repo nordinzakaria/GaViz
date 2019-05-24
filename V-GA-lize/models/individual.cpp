@@ -18,6 +18,10 @@ Individual::Individual(int generation, int cluster, int parent1, int parent2, fl
 {
     this->setGeneration(generation);
     this->setCluster(cluster);
+    if (parent1 < -1)
+        parent1 = -1;
+    if (parent2 < -1)
+        parent2 = -1;
     this->setParents(parent1, parent2);
     this->setChromosomes(chromosome, fitness);
     this->setRank(rank);

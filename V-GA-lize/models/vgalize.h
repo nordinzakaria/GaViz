@@ -417,6 +417,106 @@ public:
            return 0;
        }
 
+    Q_INVOKABLE float getMinStats(int pindex, int findex, int which) const
+       {
+           Stats** pstats = population[pindex].getStats(findex);
+
+           switch (which) {
+
+            case Stats::AVERAGE:
+            {
+                float minAverage = 999999999999999999;
+                for(int i = 0; i < population[pindex].getNbGenerations(); i++)
+                {
+                    if(pstats[i]->average() < minAverage)
+                        minAverage = pstats[i]->average();
+                }
+                return minAverage;
+            }
+            case Stats::MIN:
+            {
+               float minMinimum = 999999999999999999;
+               for(int i = 0; i < population[pindex].getNbGenerations(); i++)
+               {
+                   if(pstats[i]->average() < minMinimum)
+                       minMinimum = pstats[i]->min();
+               }
+               return minMinimum;
+            }
+            case Stats::MAX:
+            {
+               float minMaximum = 999999999999999999;
+               for(int i = 0; i < population[pindex].getNbGenerations(); i++)
+               {
+                   if(pstats[i]->average() < minMaximum)
+                       minMaximum = pstats[i]->max();
+               }
+               return minMaximum;
+            }
+            case Stats::STDDEV:
+            {
+               float minStddev = 999999999999999999;
+               for(int i = 0; i < population[pindex].getNbGenerations(); i++)
+               {
+                   if(pstats[i]->average() < minStddev)
+                       minStddev = pstats[i]->average();
+               }
+               return minStddev;
+            }
+           }
+
+           return 0;
+       }
+    Q_INVOKABLE float getMaxStats(int pindex, int findex, int which) const
+       {
+           Stats** pstats = population[pindex].getStats(findex);
+
+           switch (which) {
+
+            case Stats::AVERAGE:
+            {
+                float maxAverage = -999999999999999999;
+                for(int i = 0; i < population[pindex].getNbGenerations(); i++)
+                {
+                    if(pstats[i]->average() > maxAverage)
+                        maxAverage = pstats[i]->average();
+                }
+                return maxAverage;
+            }
+            case Stats::MIN:
+            {
+               float maxMinimum = -999999999999999999;
+               for(int i = 0; i < population[pindex].getNbGenerations(); i++)
+               {
+                   if(pstats[i]->average() > maxMinimum)
+                       maxMinimum = pstats[i]->min();
+               }
+               return maxMinimum;
+            }
+            case Stats::MAX:
+            {
+               float maxMaximum = -999999999999999999;
+               for(int i = 0; i < population[pindex].getNbGenerations(); i++)
+               {
+                   if(pstats[i]->average() > maxMaximum)
+                       maxMaximum = pstats[i]->max();
+               }
+               return maxMaximum;
+            }
+            case Stats::STDDEV:
+            {
+               float maxStddev = -999999999999999999;
+               for(int i = 0; i < population[pindex].getNbGenerations(); i++)
+               {
+                   if(pstats[i]->average() > maxStddev)
+                       maxStddev = pstats[i]->average();
+               }
+               return maxStddev;
+            }
+           }
+
+           return 0;
+       }
 
     Q_INVOKABLE QString getLocalFile(QUrl file)
     {

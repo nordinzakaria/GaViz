@@ -56,10 +56,12 @@ TextField {
             from:0
             to:
             second.value = 100
-
             onHoveredChanged: {
                 ToolTip.visible = hovered
                 ToolTip.text = "From : " + first.value + " to :" + second.value
+
+                minLimit = first.value
+                maxLimit = second.value
             }
         }
     }
