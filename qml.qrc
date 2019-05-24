@@ -1,0 +1,18 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>views/population/AltPopulation.qml</file>
+        <file>views/population/Population.qml</file>
+        <file>views/tools/ToolBar.qml</file>
+        <file>views/menu/Menu.qml</file>
+        <file>views/menu/MenuButton.qml</file>
+        <file>views/menu/MenuPage.qml</file>
+        <file>views/menu/Visualization.qml</file>
+        <file>views/individual/Individual.qml</file>
+        <file>views/graph/Graph.qml</file>
+        <file>main/MainMenu.qml</file>
+        <file>views/tools/Tool.qml</file>
+        <file>views/menu/VerticalSeparator.qml</file>
+        <file>views/tools/ToolSeparator.qml</file>
+    </qresource>
+</RCC>
