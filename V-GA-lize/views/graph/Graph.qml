@@ -59,8 +59,25 @@ Frame {
             }
 
             Label {
-                text: "Generation " + selectedGeneration
+                text: "Generation "
                 font.pixelSize: 24
+                color: "white"
+            }
+
+            TextField {
+                //text: selectedGeneration
+                placeholderText : selectedGeneration
+                font.pixelSize: 24
+                color: "white"
+                onEditingFinished:  {
+                    var newgen = parseInt(text);
+                    if (newgen > 0 && newgen < gaviz.getNbGenerations()){
+                        selectedGeneration = parseInt(text);
+                        updateBounds()
+                    }
+                    text = ''
+
+                }
             }
         }
 
@@ -154,23 +171,22 @@ Frame {
                      }
 
                  Slider {
+                     id : s
                      Layout.fillWidth: true
                      Layout.leftMargin: 20
-                     property int lastvalue: 0
                      from: 0
-                     value: 0
+                     value: selectedGeneration
+                     property int lastvalue: valueOf(value)
                      to: gaviz.getNbGenerations(selectedPopulation) - 1
 
 
                      onPressedChanged: {
                          var val = parseInt(value)
                          if (lastvalue !== val){
-                             selectedGeneration = value
+                             lastValue = selectedGeneration =val
                              updateBounds()
                          }
                      }
-
-
 
                  }
             }
@@ -222,7 +238,6 @@ Frame {
                 console.log('redrawing scatter')
 
                 for (var i=0; i<sz; i++) {
-
                     scatter1.append(fitness1[i],parseFloat(fitness0[i]))
                 }
 
