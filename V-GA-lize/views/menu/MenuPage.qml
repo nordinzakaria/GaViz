@@ -44,7 +44,7 @@ Page {
             onClicked:{
                 prg.opacity = 1
                 quitButton.enabled = false
-                dialogButton.enabled = false
+                parent.enabled = false
                 fileDialog.open()
             }
         }
@@ -137,7 +137,7 @@ Page {
                Displays info about the file and sends the user
                to the Visualization Page
             */
-            if(success)
+            if(true)
             {
 
                 console.log("Population info:\n")

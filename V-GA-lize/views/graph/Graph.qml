@@ -156,14 +156,20 @@ Frame {
                  Slider {
                      Layout.fillWidth: true
                      Layout.leftMargin: 20
+                     property int lastvalue: 0
                      from: 0
                      value: 0
                      to: gaviz.getNbGenerations(selectedPopulation) - 1
 
-                     onValueChanged: {
-                         selectedGeneration = value
-                         updateBounds()
+
+                     onPressedChanged: {
+                         var val = parseInt(value)
+                         if (lastvalue !== val){
+                             lastvalue = selectedGeneration = val
+                             updateBounds()
+                         }
                      }
+
                  }
             }
 
@@ -213,24 +219,21 @@ Frame {
                 console.log('redrawing scatter')
 
                 for (var i=0; i<sz; i++) {
-                    scatter1.append(fitness0[i], fitness1[i])
-                    }
+                    console.log('fitness : '+typeof parseFloat(fitness0[i]))
+                    scatter2.append(i,parseFloat(fitness0[i]))
+                }
+
+
             }
 
-            ScatterSeries {
+           ScatterSeries {
                 id: scatter1
-                name: "F0:"+gaviz.getObjectiveFunction(selectedFitness0) + " vs F1:" + gaviz.getObjectiveFunction(selectedFitness1)
+                color: "red"
+                name: "F0:"+gaviz.getObjectiveFunction(selectedFitness0)
                 Component.onCompleted: {
-                        var sz = gaviz.getNbIndInGeneration(selectedPopulation, selectedGeneration)
-                        var fitness0 = gaviz.getIndividualPropertyList(selectedPopulation, selectedGeneration, 0, selectedFitness0, IndividualProperty.Fitness)
-                        var fitness1 = gaviz.getIndividualPropertyList(selectedPopulation, selectedGeneration, 0, selectedFitness1, IndividualProperty.Fitness)
-                        console.log('redrawing scatter')
-
-                        for (var i=0; i<sz; i++) {
-                            scatter1.append(fitness0[i], fitness1[i])
-                            }
-                    }
+                        updateBounds()
                 }
+           }
 
             MouseArea {
                    anchors.fill: parent
@@ -684,6 +687,7 @@ Frame {
     */
     function updateBounds ()
     {
+        console.log('updateBounds is called')
         console.log('minFitness0 was '+minFitness0+', maxFitness0 was '+maxFitness0)
         console.log('minFitness1 was '+minFitness1+', maxFitness1 was '+maxFitness1)
 
