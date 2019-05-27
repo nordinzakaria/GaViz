@@ -164,7 +164,7 @@ Frame {
 
                      onPressedChanged: {
                          var val = parseInt(value)
-                         if (lastvalue !== val){
+                         if (lastvalue !== val){        // if the new value is different of the old one then reload
                              selectedGeneration = value
                              updateBounds()
                          }
