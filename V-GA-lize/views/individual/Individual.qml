@@ -6,6 +6,7 @@ import QtQuick.Dialogs 1.0
 
 import gaviz 1.0
 import "../menu"
+
 /* The Individual Frame appears when you click on a square in the Population Frames
     It contains :
        - Two Labels on the left displaying the Generation and Number of the selected individual
@@ -179,48 +180,51 @@ Frame {
                                         spacing: 10
 
                                         Rectangle {
-                                            id: coloredParent1
-                                            visible: parent1Index > -1
-                                            width: swipeframe.width / 4; height: swipeframe.height / 4;
-                                            color: populationView.getFillStyle(selectedGeneration-1, 0, parent1Index, selectedFitness)
+                                                id: coloredParent1
+                                                visible: parent1Index > (-1)
 
-                                            property int numgenes: (parent1Index != -1) ? gaviz.getIndividualProperty(selectedPopulation,
-                                                                                                                      selectedGeneration-1, 0,
-                                                                                                                      parent1Index,
-                                                                                                                      selectedFitness, IndividualProperty.NumGenes) : 0
-                                            property real gwidth : (numgenes > 0) ? width * 0.9 / numgenes : 0
+                                                width: swipeframe.width / 4; height: swipeframe.height / 4
+                                                color: populationView.getFillStyle(selectedGeneration-1, 0,
+                                                                                   parent1Index, selectedFitness)
 
-                                            Row {
-                                                anchors.horizontalCenter: parent.horizontalCenter
-                                                anchors.verticalCenter: parent.verticalCenter
-                                                Repeater {
-                                                    id: genesrect
-                                                    model: coloredParent1.numgenes
-                                                    Rectangle {
-                                                        width: coloredParent1.gwidth
-                                                        height: coloredParent1.height * 0.9
-                                                        color:altPopulationView.getGeneStyle(coloredParent1.currgen, 0,
-                                                                                             coloredParent1.currind, index)
+                                                property int numgenes: (parent1Index != -1) ? gaviz.getIndividualProperty(selectedPopulation,
+                                                                                                                          selectedGeneration-1, 0,
+                                                                                                                          parent1Index,
+                                                                                                                          selectedFitness, IndividualProperty.NumGenes) : 0
+                                                property real gwidth : (numgenes > 0) ? width * 0.9 / numgenes : 0
+
+                                                Row {
+                                                    anchors.horizontalCenter: parent.horizontalCenter
+                                                    anchors.verticalCenter: parent.verticalCenter
+                                                    Repeater {
+                                                        id: genesrect1
+                                                        model: coloredParent1.numgenes
+                                                        Rectangle {
+                                                            width: coloredParent1.gwidth
+                                                            height: coloredParent1.height * 0.9
+                                                            color:altPopulationView.getGeneStyle(
+                                                                      selectedGeneration-1, 0,
+                                                                      parent1Index, index)
+                                                        }
                                                     }
                                                 }
-                                            }
 
-                                            MouseArea {
-                                                visible: parent1Index > -1
-                                                anchors.fill: parent
-                                                acceptedButtons: Qt.LeftButton
-                                                cursorShape: Qt.PointingHandCursor
+                                                MouseArea {
+                                                    visible: parent1Index > (-1)
+                                                    anchors.fill: coloredParent1
+                                                    acceptedButtons: Qt.LeftButton
+                                                    cursorShape: Qt.PointingHandCursor
 
-                                                onClicked: {
-                                                    individualView.selectIndividual(selectedGeneration-1, parent1Index)
+                                                    onClicked: {
+                                                        individualView.selectIndividual(selectedGeneration-1, parent1Index)
+                                                    }
                                                 }
-                                            }
 
-                                        }
+                                            }
 
                                         Rectangle {
                                                 id: coloredParent2
-                                                visible: parent2Index > -1
+                                                visible: parent2Index > (-1)
 
                                                 width: swipeframe.width / 4; height: swipeframe.height / 4
                                                 color: populationView.getFillStyle(selectedGeneration-1, 0,
@@ -241,15 +245,16 @@ Frame {
                                                         Rectangle {
                                                             width: coloredParent2.gwidth
                                                             height: coloredParent2.height * 0.9
-                                                            color:altPopulationView.getGeneStyle(coloredParent2.currgen, 0,
-                                                                                                 coloredParent2.currind, index)
+                                                            color:altPopulationView.getGeneStyle(
+                                                                      selectedGeneration-1, 0,
+                                                                      parent2Index, index)
                                                         }
                                                     }
                                                 }
 
                                                 MouseArea {
-                                                    visible: parent2Index > -1
-                                                    anchors.fill: parent
+                                                    visible: parent2Index > (-1)
+                                                    anchors.fill: coloredParent2
                                                     acceptedButtons: Qt.LeftButton
                                                     cursorShape: Qt.PointingHandCursor
 
@@ -427,29 +432,144 @@ Frame {
             Frame {
                 id: lastBox
                 Layout.fillHeight: true
+                Layout.preferredWidth: 0.3*parent.width
 
-                ColumnLayout {
+                clip: true
+                ColumnLayout{
+                    anchors.fill: parent
+                    Layout.fillHeight: true
+                    Layout.fillWidth:  true
+
                     Label {
                         text: "Individual Statistics"
                         font.pixelSize: 24
                     }
 
                     Repeater {
+                        id: rep1
                         model: gaviz.getNbObjectiveFunctions()
                         Label {
+                            //property int ng: gaviz.getIndividualProperty(selectedPopulation, selectedGeneration, 0, individualIndex, index, IndividualProperty.NumGenes)
                             text: "Fitness " + index +": "+
                                   gaviz.getIndividualProperty(selectedPopulation, selectedGeneration, 0, individualIndex, index, IndividualProperty.Fitness)
-                                  + ", rank: " + individualIndex
+                                  + '\n' + "Rank: " + individualIndex + '\n' + "Genes : " + coloredInd.numgenes
                         }
                     }
 
+                    Label {
+                        text: ""
+                    }
+
+                    // add popup window for gene
+                    Button{
+                        id : inspector
+                        text: "See Genes"
+
+                        onClicked: dialog.open()
+
+                        Dialog {
+                            id: dialog
+                            title: qsTr("Genes Inspector")
+                            visible: false
+
+                            anchors.centerIn: Overlay.overlay
+                            width: 800
+                            height: 600
+                            modal : false
+
+                            standardButtons: Dialog.Ok
+
+                            contentItem: ColumnLayout {
+                                Frame{
+                                    Layout.preferredHeight: 0.3*parent.height
+                                    Layout.preferredWidth: parent.width
+
+                                    Column { /* inner column */
+                                        anchors.horizontalCenter: parent.horizontalCenter
+                                        spacing: 10
+
+                                        Text {
+                                            color: "white"
+                                            anchors.horizontalCenter: parent.horizontalCenter
+                                            text: "Individual"
+                                        }
+
+                                        Rectangle {
+                                            id: coloredIndBis
+                                            width: swipeframe.width / 4; height: swipeframe.height / 4
+
+                                            color: populationView.getFillStyle(selectedGeneration, 0,
+                                                                               individualIndex, selectedFitness)
+                                            property int numgenes: gaviz.getIndividualProperty(selectedPopulation,
+                                                                                               selectedGeneration, 0,
+                                                                                               individualIndex,
+                                                                                               selectedFitness, IndividualProperty.NumGenes)
+                                            property real gwidth : (numgenes > 0) ? width * 0.9 / numgenes : 0
+
+                                            Row {
+                                                anchors.horizontalCenter: parent.horizontalCenter
+                                                anchors.verticalCenter: parent.verticalCenter
+                                                Repeater {
+                                                    id: genesrectIndBis
+                                                    model: coloredInd.numgenes
+                                                    Rectangle {
+                                                        width: coloredInd.gwidth
+                                                        height: coloredInd.height * 0.9
+                                                        color:altPopulationView.getGeneStyle(
+                                                                  selectedGeneration, 0,
+                                                                  individualIndex, index)
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        Label {
+                                            //property int ng: gaviz.getIndividualProperty(selectedPopulation, selectedGeneration, 0, individualIndex, index, IndividualProperty.NumGenes)
+                                            text: "Fitness " + index +": "+
+                                                  gaviz.getIndividualProperty(selectedPopulation, selectedGeneration, 0, individualIndex, index, IndividualProperty.Fitness)
+                                                  + '\n' + "Rank: " + individualIndex + '\n' + "Genes : " + coloredInd.numgenes
+                                        }
+
+                                    }
+                                }
+
+                                Frame{
+                                    Layout.preferredHeight: 0.7*parent.height
+                                    Layout.preferredWidth: parent.width
+                                    /*
+                                    ScrollView{
+                                        ScrollBar.horizontal.policy: ScrollBar.AsNeeded
+                                        ScrollBar.vertical.policy: ScrollBar.AlwaysOn
+
+                                        contentHeight: parent.height
+                                        contentWidth: parent.width
+                                        clip: true
+                                        */
+
+                                        GridLayout{
+                                            Layout.fillHeight: true
+                                            Layout.fillWidth: true
+                                            columns: 3
+                                            columnSpacing: 0.12*parent.width
+                                            rowSpacing: 10
+
+                                            Repeater{
+                                                id: rep2
+                                                model: coloredInd.numgenes
+                                                Label {
+                                                    text: "Gene " + index + " : " +
+                                                          gaviz.getGene(selectedGeneration, 0, index, index)
+                                                }
+                                            }
+                                        }
+                                    //}
+                                }
+                            }
+                        }
+                    }
                 }
-
             }
-
-
         }
     }
-
 }
 

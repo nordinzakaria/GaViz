@@ -200,6 +200,7 @@ Frame {
         }
 
         VerticalSeparator{
+
             Layout.fillWidth: true
         }
 
@@ -210,7 +211,7 @@ Frame {
             height: 450
             antialiasing: true
             visible: true
-            theme: ChartView.ChartThemeBlueCerulean
+            theme: ChartView.ChartThemeDark
 
 
             function populate()
@@ -270,7 +271,7 @@ Frame {
             title: "Average"
             antialiasing: true
             visible:false
-            theme: ChartView.ChartThemeBlueCerulean
+            theme: ChartView.ChartThemeDark
 
             ValueAxis {
                     id: xAxisAvg
@@ -278,11 +279,18 @@ Frame {
                     max: gaviz.getNbGenerations(selectedPopulation)
                 }
 
+            ValueAxis {    //  <- custom ValueAxis attached to the y-axis
+                id: yAxisAvg
+                min: gaviz.getMinStats(selectedPopulation, selectedFitness0, StatsProperty.AVERAGE)//-0.2
+                max: gaviz.getMaxStats(selectedPopulation, selectedFitness0, StatsProperty.AVERAGE)//+0.2
+            }
+
 
             LineSeries {
                 id: avgseries0
                 name: "F0:"+gaviz.getObjectiveFunction(selectedFitness0)
                 axisX: xAxisAvg
+                axisY: yAxisAvg
                 Component.onCompleted: {
                         var gsz = gaviz.getNbGenerations(selectedPopulation)
                         for (var i=0; i<gsz; i++) {
@@ -295,6 +303,7 @@ Frame {
                 id: avgseries1
                 name: "F1:"+gaviz.getObjectiveFunction(selectedFitness1)
                 axisX: xAxisAvg
+                axisY: yAxisAvg
                 Component.onCompleted: {
                         var gsz = gaviz.getNbGenerations(selectedPopulation)
                         for (var i=0; i<gsz; i++) {
@@ -332,10 +341,10 @@ Frame {
                 width: 0.5*parent.width
                 height: 450
                 id: minmaxplot0
-                title: "Min and Max for "+gaviz.getObjectiveFunction(selectedFitness0)
+                title: "Min and Max "+gaviz.getObjectiveFunction(selectedFitness0) + " for each Generation"
                 antialiasing: true
                 visible:false
-                theme: ChartView.ChartThemeBlueCerulean
+                theme: ChartView.ChartThemeDark
                 Layout.rightMargin: -5
 
                 ValueAxis {
@@ -343,29 +352,37 @@ Frame {
                     min: 0
                     max: gaviz.getNbGenerations(selectedPopulation)
                 }
+                ValueAxis {
+                    id: yAxisMinMax
+                    min: gaviz.getMinStats(selectedPopulation, selectedFitness0, StatsProperty.MIN)//-1
+                    max: gaviz.getMaxStats(selectedPopulation, selectedFitness0, StatsProperty.MAX)//+1
+
+                }
 
                 LineSeries {
-                id: minseries0
-                name: "Min"
-                axisX: xAxisMinMax
-                Component.onCompleted: {
+                    id: minseries0
+                    name: "Min"
+                    axisX: xAxisMinMax
+                    axisY: yAxisMinMax
+                    Component.onCompleted: {
                         var gsz = gaviz.getNbGenerations(selectedPopulation)
                         for (var i=0; i<gsz; i++) {
-                            minseries0.append(i, gaviz.getStats(selectedPopulation, i, selectedFitness0, StatsProperty.MAX))
-                          }
+                            minseries0.append(i, gaviz.getStats(selectedPopulation, i, selectedFitness0, StatsProperty.MIN))
+                        }
                     }
                 }
                 LineSeries {
-                id: maxseries0
-                name: "Max"
-                axisX: xAxisMinMax
-                Component.onCompleted: {
+                    id: maxseries0
+                    name: "Max"
+                    axisX: xAxisMinMax
+                    axisY: yAxisMinMax
+                    Component.onCompleted: {
                         var gsz = gaviz.getNbGenerations(selectedPopulation)
                         for (var i=0; i<gsz; i++) {
-                            maxseries0.append(i, gaviz.getStats(selectedPopulation, i, selectedFitness0, StatsProperty.MIN))
-                          }
+                            maxseries0.append(i, gaviz.getStats(selectedPopulation, i, selectedFitness0, StatsProperty.MAX))
+                        }
                     }
-            }
+                }
 
                 MouseArea {
                    anchors.fill: parent
@@ -393,10 +410,10 @@ Frame {
                 width: 0.5*parent.width
                 height: 450
                 id: minmaxplot1
-                title: "Min and Max for "+gaviz.getObjectiveFunction(selectedFitness1)
+                title: "Min and Max "+gaviz.getObjectiveFunction(selectedFitness1)  + " for each Generation"
                 antialiasing: true
                 visible:false
-                theme: ChartView.ChartThemeBlueCerulean
+                theme: ChartView.ChartThemeDark
 
 
 
@@ -405,31 +422,40 @@ Frame {
                     min: 0
                     max: gaviz.getNbGenerations(selectedPopulation)
                 }
+                ValueAxis {
+                    id: yAxisMinMax1
+                    min: gaviz.getMinStats(selectedPopulation, selectedFitness0, StatsProperty.MIN)//-1
+                    max: gaviz.getMaxStats(selectedPopulation, selectedFitness0, StatsProperty.MAX)//+1
+
+                }
 
 
                 LineSeries {
                 id: minseries1
                 name: "Min"
+
                 axisX: xAxisMinMax1
+                axisY: yAxisMinMax1
 
                 Component.onCompleted: {
-                        var gsz = gaviz.getNbGenerations(selectedPopulation)
-                        for (var i=0; i<gsz; i++) {
-                            minseries1.append(i, gaviz.getStats(selectedPopulation, i, selectedFitness1, StatsProperty.MAX))
-                          }
+                    var gsz = gaviz.getNbGenerations(selectedPopulation)
+                    for (var i=0; i<gsz; i++) {
+                        minseries1.append(i, gaviz.getStats(selectedPopulation, i, selectedFitness1, StatsProperty.MIN))
                     }
+                }
             }
                 LineSeries {
                 id: maxseries1
                 name: "Max"
                 axisX: xAxisMinMax1
+                axisY: yAxisMinMax1
 
                 Component.onCompleted: {
-                        var gsz = gaviz.getNbGenerations(selectedPopulation)
-                        for (var i=0; i<gsz; i++) {
-                            maxseries1.append(i, gaviz.getStats(selectedPopulation, i, selectedFitness1, StatsProperty.MIN))
-                          }
+                    var gsz = gaviz.getNbGenerations(selectedPopulation)
+                    for (var i=0; i<gsz; i++) {
+                        maxseries1.append(i, gaviz.getStats(selectedPopulation, i, selectedFitness1, StatsProperty.MAX))
                     }
+                }
             }
 
                 MouseArea {
@@ -463,18 +489,25 @@ Frame {
             title: "Standard Deviation"
             antialiasing: true
             visible:false
-            theme: ChartView.ChartThemeBlueCerulean
+            theme: ChartView.ChartThemeDark
 
             ValueAxis {
                     id: xAxisStddev
                     min: 0
                     max: gaviz.getNbGenerations(selectedPopulation)
                 }
+            ValueAxis {
+                id: yAxisStddev
+                min: gaviz.getMinStats(selectedPopulation, selectedFitness0, StatsProperty.STDDEV)//-1
+                max: gaviz.getMaxStats(selectedPopulation, selectedFitness0, StatsProperty.STDDEV)//+1
+
+            }
 
             LineSeries {
                 id: stddevseries0
                 name: 'F0:'+gaviz.getObjectiveFunction(selectedFitness0)
                 axisX: xAxisStddev
+                axisY: yAxisStddev
                 Component.onCompleted: {
                         var gsz = gaviz.getNbGenerations(selectedPopulation)
                         for (var i=0; i<gsz; i++) {
@@ -487,6 +520,7 @@ Frame {
                 id: stddevseries1
                 name: 'F1:'+gaviz.getObjectiveFunction(selectedFitness1)
                 axisX: xAxisStddev
+                axisY: yAxisStddev
                 Component.onCompleted: {
                         var gsz = gaviz.getNbGenerations(selectedPopulation)
                         for (var i=0; i<gsz; i++) {
@@ -527,52 +561,59 @@ Frame {
                 height: 450
                 antialiasing: true
                 visible: false
-                theme: ChartView.ChartThemeBlueCerulean
+                theme: ChartView.ChartThemeDark
                 Layout.rightMargin: -5
 
+                property double category: maxFitness0/5
 
                 function populate()
                 {
-                var sz = gaviz.getNbIndInGeneration(selectedPopulation, selectedGeneration)
-                var fitness = gaviz.getIndividualPropertyList(selectedPopulation, selectedGeneration, 0, selectedFitness0, IndividualProperty.Fitness)
-                var count = [0, 0, 0, 0, 0]
+                    var sz = gaviz.getNbIndInGeneration(selectedPopulation, selectedGeneration)
+                    var fitness = gaviz.getIndividualPropertyList(selectedPopulation, selectedGeneration, 0, selectedFitness0, IndividualProperty.Fitness)
+                    var count = [0, 0, 0, 0, 0]
 
-                for (var i=0; i<sz; i++)
-                {
-                    if (fitness[i] < 0.2)
-                        count[0] ++
-                    else
-                    if (fitness[i] < 0.4)
-                        count[1] ++
-                    else
-                    if (fitness[i] < 0.6)
-                        count[2] ++
-                    else
-                    if (fitness[i] < 0.8)
-                        count[3] ++
-                    else
-                        count[4] ++
+                    for (var i=0; i<sz; i++)
+                    {
+                        if (fitness[i] < histoplot.category)
+                            count[0]++
+                        else if (fitness[i] < 2*histoplot.category)
+                            count[1]++
+                        else if (fitness[i] < 3*histoplot.category)
+                            count[2]++
+                        else if (fitness[i] < 4*histoplot.category)
+                            count[3]++
+                        else
+                            count[4]++
+                    }
+
+                    var max = 0
+                    for (i=0; i<count.length; i++)
+                    {
+                        console.log('count at index '+i+' is '+count[i])
+                        if (count[i] > max)
+                            max = count[i]
+                    }
+
+                    hist0ValueAxis.max = max
+                    histoseries.append(gaviz.getObjectiveFunction(selectedFitness0), count)
                 }
-
-                var max = 0
-                for (i=0; i<count.length; i++)
-                {
-                    console.log('count at index '+i+' is '+count[i])
-                    if (count[i] > max)
-                        max = count[i]
-                }
-
-                valueAxis.max = max
-                histoseries.append(gaviz.getObjectiveFunction(selectedFitness0), count)
-            }
 
                 BarSeries {
                 id: histoseries
-                name: "F0:"+gaviz.getObjectiveFunction(selectedFitness0)
-                axisX: BarCategoryAxis { categories: ["<0.2", "<0.4", "<0.6", "<0.8", "<1" ] }
-                axisY: ValueAxis {    //  <- custom ValueAxis attached to the y-axis
-                                id: valueAxis
-                            }
+                name: "F0 : "+gaviz.getObjectiveFunction(selectedFitness0)
+                axisX: BarCategoryAxis {
+                    categories: [(histoplot.category).toFixed(4),
+                                 (2*histoplot.category).toFixed(4),
+                                 (3*histoplot.category).toFixed(4),
+                                 (4*histoplot.category).toFixed(4),
+                                 (maxFitness0).toFixed(4)
+                                ]
+                }
+
+                axisY: ValueAxis {
+                    id: hist0ValueAxis
+                    min: 0
+                }
                 Component.onCompleted: {
                     histoplot.populate()
                     }
@@ -607,30 +648,28 @@ Frame {
             height: 450
             antialiasing: true
             visible: false
-            theme: ChartView.ChartThemeBlueCerulean
+            theme: ChartView.ChartThemeDark
 
+            property double category: maxFitness1/5
 
             function populate()
             {
                 var sz = gaviz.getNbIndInGeneration(selectedPopulation, selectedGeneration)
-                var fitness = gaviz.getIndividualPropertyList(selectedPopulation, selectedGeneration, 0, selectedFitness1, IndividualProperty.Fitness)
+                var fitness = gaviz.getIndividualPropertyList(selectedPopulation, selectedGeneration, 0, selectedFitness0, IndividualProperty.Fitness)
                 var count = [0, 0, 0, 0, 0]
 
                 for (var i=0; i<sz; i++)
                 {
-                    if (fitness[i] < 0.2)
-                        count[0] ++
+                    if (fitness[i] < histoplot1.category)
+                        count[0]++
+                    else if (fitness[i] < 2*histoplot1.category)
+                        count[1]++
+                    else if (fitness[i] < 3*histoplot1.category)
+                        count[2]++
+                    else if (fitness[i] < 4*histoplot1.category)
+                        count[3]++
                     else
-                    if (fitness[i] < 0.4)
-                        count[1] ++
-                    else
-                    if (fitness[i] < 0.6)
-                        count[2] ++
-                    else
-                    if (fitness[i] < 0.8)
-                        count[3] ++
-                    else
-                        count[4] ++
+                        count[4]++
                 }
 
                 var max = 0
@@ -641,17 +680,27 @@ Frame {
                         max = count[i]
                 }
 
-                valueAxis1.max = max
-                histoseries1.append(gaviz.getObjectiveFunction(selectedFitness1), count)
+                hist1ValueAxis.max = Math.ceil(max)
+                histoseries1.append(gaviz.getObjectiveFunction(selectedFitness0), count)
             }
 
             BarSeries {
                 id: histoseries1
-                name: "F1:"+gaviz.getObjectiveFunction(selectedFitness1)
-                axisX: BarCategoryAxis { categories: ["<0.2", "<0.4", "<0.6", "<0.8", "<1" ] }
-                axisY: ValueAxis {    //  <- custom ValueAxis attached to the y-axis
-                                id: valueAxis1
-                            }
+                name: "F1 : "+gaviz.getObjectiveFunction(selectedFitness1)
+                axisX: BarCategoryAxis {
+                    categories: [(histoplot1.category).toFixed(4),
+                                 (2*histoplot1.category).toFixed(4),
+                                 (3*histoplot1.category).toFixed(4),
+                                 (4*histoplot1.category).toFixed(4),
+                                 (maxFitness1).toFixed(4)
+                                ]
+                }
+
+                axisY: ValueAxis {
+                    id: hist1ValueAxis
+                    min: 0
+                }
+
                 Component.onCompleted: {
                     histoplot1.populate()
                     }
