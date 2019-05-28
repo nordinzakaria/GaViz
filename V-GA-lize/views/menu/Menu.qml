@@ -17,6 +17,8 @@ RowLayout{
     Layout.bottomMargin: -5
     Layout.topMargin: 3
 
+    property alias params: params
+
     // Just an Image used as a logo/title for the window
     Image {
         source : "../../images/Logo2.png"
@@ -52,7 +54,7 @@ RowLayout{
             height: 600
             modal : false
 
-            standardButtons: Dialog.Ok
+            //standardButtons: Dialog.Ok
 
             contentItem: ColumnLayout {
 
@@ -113,17 +115,32 @@ RowLayout{
             title: qsTr("Visualization Parameters")
             visible: false
 
+            property alias tsp: tspMode.checkState
+
             anchors.centerIn: Overlay.overlay
             width: 800
             height: 600
             modal : false
 
-            standardButtons: Dialog.Ok | Dialog.Apply
+            //standardButtons: Dialog.Ok | Dialog.Apply
 
             contentItem: ColumnLayout {
-
+/*
                 Label{
-                    text : "This page is not used yet."
+                    text : "Use Travelling Salesman-type display :"
+                }*/
+                CheckBox{
+                    id: tspMode
+                    text : "Using Travelling Salesman-type display"
+
+                    onCheckStateChanged: {
+                       if(checkState === Qt.Checked)
+                       {
+                       }
+                       else
+                       {
+                       }
+                    }
                 }
 
                 /*

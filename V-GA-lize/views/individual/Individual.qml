@@ -1,8 +1,10 @@
-import QtQuick 2.0
+import QtQuick 2.7
 import QtQuick.Controls 2.3
 import QtQuick.Layouts 1.3
 import QtQuick.Shapes 1.0
 import QtQuick.Dialogs 1.0
+import QtQuick.Window 2.2
+
 
 import gaviz 1.0
 import "../menu"
@@ -386,7 +388,7 @@ Frame {
                             }                            
 
                             MouseArea {
-                                   anchors.fill: parent
+                                   anchors.fill: parent.currentItem
                                    onPressAndHold: { swipeDialog.open() }
                                }
 
@@ -465,7 +467,12 @@ Frame {
                         id : inspector
                         text: "See Genes"
 
-                        onClicked: dialog.open()
+                        onClicked: {
+                            if(menuBar.params.tsp === Qt.Unchecked)
+                                dialog.open()
+                            else
+                                tspDialog.open()
+                        }
 
                         Dialog {
                             id: dialog
@@ -521,19 +528,22 @@ Frame {
                                                     }
                                                 }
                                             }
-                                        }
-
-                                        Label {
-                                            //property int ng: gaviz.getIndividualProperty(selectedPopulation, selectedGeneration, 0, individualIndex, index, IndividualProperty.NumGenes)
-                                            text: "Fitness " + index +": "+
-                                                  gaviz.getIndividualProperty(selectedPopulation, selectedGeneration, 0, individualIndex, index, IndividualProperty.Fitness)
-                                                  + '\n' + "Rank: " + individualIndex + '\n' + "Genes : " + coloredInd.numgenes
+                                        }                                        
+                                        Repeater {
+                                            id: labelRepeater
+                                            model: gaviz.getNbObjectiveFunctions()
+                                            Label {
+                                                text: "Fitness " + index +": "+
+                                                      gaviz.getIndividualProperty(selectedPopulation, selectedGeneration, 0, individualIndex, index, IndividualProperty.Fitness)
+                                                      + '\n' + "Rank: " + individualIndex + '\n' + "Genes : " + coloredInd.numgenes
+                                            }
                                         }
 
                                     }
                                 }
 
                                 Frame{
+                                    implicitWidth: parent.width
                                     Layout.preferredHeight: 0.7*parent.height
                                     Layout.preferredWidth: parent.width
                                     /*
@@ -554,7 +564,132 @@ Frame {
                                             rowSpacing: 10
 
                                             Repeater{
-                                                id: rep2
+                                                model: coloredInd.numgenes
+                                                Label {
+                                                    text: "Gene " + index + " : " +
+                                                          gaviz.getGene(selectedGeneration, 0, individualIndex, index)
+                                                }
+                                            }
+                                        }
+                                    //}
+                                }
+                            }
+                        }
+
+                        Dialog {
+                            id: tspDialog
+                            title: qsTr("Genes Inspector")
+                            visible: false
+
+                            anchors.centerIn: Overlay.overlay
+                            width: 900
+                            height: 700
+                            modal : true
+
+                            //standardButtons: Dialog.Ok
+
+                            contentItem: ColumnLayout {
+                                Frame{
+                                    id: tspframe
+
+                                    Layout.preferredHeight: parent.height
+                                    Layout.preferredWidth: parent.width
+
+                                    Column { /* inner column */
+                                        anchors.horizontalCenter: parent.horizontalCenter
+                                        spacing: 10
+
+                                        Text {
+                                            color: "white"
+                                            anchors.horizontalCenter: parent.horizontalCenter
+                                            text: "Proposed Route :"
+                                        }
+
+                                        Canvas{
+                                            id: tspCanvas
+                                            width: 600
+                                            height: 600
+
+                                            anchors.centerIn: tspframe.Center
+
+                                            property real radius: 6
+                                            property real margin: 25
+                                            property var pointsArray : []
+                                            property int numgenes: gaviz.getIndividualProperty(selectedPopulation,
+                                                                                               selectedGeneration, 0,
+                                                                                               individualIndex,
+                                                                                               selectedFitness, IndividualProperty.NumGenes)
+                                            onPaint: {
+                                                pointsArray = []
+                                                var context = getContext("2d");
+                                                context.reset()
+                                                tspCanvas.requestPaint();
+
+                                                var gene, geneX, geneY;
+
+                                                for(var k = 0; k < numgenes; k++){
+                                                    gene = gaviz.getGene(selectedGeneration, 0, individualIndex, k)
+                                                    geneX = gene.slice(1).slice(0, gene.length-2).split(",")[0]
+                                                    geneY = gene.slice(1).slice(0, gene.length-2).split(",")[1]
+
+                                                    tspCanvas.pointsArray.push({"x": (geneX * 1.4), "y": (geneY * 1.4)})
+                                                }
+
+                                                context.save()
+                                                if(pointsArray.length > 0){
+                                                    for(var i = 0; i < pointsArray.length; i++){
+                                                        if(i === 0)
+                                                        {
+                                                            context.clearRect(0, 0, width, height)
+                                                            context.fillStyle = "white"
+                                                            context.fillRect(0, 0, width, height)
+                                                            context.fill()
+                                                            context.fillStyle = "green"
+                                                        }
+                                                        else if(i === 1)
+                                                            context.fillStyle = "black"
+                                                        else if( i === pointsArray.length-1)
+                                                            context.fillStyle = "red"
+
+                                                        var point= pointsArray[i]
+                                                        context.fillRect(point["x"]-radius, point["y"]-radius, 2*radius, 2*radius)
+                                                    }
+                                                    context.strokeStyle = Qt.rgba(0, 1, 1, 0)
+                                                    context.fill()
+                                                    context.stroke()
+                                                    context.beginPath()
+                                                    var start = pointsArray[0]
+                                                    context.moveTo(start["x"], start["y"])
+                                                    for(var j=1; j < pointsArray.length; j++){
+                                                        var end= pointsArray[j]
+                                                        context.lineTo(end["x"], end["y"])
+                                                        context.moveTo(end["x"], end["y"])
+                                                    }
+                                                    context.closePath()
+                                                    context.strokeStyle = Qt.rgba(0, 0, 1, 0.5)
+                                                    context.lineWidth = 2
+                                                    context.stroke()
+                                                }
+                                                context.restore()
+
+                                            }
+                                        }
+                                    }
+                                }
+
+                                /*
+                                Frame{
+                                    Layout.preferredHeight: 0.7*parent.height
+                                    Layout.preferredWidth: parent.width
+
+                                        GridLayout{
+                                            Layout.fillHeight: true
+                                            Layout.fillWidth: true
+                                            columns: 3
+                                            columnSpacing: 0.12*parent.width
+                                            rowSpacing: 10
+
+                                            Repeater{
                                                 model: coloredInd.numgenes
                                                 Label {
                                                     text: "Gene " + index + " : " +
@@ -564,8 +699,10 @@ Frame {
                                         }
                                     //}
                                 }
+                                */
                             }
                         }
+
                     }
                 }
             }

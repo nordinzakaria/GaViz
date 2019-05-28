@@ -14,5 +14,6 @@
         <file>views/tools/Tool.qml</file>
         <file>views/menu/VerticalSeparator.qml</file>
         <file>views/tools/ToolSeparator.qml</file>
+        <file>views/tools/GraphToolBar.qml</file>
     </qresource>
 </RCC>

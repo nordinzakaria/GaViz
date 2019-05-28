@@ -62,8 +62,8 @@ void Parser::run()
     input >> numfitness;
     Population::setNbObjectiveFunctions(numfitness);
 
-    std::cout << "numfitness = " << numfitness << std::endl;
-    std::cout.flush();
+    //std::cout << "numfitness = " << numfitness << std::endl;
+    //std::cout.flush();
 
     for (int fstr=0; fstr < numfitness; fstr++)
     {
@@ -99,7 +99,7 @@ void Parser::run()
     {
             int numgen = 0;
             input >> numgen;
-            std::cout << "numgen = " << numgen << std::endl;
+            //std::cout << "numgen = " << numgen << std::endl;
 
             population[np].setNumGenerations(numgen);
             population[np].setStats(numfitness, numgen);
@@ -117,15 +117,15 @@ void Parser::run()
 
                 int numcluster = 0;
                 input >> numcluster;
-                std::cout << "at gen " << ng << std::endl;
-                std::cout << "numcluster = " << numcluster << std::endl;
+                //std::cout << "at gen " << ng << std::endl;
+                //std::cout << "numcluster = " << numcluster << std::endl;
                 gen->setNumClusters(numcluster);
 
                 for (int nc=0; nc<numcluster; nc++) {
 
                     int numind = 0;
                     input >> numind;
-                    std::cout << "numind = " << numind << std::endl;
+                    //std::cout << "numind = " << numind << std::endl;
 
                     for (int ni=0; ni<numind; ni++) {
                          float *fitness = new float[numfitness];

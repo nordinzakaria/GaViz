@@ -88,11 +88,11 @@ Page {
               - An empty Item in order to keep all the Tools on the left
         */
         ToolBar {
-            id: toolBar
+            id: toolBar            
             Layout.leftMargin: 10
             Layout.preferredWidth: parent.width
             Layout.preferredHeight: 0.07 * parent.height
-            Layout.topMargin: 0
+            Layout.topMargin: 0       
         }
 
         VerticalSeparator{
@@ -155,6 +155,8 @@ Page {
             */
             Graph {
                 id: graphView
+
+                implicitHeight: parent.height
                 visible: true
             }
 
