@@ -8,6 +8,7 @@
 
 int main(int argc, char *argv[])
 {
+    QCoreApplication::setOrganizationName("Universiti Teknologi PETRONAS");
     //QGuiApplication app(argc, argv);
     QApplication app(argc, argv);
     QQmlApplicationEngine engine;
