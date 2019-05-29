@@ -4,6 +4,7 @@ import QtQuick.Layouts 1.3
 import QtQuick.Shapes 1.0
 import QtQuick.Dialogs 1.0
 import QtQuick.Controls.Styles 1.4
+import QtQuick.Controls 2.12
 import QtCharts 2.3
 
 import gaviz 1.0
@@ -33,6 +34,10 @@ Frame {
     property real minFitness1:  gaviz.getMinFitness(selectedPopulation, selectedFitness1)
     property int selectedFitness: selectedFitness0
 
+    onSelectedGenerationChanged: {
+           console.log('SelectedGeneration CallBack Triggered')
+        //updateBounds()
+    }
 
     ColumnLayout {
         anchors.fill: parent
@@ -64,16 +69,25 @@ Frame {
                 color: "white"
             }
 
+            /**
+              *
+              * TODO: For a reason i can't explain the TextField does not loose
+              * the focus when you make a mouse click outside the area of the TextField
+              *
+              **/
             TextField {
-                //text: selectedGeneration
                 placeholderText : selectedGeneration
                 font.pixelSize: 24
-                color: "white"
+                color: "white"      //color of the actual text not the placeholderText !!
+
                 onEditingFinished:  {
                     var newgen = parseInt(text);
+                    // checking if the value written by is acceptable (in bounds, etc...)
                     if (newgen > 0 && newgen < gaviz.getNbGenerations()){
-                        selectedGeneration = parseInt(text);
-                        updateBounds()
+                        // Changing the value of the attribute selectedGeneration should
+                        // trigger its callBack function: onSelectedGenerationChange()
+                        // and thus perform the updateBounds() function
+                        selectedGeneration = parseInt(text);    //Also will naturally change the placeholderText as well
                     }
                     text = ''
 
@@ -171,23 +185,24 @@ Frame {
                      }
 
                  Slider {
-                     id : s
                      Layout.fillWidth: true
                      Layout.leftMargin: 20
                      from: 0
+                     stepSize: 1    //
                      value: selectedGeneration
-                     property int lastvalue: valueOf(value)
+                     property int lastvalue: 0
                      to: gaviz.getNbGenerations(selectedPopulation) - 1
+                     live: false    // the attribute value is updated only when the tickmark is released
 
-
-                     onPressedChanged: {
-                         var val = parseInt(value)
-                         if (lastvalue !== val){
-                             lastValue = selectedGeneration =val
-                             updateBounds()
-                         }
+                    /**
+                      *Called when the attribute value has been modified
+                      **/
+                     onValueChanged: {
+                         // Changing the value of the attribute selectedGeneration should
+                         // trigger it's callBack function onSelectedGenerationChange()
+                         // and thus perform the updateBounds() function
+                         selectedGeneration = value;
                      }
-
                  }
             }
 
@@ -207,7 +222,7 @@ Frame {
                     CheckBox {
                           id: fitToGenerationCheckBox
                           onCheckStateChanged: {
-                              updateBounds()
+                              //updateBounds()
                           }
                  }
 
@@ -249,7 +264,7 @@ Frame {
                 color: "red"
                 name: "F0:"+gaviz.getObjectiveFunction(selectedFitness0)
                 Component.onCompleted: {
-                        updateBounds()
+                        //updateBounds()
                 }
            }
 

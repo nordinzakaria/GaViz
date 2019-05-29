@@ -334,8 +334,8 @@ Frame {
                                     transitions: Transition {
                                         NumberAnimation {
                                             property: "animationProgress"
-                                            easing.type: Easing.InOutCubic
-                                            duration: 1500
+                                            easing.type: Easing.OutExpo
+                                            duration: 4000
                                         }
                                     }
 
@@ -343,7 +343,7 @@ Frame {
 
                                     onPaint: {
                                         var radius = 0.4*parent.height;
-                                        var lineWidth = 0.2*radius;
+                                        var lineWidth = 0.1*radius;
                                         var ctx = getContext("2d");
                                         ctx.reset();
                                         // Resets the current path to a new path.
