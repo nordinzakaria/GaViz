@@ -79,17 +79,14 @@ RowLayout {
          Slider {
              Layout.fillWidth: true
              Layout.leftMargin: 20
-             property int lastValue: 0
+             live: false
+             stepSize: 1
              from: 0
-             value: 0
+             value: selectedGeneration
              to: gaviz.getNbGenerations(selectedPopulation) - 1
 
-             onPressedChanged: {
-                 var val = parseInt(value)
-                 if(lastValue !== val){
-                     lastValue = selectedGeneration = val
-                     updateBounds()
-                 }
+             onValueChanged: {
+                     selectedGeneration = parseInt(value)
              }
          }
     }
