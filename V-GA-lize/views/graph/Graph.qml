@@ -110,14 +110,14 @@ Frame {
                  only for the selected Generation
                  (if checked))
         */
-        GraphToolBar {
+        /*GraphToolBar {
             id: graphToolBar
 
             Layout.leftMargin: 10
             Layout.rightMargin: 10
             Layout.maximumHeight: 0.1 * parent.height
 
-        }
+        }*/
 
         VerticalSeparator{
 
@@ -663,8 +663,9 @@ Frame {
        Updates the graph's bounds depending on wether the CheckBox
           is checked or not
     */
-    function updateBounds ()
-    {
+    function test(){
+    }
+    function updateBounds ()    {
         //console.log('minFitness0 was '+minFitness0+', maxFitness0 was '+maxFitness0)
         //console.log('minFitness1 was '+minFitness1+', maxFitness1 was '+maxFitness1)
 
