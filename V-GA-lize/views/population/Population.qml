@@ -17,7 +17,7 @@ import gaviz 1.0
 Frame {
     id: populationView
 
-    // The Flickable Item allows to move on the frame by maintaining the left mouse button
+    // The ScrollView Item allows to move on the frame by using the hotizontal and vertical ScrollBars
     ScrollView {
         id: canvasParent
         anchors.fill: parent
@@ -26,6 +26,10 @@ Frame {
 
         contentWidth: gaviz.getMaxNbIndPerGeneration() * zoomValue
         contentHeight: gaviz.getNbGenerations(selectedPopulation) * zoomValue
+
+        property double contentX: 0
+        property double contentY: 0
+
         clip: true
 
         Connections {
@@ -87,8 +91,8 @@ Frame {
                 context.clearRect(0, 0, width, height)
                 context.fill()
 
-                console.log("selectedFitness = " + selectedFitness)
-                console.log("num gen = " + gaviz.getNbGenerations(selectedPopulation))
+                //console.log("selectedFitness = " + selectedFitness)
+                //console.log("num gen = " + gaviz.getNbGenerations(selectedPopulation))
                 for (var g = 0; g < gaviz.getNbGenerations(selectedPopulation); g++)
                 {
                     var wd = gaviz.getNbIndInGeneration(selectedPopulation, g)

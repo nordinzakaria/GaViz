@@ -141,12 +141,14 @@ Page {
             if(true)
             {
 
+
                 console.log("Population info:\n")
                 console.log("Number of Generations : "+ gaviz.getNbGenerations())
                 console.log("Max Num Individuals in a Generation : "+ gaviz.getMaxNbIndPerGeneration())
                 console.log("Number of Objective Functions : " + gaviz.getNbObjectiveFunctions())
                 console.log("Max fitness: " + gaviz.getMaxFitness(0))
                 console.log("Min fitness: " + gaviz.getMinFitness(0))
+
 
                 pages.push(vizPage)
                 prg.value = 0

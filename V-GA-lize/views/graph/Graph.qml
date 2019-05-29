@@ -22,7 +22,9 @@ Frame {
     Layout.fillHeight: true
     padding: 0
 
-    property alias fitToGeneration : fitToGenerationCheckBox.checked
+    property alias toolBar: graphToolBar
+
+    property bool fitToGeneration : graphToolBar.fitToGenerationCheckBox.checked
     property int axisWidth: 1
     property int selectedGeneration: 0
 
@@ -108,126 +110,13 @@ Frame {
                  only for the selected Generation
                  (if checked))
         */
-        RowLayout {
+        GraphToolBar {
             id: graphToolBar
+
             Layout.leftMargin: 10
             Layout.rightMargin: 10
             Layout.maximumHeight: 0.1 * parent.height
 
-            Tool{
-                Label {
-                    id: fitnesslist1Label
-                    text: "Function Choice :"
-                }
-
-                ComboBox {
-                    id: fitnesslist1
-                    currentIndex: 0
-                    model: gaviz.getObjectiveFunctions()
-                    width: 150
-                    onCurrentIndexChanged: selectedFitness1 = currentIndex
-                }
-            }
-
-            ToolSeparator{
-                Layout.fillHeight: true
-                Layout.rightMargin: 10
-                Layout.leftMargin: 10
-            }
-
-            Tool{
-                Label {
-                    id: chartlistLabel
-                    text: "Graph Type :"
-                }
-
-                ComboBox {
-                    id: chartlist
-                    currentIndex: 0
-                    width: 150
-
-                    model:   ["SCATTERPLOT", "AVERAGE", "STDDEV", "MINMAX", "HISTOGRAM" ]
-
-                    onCurrentIndexChanged: {
-                            var charts = [scatterplot, averageplot, stddevplot, minmaxplot0, minmaxplot1, histoplot, histoplot1]
-                            for (var i=0; i<charts.length; i++)
-                            {
-                                charts[i].visible = false
-                            }
-                            if (currentIndex == 3)
-                            {
-                                charts[3].visible = true
-                                charts[4].visible = true
-                            }
-                            else
-                            if (currentIndex == 4)
-                            {
-                                charts[5].visible = true
-                                charts[6].visible = true
-                            }
-
-                            else
-                                charts[currentIndex].visible = true
-                    }
-                }
-            }
-
-            ToolSeparator{
-                Layout.fillHeight: true
-                Layout.rightMargin: 10
-                Layout.leftMargin: 10
-            }
-
-            Tool {
-
-                 Label {
-                         text: "Generation Selection :"
-                     }
-
-                 Slider {
-                     Layout.fillWidth: true
-                     Layout.leftMargin: 20
-                     from: 0
-                     stepSize: 1    //
-                     value: selectedGeneration
-                     property int lastvalue: 0
-                     to: gaviz.getNbGenerations(selectedPopulation) - 1
-                     live: false    // the attribute value is updated only when the tickmark is released
-
-                    /**
-                      *Called when the attribute value has been modified
-                      **/
-                     onValueChanged: {
-                         // Changing the value of the attribute selectedGeneration should
-                         // trigger it's callBack function onSelectedGenerationChange()
-                         // and thus perform the updateBounds() function
-                         selectedGeneration = value;
-                     }
-                 }
-            }
-
-            ToolSeparator{
-                Layout.fillHeight: true
-                Layout.rightMargin: 10
-                Layout.leftMargin: 10
-            }
-
-            Tool {
-                RowLayout{
-
-                    Label {
-                         text: "Fit to gen : "
-                     }
-
-                    CheckBox {
-                          id: fitToGenerationCheckBox
-                          onCheckStateChanged: {
-                              //updateBounds()
-                          }
-                 }
-
-                }
-            }
         }
 
         VerticalSeparator{
@@ -250,7 +139,7 @@ Frame {
                 var sz = gaviz.getNbIndInGeneration(selectedPopulation, selectedGeneration)
                 var fitness0 = gaviz.getIndividualPropertyList(selectedPopulation, selectedGeneration, 0, selectedFitness0, IndividualProperty.Fitness)
                 var fitness1 = gaviz.getIndividualPropertyList(selectedPopulation, selectedGeneration, 0, selectedFitness1, IndividualProperty.Fitness)
-                console.log('redrawing scatter')
+                //console.log('redrawing scatter')
 
                 for (var i=0; i<sz; i++) {
                     scatter1.append(fitness1[i],parseFloat(fitness0[i]))
@@ -264,7 +153,15 @@ Frame {
                 color: "red"
                 name: "F0:"+gaviz.getObjectiveFunction(selectedFitness0)
                 Component.onCompleted: {
-                        //updateBounds()
+                        var sz = gaviz.getNbIndInGeneration(selectedPopulation, selectedGeneration)
+                        var fitness0 = gaviz.getIndividualPropertyList(selectedPopulation, selectedGeneration, 0, selectedFitness0, IndividualProperty.Fitness)
+                        var fitness1 = gaviz.getIndividualPropertyList(selectedPopulation, selectedGeneration, 0, selectedFitness1, IndividualProperty.Fitness)
+                        //console.log('redrawing scatter')
+
+                        for (var i=0; i<sz; i++) {
+                            scatter1.append(fitness0[i], fitness1[i])
+                            }
+                    }
                 }
            }
 
@@ -584,7 +481,7 @@ Frame {
 
         // 2 ChartViews of the Histogram of 2 Objective Functions
         RowLayout {
-            Layout.alignment: parent.verticalCenter
+            Layout.alignment: Qt.AlignVCenter
             ChartView {
                 id: histoplot
                 width: 0.5*parent.width
@@ -619,7 +516,7 @@ Frame {
                     var max = 0
                     for (i=0; i<count.length; i++)
                     {
-                        console.log('count at index '+i+' is '+count[i])
+                        //console.log('count at index '+i+' is '+count[i])
                         if (count[i] > max)
                             max = count[i]
                     }
@@ -705,7 +602,7 @@ Frame {
                 var max = 0
                 for (i=0; i<count.length; i++)
                 {
-                    console.log('count at index '+i+' is '+count[i])
+                    //console.log('count at index '+i+' is '+count[i])
                     if (count[i] > max)
                         max = count[i]
                 }
@@ -768,8 +665,8 @@ Frame {
     */
     function updateBounds ()
     {
-        console.log('minFitness0 was '+minFitness0+', maxFitness0 was '+maxFitness0)
-        console.log('minFitness1 was '+minFitness1+', maxFitness1 was '+maxFitness1)
+        //console.log('minFitness0 was '+minFitness0+', maxFitness0 was '+maxFitness0)
+        //console.log('minFitness1 was '+minFitness1+', maxFitness1 was '+maxFitness1)
 
         if(fitToGeneration){
             minFitness0 = gaviz.getMinFitness(selectedPopulation, selectedGeneration, selectedFitness0)
@@ -786,8 +683,8 @@ Frame {
             maxFitness1 = gaviz.getMaxFitness(selectedPopulation, selectedFitness1)
         }
 
-        console.log('minFitness0 = '+minFitness0+', maxFitness0='+maxFitness0 +" for gen "+selectedGeneration+', for fitness '+selectedFitness0)
-        console.log('minFitness1 = '+minFitness1+', maxFitness1='+maxFitness1)
+        //console.log('minFitness0 = '+minFitness0+', maxFitness0='+maxFitness0 +" for gen "+selectedGeneration+', for fitness '+selectedFitness0)
+        //console.log('minFitness1 = '+minFitness1+', maxFitness1='+maxFitness1)
 
         scatter1.clear()
         scatterplot.populate()
