@@ -1,0 +1,4 @@
+# Beginning of Gitignore
+
+./build-V-GA-lize-Desktop_Qt_5_12_3_GCC_64bit-Debug/
+./V-GA-Lize/V-GA-lize.pro.*

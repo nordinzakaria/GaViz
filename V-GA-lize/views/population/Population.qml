@@ -17,6 +17,9 @@ import gaviz 1.0
 Frame {
     id: populationView
 
+    property int selectedIndividual: 0
+    property int selectedGeneration: 0
+
     // The ScrollView Item allows to move on the frame by using the hotizontal and vertical ScrollBars
     ScrollView {
         id: canvasParent
@@ -37,7 +40,7 @@ Frame {
             onZoomValueChanged: {
                 canvasParent.contentX = firstIndividual * zoomValue
                 canvasParent.contentY = firstGeneration * zoomValue
-                canvasParent.updateCanvasPosition()
+                //canvasParent.updateCanvasPosition()
             }
         }
 
@@ -52,12 +55,16 @@ Frame {
         }
 
 
-
-        ProgressBar {
+        /**
+          *
+          * I have no clue of what that is.
+          *
+          */
+        /*ProgressBar {
             id: prgPop
             anchors.horizontalCenter: parent.horizontalCenter
             Layout.preferredWidth: 0.7 * parent.width
-            visible: false
+            visible: true
 
             from: 0
             to: 100
@@ -68,7 +75,7 @@ Frame {
                 visible: true
                 text: prgPop.value.toFixed(1) + "%"
             }
-        }
+        }*/
 
 
 
@@ -91,8 +98,6 @@ Frame {
                 context.clearRect(0, 0, width, height)
                 context.fill()
 
-                //console.log("selectedFitness = " + selectedFitness)
-                //console.log("num gen = " + gaviz.getNbGenerations(selectedPopulation))
                 for (var g = 0; g < gaviz.getNbGenerations(selectedPopulation); g++)
                 {
                     var wd = gaviz.getNbIndInGeneration(selectedPopulation, g)
@@ -104,8 +109,6 @@ Frame {
                         context.fillRect(i, g, 1, 1)
                         context.fill()
                     }
-
-                    prgPop.value = g * 100 / gaviz.getNbGenerations(selectedPopulation)
                 }
             }
         }
@@ -120,8 +123,13 @@ Frame {
             transform: Scale { origin.x: 0; origin.y: 0; xScale: zoomValue; yScale: zoomValue }
             smooth: false
 
+
             onPaint: {
                 var context = getContext("2d")
+
+
+                var currentIndividual = selectedIndividual;
+                var currentGeneration = selectedGeneration;
 
                 context.beginPath()
                 context.clearRect(0, 0, width, height)
@@ -146,10 +154,13 @@ Frame {
 
             onClicked: {
                 individualView.selectIndividual(mouseY/zoomValue, mouseX/zoomValue)
-                individualView.canvas.requestPaint()
+                selectedIndividual = mouseX/zoomValue
+                selectedGeneration = mouseY/zoomValue
+                individualView.mycanvas.requestPaint()
                 individualView.swipeV.currentIndex = 0
                 individualView.leftB.visible = false
                 individualView.rightB.visible = true
+
             }
 
             onPressAndHold: {
@@ -166,6 +177,10 @@ Frame {
             nameFilters: [ "Image files (*.jpg *.png)", "All files (*)" ]
 
             onAccepted: {
+
+                /**
+                  * What is result ?
+                  */
                 populationView.grabToImage(function(result) {
                                            result.saveToFile(populationDialog.fileUrl);
                                        });
@@ -173,6 +188,11 @@ Frame {
         }
 
     }
+    /**
+      *
+      * Migth be useless, i don't get the utilisation of Timer here.
+      *
+      */
 
     Timer {
         id: repaintTimer
@@ -194,6 +214,8 @@ Frame {
     {
         repaintTimer.running = false
         repaintTimer.running = true
+        //canvas.requestPaint()
+        highlightCanvas.requestPaint()
     }
 
     function highlight()

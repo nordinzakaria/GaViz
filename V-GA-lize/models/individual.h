@@ -101,7 +101,6 @@ public:
         return Individual::mingene;
     }
 
-
 private:
     int generation;
     int cluster;

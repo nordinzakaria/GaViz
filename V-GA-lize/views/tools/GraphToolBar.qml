@@ -79,7 +79,7 @@ RowLayout {
          Slider {
              Layout.fillWidth: true
              Layout.leftMargin: 20
-             live: false
+             live: true
              stepSize: 1
              from: 0
              value: selectedGeneration

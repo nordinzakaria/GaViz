@@ -89,7 +89,7 @@ Frame {
                         // Changing the value of the attribute selectedGeneration should
                         // trigger its callBack function: onSelectedGenerationChange()
                         // and thus perform the updateBounds() function
-                        selectedGeneration = parseInt(text);    //Also will naturally change the placeholderText as well
+                        selectedGeneration = newgen; //Also will naturally change the placeholderText as well
                     }
                     text = ''
 

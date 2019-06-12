@@ -149,7 +149,9 @@ Page {
                 console.log("Max fitness: " + gaviz.getMaxFitness(0))
                 console.log("Min fitness: " + gaviz.getMinFitness(0))
 
-
+                /**
+                  * When the file is downloaded the vizualisationPage is "pushed" front of the screen
+                  */
                 pages.push(vizPage)
                 prg.value = 0
                 prg.opacity = 0

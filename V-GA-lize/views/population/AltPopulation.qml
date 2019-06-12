@@ -37,20 +37,6 @@ Frame {
         }
     }
 
-    FileDialog {
-        id: altpopulationDialog
-        title: "Please choose a file"
-        folder: shortcuts.home
-        modality: Qt.NonModal
-        selectExisting : false
-        nameFilters: [ "Image files (*.jpg *.png)", "All files (*)" ]
-
-        onAccepted: {
-            altPopulationView.grabToImage(function(result) {
-                                       result.saveToFile(altpopulationDialog.fileUrl);
-                                   });
-        }
-    }
     ScrollView {
         anchors.fill: parent
 
@@ -59,6 +45,8 @@ Frame {
 
         contentHeight: parent.height
         contentWidth: parent.width
+
+
 
         ListView {      // table
             id: poptable

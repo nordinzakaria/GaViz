@@ -41,6 +41,7 @@ Page {
     property int selectedIndividual: 0
     property int selectedPopulation: 0
     property int selectedFitness: 0
+    property int zoomlimit: 30
 
     onZoomValueChanged: {
         if (zoomValue < minZoomValue)
@@ -126,7 +127,9 @@ Page {
 
                 Population {
                     id: populationView
-                    visible: zoomValue <= 30.0
+                    visible: zoomValue <= zoomlimit
+                    selectedIndividual: selectedIndividual;
+                    selectedGeneration: selectedGeneration;
 
                     Layout.fillWidth: true
                     Layout.fillHeight: true
@@ -134,7 +137,7 @@ Page {
 
                 AltPopulation {
                     id: altPopulationView
-                    visible: zoomValue > 30.0
+                    visible: zoomValue > zoomlimit
 
                     Layout.fillWidth: true
                     Layout.fillHeight: true
