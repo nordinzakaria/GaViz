@@ -1,6 +1,7 @@
 #include <QQmlEngine>
 #include <QDebug>
 #include <iostream>
+#include <QImage>
 
 #include "population.h"
 
@@ -231,3 +232,34 @@ void Population::setNbPop(int np)
     Population::numPop = np;
 }
 
+QImage Population::getImageIndividuals()
+{
+    Generation currentGeneration;
+    QVector<Individual* > currentIndividuals;
+    Individual *currentIndividual;
+
+    int generationSize = generations->size();
+
+    /**
+      *  TODO  : getMaxIndividualsByGeneration,
+      *  even tho each generation should have the same amount of individuals
+      *
+      */
+    int individualsByGeneration = generations[0].size();
+
+    QImage *image = new QImage(generationSize, 100, QImage::Format_RGB16);  // The image that we will create
+    QRgb color = qRgb(200,10,10);
+
+    for (int i = 0; i < generationSize ; i++) {
+        currentGeneration = generations[i];
+        currentIndividuals = currentGeneration.getIndividuals();
+        for (int j = 0; j < individualsByGeneration;j++) {
+            currentIndividual = currentIndividuals.at(j);
+
+            // TODO : set the pixel color with a real value
+            image->setPixel(i,j,qRgb(rand()%255,rand()%255,rand()%255));
+        }
+    }
+
+    return *image;
+}

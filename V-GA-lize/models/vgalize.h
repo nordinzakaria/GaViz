@@ -373,6 +373,11 @@ public:
         return Population::getNbPop();
     }
 
+    Q_INVOKABLE QImage getImageIndividuals()
+    {
+        return population->getImageIndividuals();
+    }
+
     /*!
         \fn int numPops()
         \brief get the number of populations

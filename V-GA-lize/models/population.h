@@ -18,6 +18,7 @@ public:
 
     QVariant getGene(int generation, int cluster, int index, int geneindex) const;
 
+    QImage getImageIndividuals();
 
     QVariantList getIndividualProperty(int generation, int cluster, int findex, int property) const;
 

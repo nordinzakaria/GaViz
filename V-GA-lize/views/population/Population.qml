@@ -79,19 +79,18 @@ Frame {
 
 
 
-        Canvas {
+        Image {
             id: canvas
 
             width: gaviz.getMaxNbIndPerGeneration(selectedPopulation)
             height: gaviz.getNbGenerations(selectedPopulation)
-            renderStrategy: Canvas.Threaded
-            renderTarget: Canvas.FramebufferObject
+            source : "image://provider/#"
 
 
             transform: Scale { origin.x: 0; origin.y: 0; xScale: zoomValue; yScale: zoomValue }
             smooth: false
 
-            onPaint: {
+            /**onPaint: {
                 var context = getContext("2d")
 
                 context.beginPath()
@@ -110,7 +109,7 @@ Frame {
                         context.fill()
                     }
                 }
-            }
+            }*/
         }
 
         Canvas {

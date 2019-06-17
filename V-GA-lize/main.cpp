@@ -5,6 +5,7 @@
 #include <QtQml>
 
 #include "./models/vgalize.h"
+#include "./models/qimageprovider.h"
 
 int main(int argc, char *argv[])
 {
@@ -15,10 +16,20 @@ int main(int argc, char *argv[])
     QObject::connect((QObject*)&engine, SIGNAL(quit()), &app, SLOT(quit()));
 
     GAViz gaviz; //(&engine);
+    QImageProvider QIp = QImageProvider(&gaviz);
+
     qmlRegisterType<Individual>("gaviz", 1, 0, "IndividualProperty");
     qmlRegisterType<Stats>("gaviz", 1, 0, "StatsProperty");
 
     //qmlRegisterType<Stats>("gaviz", 1, 0, "Stats");
+
+    /**
+      *
+      * Make the image provider usable in the qml code
+      * with << source : "image://provider/idOfTheImage" >>
+      *
+      */
+    engine.addImageProvider(QLatin1String("provider"), &QIp);
 
 //    qmlRegisterUncreatableMetaObject(
 //      GAVizErrors::staticMetaObject, // static meta object
