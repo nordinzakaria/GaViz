@@ -84,7 +84,7 @@ Frame {
 
             width: gaviz.getMaxNbIndPerGeneration(selectedPopulation)
             height: gaviz.getNbGenerations(selectedPopulation)
-            source : "image://provider/#"
+            source : "image://provider/0"
 
 
             transform: Scale { origin.x: 0; origin.y: 0; xScale: zoomValue; yScale: zoomValue }
@@ -134,7 +134,8 @@ Frame {
                 context.clearRect(0, 0, width, height)
                 context.fill()
                 context.beginPath()
-                context.fillStyle = Qt.rgba(1.0, 1.0, 0.0, 1.0)
+                //context.fillStyle = Qt.rgba(1.0, 1.0, 0.0, 1.0)
+                context.fillStyle = getFillStyle(currentGeneration, 0, currentIndividual, selectedFitness)
                 context.fillRect(selectedIndividual, selectedGeneration, 1, 1)
                 context.fill()
             }
@@ -198,7 +199,7 @@ Frame {
         interval: 100
         running: false
         repeat: false
-        onTriggered: canvas.requestPaint()
+        //onTriggered: canvas.requestPaint()
     }
 
     Timer {

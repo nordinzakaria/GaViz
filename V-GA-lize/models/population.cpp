@@ -2,6 +2,7 @@
 #include <QDebug>
 #include <iostream>
 #include <QImage>
+#include <QtGlobal>
 
 #include "population.h"
 
@@ -232,7 +233,7 @@ void Population::setNbPop(int np)
     Population::numPop = np;
 }
 
-QImage Population::getImageIndividuals()
+QImage Population::getImageIndividuals(float minScore)
 {
     Generation currentGeneration;
     QVector<Individual* > currentIndividuals;
@@ -247,17 +248,49 @@ QImage Population::getImageIndividuals()
       */
     int individualsByGeneration = generations[0].size();
 
-    QImage *image = new QImage(generationSize, 100, QImage::Format_RGB16);  // The image that we will create
-    QRgb color = qRgb(200,10,10);
+    QImage *image = new QImage(generationSize, 100, QImage::Format_RGBA64);  // The image that we will create
+    QRgba64 color ;
 
     for (int i = 0; i < generationSize ; i++) {
         currentGeneration = generations[i];
         currentIndividuals = currentGeneration.getIndividuals();
         for (int j = 0; j < individualsByGeneration;j++) {
             currentIndividual = currentIndividuals.at(j);
+            float fitness = *currentIndividual->getFitness();
+
+            if (fitness > minScore){
+                //color = QRgba64::fromRgba(rand()%255,rand()%255,rand()%255,255);
+                float minimum = minScore;
+                float maximum = minScore+5;
+
+                float ratio = 2 * (fitness-minimum) / (maximum - minimum);
+
+                int b = qMax(0.f, 255*(1 - ratio));
+                int r = qMax(0.f, 255*(ratio - 1));
+                int g = 255 - b - r;
+
+                std::cout << "generation: " << i << " individue: " << j<< std::endl;
+                std::cout << "|r = " << r;
+                std::cout << "|b = " << b;
+                std::cout << "|g = " << g << std::endl;
+
+                r = qMin(r,255);
+                b = qMin(b,255);
+                g = qMin(g,255);
+                r = qMax(r,0);
+                b = qMax(b,0);
+                g = qMax(g,0);
+
+                //TODO convert to short
+
+                color = QRgba64::fromRgba(r, g, b, 255);
+
+            }else{
+                color = QRgba64::fromRgba(0,0,0,0);
+            }
 
             // TODO : set the pixel color with a real value
-            image->setPixel(i,j,qRgb(rand()%255,rand()%255,rand()%255));
+            image->setPixelColor(i,j,color);
         }
     }
 
