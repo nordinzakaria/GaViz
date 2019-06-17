@@ -177,7 +177,7 @@ Frame {
         id: repaintTimer
         interval: 1000/60
         running: true
-        repeat: true
+        repeat: false
         onTriggered: canvas.source = "image://provider/"+minScore;
     }
 
@@ -191,8 +191,7 @@ Frame {
 
     function repaintView()
     {
-        //repaintTimer.running = false
-        //repaintTimer.running = true
+        repaintTimer.running = true
         highlight()
     }
 
