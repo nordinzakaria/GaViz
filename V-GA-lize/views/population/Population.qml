@@ -84,7 +84,7 @@ Frame {
 
             width: gaviz.getMaxNbIndPerGeneration(selectedPopulation)
             height: gaviz.getNbGenerations(selectedPopulation)
-            source : "image://provider/0"
+            source : "image://provider/"+minScore
 
 
             transform: Scale { origin.x: 0; origin.y: 0; xScale: zoomValue; yScale: zoomValue }
@@ -214,7 +214,7 @@ Frame {
     {
         repaintTimer.running = false
         repaintTimer.running = true
-        //canvas.requestPaint()
+        canvas.source = "image://provider/"+minScore
         highlightCanvas.requestPaint()
     }
 

@@ -290,7 +290,7 @@ QImage Population::getImageIndividuals(float minScore)
             }
 
             // TODO : set the pixel color with a real value
-            image->setPixelColor(i,j,color);
+            image->setPixelColor(j,i,color);
         }
     }
 
