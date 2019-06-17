@@ -85,6 +85,7 @@ TextField {
         Slider {
             id: minScoreSelector
             from: minScoreSelectorLimits.first.value
+            stepSize:10
             to: minScoreSelectorLimits.second.value
 
             onValueChanged: {
@@ -171,6 +172,7 @@ TextField {
         Slider {
             id: zoomSlider
             from: 1
+            stepSize: 0.1
             to: 40
 
             onValueChanged: {

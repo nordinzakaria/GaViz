@@ -233,7 +233,7 @@ void Population::setNbPop(int np)
     Population::numPop = np;
 }
 
-QImage Population::getImageIndividuals(float minScore)
+void Population::fillImageIndividuals(QImage *image,float minScore)
 {
     Generation currentGeneration;
     QVector<Individual* > currentIndividuals;
@@ -241,58 +241,47 @@ QImage Population::getImageIndividuals(float minScore)
 
     int generationSize = generations->size();
 
-    /**
-      *  TODO  : getMaxIndividualsByGeneration,
-      *  even tho each generation should have the same amount of individuals
-      *
-      */
-    int individualsByGeneration = generations[0].size();
 
-    QImage *image = new QImage(generationSize, 100, QImage::Format_RGBA64);  // The image that we will create
     QRgba64 color ;
 
+    float minimum;  // == minScore
+    float maximum;  // == minScore +5
+    float ratio;    //
+    int r,g,b;
+
+    // we go through each generation
     for (int i = 0; i < generationSize ; i++) {
         currentGeneration = generations[i];
         currentIndividuals = currentGeneration.getIndividuals();
-        for (int j = 0; j < individualsByGeneration;j++) {
+        //we go through each individuals
+        for (int j = 0; j < currentIndividuals.size();j++) {
+
             currentIndividual = currentIndividuals.at(j);
             float fitness = *currentIndividual->getFitness();
 
             if (fitness > minScore){
-                //color = QRgba64::fromRgba(rand()%255,rand()%255,rand()%255,255);
-                float minimum = minScore;
-                float maximum = minScore+5;
+                //TODO: explain the calculus
+                minimum = minScore;
+                maximum = fitness+5;   // weird why 5
 
-                float ratio = 2 * (fitness-minimum) / (maximum - minimum);
+                ratio = 2 * (fitness-minimum) / (maximum - minimum);
 
-                int b = qMax(0.f, 255*(1 - ratio));
-                int r = qMax(0.f, 255*(ratio - 1));
-                int g = 255 - b - r;
+                b = qMax(0.f, 255*(1 - ratio));
+                r = qMax(0.f, 255*(ratio - 1));
+                g = 255 - b - r;
 
-                std::cout << "generation: " << i << " individue: " << j<< std::endl;
-                std::cout << "|r = " << r;
-                std::cout << "|b = " << b;
-                std::cout << "|g = " << g << std::endl;
-
-                r = qMin(r,255);
-                b = qMin(b,255);
-                g = qMin(g,255);
-                r = qMax(r,0);
-                b = qMax(b,0);
-                g = qMax(g,0);
-
-                //TODO convert to short
+                r = qMin(r,255);r = qMax(r,0);
+                b = qMin(b,255);b = qMax(b,0);
+                g = qMin(g,255);g = qMax(g,0);
 
                 color = QRgba64::fromRgba(r, g, b, 255);
 
             }else{
-                color = QRgba64::fromRgba(0,0,0,0);
+                color = QRgba64::fromRgba(0,0,0,0); // transparent pixel
             }
 
             // TODO : set the pixel color with a real value
             image->setPixelColor(j,i,color);
         }
     }
-
-    return *image;
 }

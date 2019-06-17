@@ -90,26 +90,6 @@ Frame {
             transform: Scale { origin.x: 0; origin.y: 0; xScale: zoomValue; yScale: zoomValue }
             smooth: false
 
-            /**onPaint: {
-                var context = getContext("2d")
-
-                context.beginPath()
-                context.clearRect(0, 0, width, height)
-                context.fill()
-
-                for (var g = 0; g < gaviz.getNbGenerations(selectedPopulation); g++)
-                {
-                    var wd = gaviz.getNbIndInGeneration(selectedPopulation, g)
-
-                    for (var i = 0; i < wd; i++)
-                    {
-                        context.beginPath()
-                        context.fillStyle = getFillStyle(g, 0, i, selectedFitness)
-                        context.fillRect(i, g, 1, 1)
-                        context.fill()
-                    }
-                }
-            }*/
         }
 
         Canvas {
@@ -134,8 +114,7 @@ Frame {
                 context.clearRect(0, 0, width, height)
                 context.fill()
                 context.beginPath()
-                //context.fillStyle = Qt.rgba(1.0, 1.0, 0.0, 1.0)
-                context.fillStyle = getFillStyle(currentGeneration, 0, currentIndividual, selectedFitness)
+                context.fillStyle = Qt.rgba(1.0, 1.0, 0.0, 1.0)
                 context.fillRect(selectedIndividual, selectedGeneration, 1, 1)
                 context.fill()
             }
@@ -182,8 +161,8 @@ Frame {
                   * What is result ?
                   */
                 populationView.grabToImage(function(result) {
-                                           result.saveToFile(populationDialog.fileUrl);
-                                       });
+                    result.saveToFile(populationDialog.fileUrl);
+                });
             }
         }
 
@@ -196,10 +175,10 @@ Frame {
 
     Timer {
         id: repaintTimer
-        interval: 100
-        running: false
-        repeat: false
-        //onTriggered: canvas.requestPaint()
+        interval: 1000/60
+        running: true
+        repeat: true
+        onTriggered: canvas.source = "image://provider/"+minScore;
     }
 
     Timer {
@@ -212,10 +191,9 @@ Frame {
 
     function repaintView()
     {
-        repaintTimer.running = false
-        repaintTimer.running = true
-        canvas.source = "image://provider/"+minScore
-        highlightCanvas.requestPaint()
+        //repaintTimer.running = false
+        //repaintTimer.running = true
+        highlight()
     }
 
     function highlight()

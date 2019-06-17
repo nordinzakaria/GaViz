@@ -397,7 +397,7 @@ Frame {
 
                                 selectedFitness: individualView.selectedFitness
                                 selectedGeneration: individualView.selectedGeneration
-                                selectedPopulation: individualView.selectedPopulation
+                                //selectedPopulation: individualView.selectedPopulation
 
                                 mNumberFunctions: gaviz.getNbObjectiveFunctions()
                                 mFunctions: gaviz.getObjectiveFunctions()

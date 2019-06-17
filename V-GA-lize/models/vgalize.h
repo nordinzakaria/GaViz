@@ -373,9 +373,9 @@ public:
         return Population::getNbPop();
     }
 
-    Q_INVOKABLE QImage getImageIndividuals(float minScore)
+    Q_INVOKABLE void fillImageIndividuals(QImage *image,float minScore)
     {
-        return population->getImageIndividuals(minScore);
+        population->fillImageIndividuals(image,minScore);
     }
 
     /*!

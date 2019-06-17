@@ -22,7 +22,7 @@ public:
      * @brief getImageIndividuals
      * @return
      */
-    QImage getImageIndividuals(float minScore);
+    void fillImageIndividuals(QImage *image,float minScore);
 
     QVariantList getIndividualProperty(int generation, int cluster, int findex, int property) const;
 

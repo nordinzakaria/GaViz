@@ -1,4 +1,3 @@
-
 import QtQuick 2.0
 import QtQuick.Controls 2.3
 import QtQuick.Layouts 1.3
@@ -89,11 +88,11 @@ Page {
               - An empty Item in order to keep all the Tools on the left
         */
         ToolBar {
-            id: toolBar            
+            id: toolBar
             Layout.leftMargin: 10
             Layout.preferredWidth: parent.width
             Layout.preferredHeight: 0.07 * parent.height
-            Layout.topMargin: 0       
+            Layout.topMargin: 0
         }
 
         VerticalSeparator{
