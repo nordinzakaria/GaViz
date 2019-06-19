@@ -5,8 +5,9 @@ QImageProvider::QImageProvider(GAViz *engine)
     : QQuickImageProvider(QQuickImageProvider::Image),mEngine(engine)
 {
 
-    //! Empty Image
-    mImage = new QImage(0,0,QImage::Format_RGBA64);
+    //! Invalid Image
+    mImage = new QImage(0,0,DEFAULT_FORMAT);
+
 
     connect(engine,
             &GAViz::doneLoadingFile,
@@ -82,14 +83,20 @@ void QImageProvider::handleFileLoaded()
     int individuals = mEngine->getMaxNbIndPerGeneration().toInt(); //! How much individuals for a generation
 
     QSize size = QSize(individuals,generations);
+    QImage::Format newFormat;
 
-    /**
+    /*!
      *  If the QImage is nullptr, it will be instanciated with the given QSize.
      *  If the QImage is allready instanciated but have a different size than requested,
      *  it will "realloc" the image with the good size
      */
-    if (mImage == nullptr || size != mImage->size())
-        changeDimension(&size,QImage::Format_RGBA64);
+    if (mImage == nullptr || mImage->format() == QImage::Format_Invalid){
+        newFormat = DEFAULT_FORMAT;
+        changeDimension(&size,newFormat);
+    }else if(size != mImage->size()){
+        newFormat = mImage->format();
+        changeDimension(&size,newFormat);
+    }
 
     //! The Image is not nullptr
     Q_ASSERT(mImage != nullptr);
