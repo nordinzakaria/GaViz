@@ -5,7 +5,13 @@ QImageProvider::QImageProvider(GAViz *engine)
     : QQuickImageProvider(QQuickImageProvider::Image),mEngine(engine)
 {
 
-    //! Invalid Image
+    //! Invalid Image.
+    //! I do not put mImage as a nullptr because it create probleme when Qml
+    //! try to retreive mImage when its a nullptr (the application crash).
+    //! That why i preffer to return a "empty QImage".
+    //!
+    //! But if there is a better way feel free to change the code.
+    //!
     mImage = new QImage(0,0,DEFAULT_FORMAT);
 
 
