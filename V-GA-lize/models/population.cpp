@@ -32,7 +32,7 @@ QVariantList Population::getIndividualProperty(int gen, int clus, int findex, in
     QList<QVariant> data;
     switch(property)
     {
-        case Individual::Fitness:
+    case Individual::Fitness:
         for (int i=0; i<sz; i++) {
             data.append(cluster->getIndividual(i)->getFitness(findex));
         }
@@ -85,21 +85,21 @@ QVariant Population::getIndividualProperty(int gen, int clus, int index, int fin
 
     switch(property)
     {
-        case Individual::Fitness:
-                return cluster->getIndividual(index)->getFitness(findex);
-        case Individual::Rank:
-                //qDebug() << "rank of ind " << index << " is " << cluster->getIndividual(index)->getRank() << "\n";
-                return cluster->getIndividual(index)->getRank();
-        case Individual::Parent1:
-                return cluster->getIndividual(index)->getParent1();
-        case Individual::Parent2:
-                return cluster->getIndividual(index)->getParent2();
-        case Individual::NumGenes:
-            qDebug() << "returning numgenes = "<< cluster->getIndividual(index)->getNumGenes() << "\n";
-            return cluster->getIndividual(index)->getNumGenes();
-        default:
-                qDebug() << "Invalid request for gen " << gen << ", index = "<< index << ", findex " << findex << ", prop " << property << "\n";
-                return QVariant();
+    case Individual::Fitness:
+        return cluster->getIndividual(index)->getFitness(findex);
+    case Individual::Rank:
+        //qDebug() << "rank of ind " << index << " is " << cluster->getIndividual(index)->getRank() << "\n";
+        return cluster->getIndividual(index)->getRank();
+    case Individual::Parent1:
+        return cluster->getIndividual(index)->getParent1();
+    case Individual::Parent2:
+        return cluster->getIndividual(index)->getParent2();
+    case Individual::NumGenes:
+        qDebug() << "returning numgenes = "<< cluster->getIndividual(index)->getNumGenes() << "\n";
+        return cluster->getIndividual(index)->getNumGenes();
+    default:
+        qDebug() << "Invalid request for gen " << gen << ", index = "<< index << ", findex " << findex << ", prop " << property << "\n";
+        return QVariant();
     }
 }
 
@@ -233,55 +233,81 @@ void Population::setNbPop(int np)
     Population::numPop = np;
 }
 
+/*!
+ * \fn Population::fillImageIndividuals(QImage *image,float minScore)
+ * \brief fillImageIndividuals fill a given QImage with each individuals fitness as a color.
+ * \param image : The image to be filled.
+ * \param minScore : To calculate the color relative to the fitness.
+ *
+ *  TODO deeper explaination of the function.
+ */
 void Population::fillImageIndividuals(QImage *image,float minScore)
 {
-    Generation currentGeneration;
-    QVector<Individual* > currentIndividuals;
-    Individual *currentIndividual;
+    //! There is nothing to do if the given QImage is nullptr
+    if (image == nullptr){
+         //throw ;
+        return ;
+    }else {
+        Generation currentGeneration;
+        QVector<Individual* > currentIndividuals;
+        Individual *currentIndividual;
 
-    int generationSize = generations->size();
+        int generationSize = generations->size();
 
 
-    QRgba64 color ;
+        int imageWidth = image->size().width();
+        int imageHeight = image->size().height();
 
-    float minimum;  // == minScore
-    float maximum;  // == minScore +5
-    float ratio;    //
-    int r,g,b;
 
-    // we go through each generation
-    for (int i = 0; i < generationSize ; i++) {
-        currentGeneration = generations[i];
-        currentIndividuals = currentGeneration.getIndividuals();
-        //we go through each individuals
-        for (int j = 0; j < currentIndividuals.size();j++) {
+        //! To calculate the color representing the fitness of an individual.
+        QRgba64 color ;
+        float minimum;  // == minScore
+        float maximum;  // == minScore +5
+        float ratio;    //
+        int r,g,b;
 
-            currentIndividual = currentIndividuals.at(j);
-            float fitness = *currentIndividual->getFitness();
 
-            if (fitness > minScore){
-                //TODO: explain the calculus
-                minimum = minScore;
-                maximum = fitness+5;   // weird why 5
+        //! To ensure that we will never go further than the image bounds, resulting in a exception.
+        int pixelsHeight = qMin(imageHeight,generationSize);
+        int pixelsWidth;
 
-                ratio = 2 * (fitness-minimum) / (maximum - minimum);
 
-                b = qMax(0.f, 255*(1 - ratio));
-                r = qMax(0.f, 255*(ratio - 1));
-                g = 255 - b - r;
+        for (int i = 0; i < pixelsHeight ; i++) {
+            currentGeneration = generations[i];
+            currentIndividuals = currentGeneration.getIndividuals();
 
-                r = qMin(r,255);r = qMax(r,0);
-                b = qMin(b,255);b = qMax(b,0);
-                g = qMin(g,255);g = qMax(g,0);
+            //! To ensure that we will never go further than the image bounds, resulting in a exception.
+            pixelsWidth = qMin(imageWidth,currentIndividuals.size());
 
-                color = QRgba64::fromRgba(r, g, b, 255);
+            for (int j = 0; j < pixelsWidth;j++) {
 
-            }else{
-                color = QRgba64::fromRgba(0,0,0,0); // transparent pixel
+                currentIndividual = currentIndividuals.at(j);
+                float fitness = *currentIndividual->getFitness();
+
+                //! TODO
+                if (fitness > minScore){
+                    minimum = minScore;
+                    maximum = minScore+5;
+
+                    ratio = 2 * (fitness-minimum) / (maximum - minimum);
+
+                    b = qMax(0.f, 255*(1 - ratio));
+                    r = qMax(0.f, 255*(ratio - 1));
+                    g = 255 - b - r;
+
+                    r = qMin(r,255);r = qMax(r,0);
+                    b = qMin(b,255);b = qMax(b,0);
+                    g = qMin(g,255);g = qMax(g,0);
+
+                    color = QRgba64::fromRgba(r, g, b, 255);
+
+
+                }else{
+                    color = QRgba64::fromRgba(0,0,0,0); //transparent pixel
+                }
+
+                image->setPixelColor(j,i,color);
             }
-
-            // TODO : set the pixel color with a real value
-            image->setPixelColor(j,i,color);
         }
     }
 }

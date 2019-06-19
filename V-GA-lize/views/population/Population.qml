@@ -19,6 +19,7 @@ Frame {
 
     property int selectedIndividual: 0
     property int selectedGeneration: 0
+    property int imagePerSeconds: 60
 
     // The ScrollView Item allows to move on the frame by using the hotizontal and vertical ScrollBars
     ScrollView {
@@ -84,11 +85,11 @@ Frame {
 
             width: gaviz.getMaxNbIndPerGeneration(selectedPopulation)
             height: gaviz.getNbGenerations(selectedPopulation)
-            source : "image://provider/"+minScore
 
 
             transform: Scale { origin.x: 0; origin.y: 0; xScale: zoomValue; yScale: zoomValue }
             smooth: false
+
 
         }
 
@@ -167,15 +168,9 @@ Frame {
         }
 
     }
-    /**
-      *
-      * Migth be useless, i don't get the utilisation of Timer here.
-      *
-      */
-
     Timer {
         id: repaintTimer
-        interval: 1000/60
+        interval: 1000/imagePerSeconds   // 60 image per seconds
         running: true
         repeat: false
         onTriggered: canvas.source = "image://provider/"+minScore;
@@ -183,7 +178,7 @@ Frame {
 
     Timer {
         id: altViewTimer
-        interval: 100
+        interval: 1000/imagePerSeconds
         running: false
         repeat: false
         onTriggered: displayAltView()

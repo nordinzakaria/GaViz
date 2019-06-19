@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
     QObject::connect((QObject*)&engine, SIGNAL(quit()), &app, SLOT(quit()));
 
     GAViz gaviz; //(&engine);
-    QImageProvider QIp = QImageProvider(&gaviz,100,100,QImage::Format_RGBA64);
+    QImageProvider *QIp = new QImageProvider(&gaviz);
 
     qmlRegisterType<Individual>("gaviz", 1, 0, "IndividualProperty");
     qmlRegisterType<Stats>("gaviz", 1, 0, "StatsProperty");
@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
       * with << source : "image://provider/idOfTheImage" >>
       *
       */
-    engine.addImageProvider(QLatin1String("provider"), &QIp);
+    engine.addImageProvider(QLatin1String("provider"), QIp);
 
 //    qmlRegisterUncreatableMetaObject(
 //      GAVizErrors::staticMetaObject, // static meta object
