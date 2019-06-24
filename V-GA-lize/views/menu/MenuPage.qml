@@ -1,6 +1,5 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.3
-//import QtQuick.Controls.Styles 1.4
 import QtQuick.Dialogs 1.0
 import QtQuick.Layouts 1.3
 import gaviz 1.0
@@ -11,6 +10,11 @@ import gaviz 1.0
 */
 Page {
     id: menuPage
+
+    signal fileLoaded();
+
+    state: stateGroup.state = "idle";   //start in the idle state
+
     background : Image {
         source: "../../images/BlenderBackground3.png"
         opacity: 0.8
@@ -39,14 +43,11 @@ Page {
             id: dialogButton
             Layout.alignment: Qt.AlignRight
             Layout.rightMargin:  (0.15 * parent.width)
-            highlighted: true
 
             text: "Load file"
-            onClicked:{
-                prg.opacity = 1
-                quitButton.enabled = false
-                parent.enabled = false
-                fileDialog.open()
+
+            onReleased: {
+                fileDialog.open();
             }
         }
 
@@ -54,11 +55,11 @@ Page {
             id: quitButton
             Layout.alignment: Qt.AlignRight
             Layout.rightMargin:  (0.15 * parent.width)
-            highlighted: true
 
             text: "Quit"
-            onClicked: Qt.quit()
+            onReleased: Qt.quit();
         }
+
         Label {
             id: fileInfo
             Layout.alignment: Qt.AlignHCenter
@@ -71,8 +72,6 @@ Page {
             Layout.alignment: Qt.AlignHCenter | Qt.AlignBottom
             Layout.bottomMargin: 0.05 * parent.height
             Layout.preferredWidth: 0.8 * parent.width
-            visible : true
-            opacity: 0
 
             from: 0   // C++ loop starts out with 0
             to: 1 // C++ loop ends with "Count"
@@ -82,17 +81,18 @@ Page {
                 anchors.bottom: parent.top
                 anchors.bottomMargin: parent.height
                 anchors.horizontalCenter: parent.horizontalCenter
+
                 visible: parent.visible
-                opacity : parent.opacity
                 color: "black"
                 font.bold: true
 
                 text: (prg.value * 100).toFixed(1) + "%"
             }
 
-
             Connections {
                 target: gaviz
+
+
                 onProgressChanged: prg.value = gaviz.progress;
             }
         }
@@ -107,60 +107,76 @@ Page {
         modality: Qt.NonModal
 
         onAccepted: {
-            console.log("File selected : "+fileDialog.fileUrl)
-            gaviz.readGAFile(fileDialog.fileUrl)
-            quitButton.enabled = true
-            dialogButton.enabled = true
+            console.debug("Accepted");
+
+            menuPage.state = stateGroup.state = "parsing";
+            gaviz.readGAFile(fileDialog.fileUrl);
         }
 
         onRejected: {
-            console.log("Canceled")
-            quitButton.enabled = true
-            dialogButton.enabled = true
+            console.degub("Canceled");
+
+            menuPage.state = stateGroup.state = "idle";
         }
 
-    }
-
-    // Timer used for the loading process
-    Timer {
-        id: readGATimer
-        interval: 1000
-        running: false
-        repeat: false
-        onTriggered: gaviz.readGAFile(fileDialog.fileUrl)
     }
 
     // Connections displaying info about the loaded file in the console
     Connections {
         target: gaviz
+
         onDoneLoadingFile: {
+
             /* If the loading is successful,
                Displays info about the file and sends the user
                to the Visualization Page
             */
-            if(true)
+            if(success)
             {
-
-
-                console.log("Population info:\n")
-                console.log("Number of Generations : "+ gaviz.getNbGenerations())
-                console.log("Max Num Individuals in a Generation : "+ gaviz.getMaxNbIndPerGeneration())
-                console.log("Number of Objective Functions : " + gaviz.getNbObjectiveFunctions())
-                console.log("Max fitness: " + gaviz.getMaxFitness(0))
-                console.log("Min fitness: " + gaviz.getMinFitness(0))
+                console.debug("Population info:\n")
+                console.debug("Number of Generations : "+ gaviz.getNbGenerations())
+                console.debug("Max Num Individuals in a Generation : "+ gaviz.getMaxNbIndPerGeneration())
+                console.debug("Number of Objective Functions : " + gaviz.getNbObjectiveFunctions())
+                console.debug("Max fitness: " + gaviz.getMaxFitness(0))
+                console.debug("Min fitness: " + gaviz.getMinFitness(0))
 
                 /**
-                  * When the file is downloaded the vizualisationPage is "pushed" front of the screen
+                  * When the file is parsed successfully by gaviz we emit fileLoaded()
+                  *
                   */
-                pages.push(vizPage)
-                prg.value = 0
-                prg.opacity = 0
+                fileLoaded();
 
             }
             else
             {
                 console.log("Failed to load file")
             }
+            menuPage.state = stateGroup.state = "idle";
         }
+    }
+
+    StateGroup {
+        id : stateGroup
+
+        states: [
+
+            State {
+                name: "idle"
+                PropertyChanges {
+                    target: prg
+
+                    value : 0;
+                    visible : false;
+                }
+            },
+            State {
+                name: "parsing"
+                PropertyChanges {
+                    target: prg
+
+                    visible : true;
+                }
+            }
+        ]
     }
 }

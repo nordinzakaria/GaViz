@@ -20,7 +20,11 @@ StackView {
 
     Component {
         id: menuPage
-        MenuPage {}
+        MenuPage {
+            onFileLoaded: {
+                pages.push(vizPage);
+            }
+        }
     }
 
     Component {

@@ -56,30 +56,6 @@ Frame {
         }
 
 
-        /**
-          *
-          * I have no clue of what that is.
-          *
-          */
-        /*ProgressBar {
-            id: prgPop
-            anchors.horizontalCenter: parent.horizontalCenter
-            Layout.preferredWidth: 0.7 * parent.width
-            visible: true
-
-            from: 0
-            to: 100
-
-            Label {
-                id: popprogPercentage
-                anchors.top: parent.bottom
-                visible: true
-                text: prgPop.value.toFixed(1) + "%"
-            }
-        }*/
-
-
-
         Image {
             id: canvas
 
@@ -88,9 +64,15 @@ Frame {
 
 
             transform: Scale { origin.x: 0; origin.y: 0; xScale: zoomValue; yScale: zoomValue }
-            smooth: false
 
+            smooth: false   // to prevent a blurry effect when zooming
 
+            // TODO : give a better explanation.
+            // to ensure that the imageProvider will always create a new image instead of getting it from
+            // the cache, to prevent unwanted behavior when calling << source: "image://provider/id" >>
+            // successively without changing the id while the internal state have changed .
+            //(exemple : when reloading datas)
+            cache : false
         }
 
         Canvas {
