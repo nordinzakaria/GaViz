@@ -42,13 +42,14 @@ Page {
     property int selectedFitness: 0
     property int zoomlimit: 30
 
+    /*
     onZoomValueChanged: {
         if (zoomValue < minZoomValue)
             zoomValue = minZoomValue;
         if (zoomValue > maxZoomValue)
             zoomValue = maxZoomValue;
         toolBar.zoomSlider.value = zoomValue
-    }
+    }*/
 
     // Main ColumnLayout, containing all the elements listed above
     ColumnLayout{
@@ -93,6 +94,16 @@ Page {
             Layout.preferredWidth: parent.width
             Layout.preferredHeight: 0.07 * parent.height
             Layout.topMargin: 0
+
+            onZoomChange: {
+                console.debug("zoom changed: "+zoom)
+                zoomValue = zoom;
+            }
+
+            onMinScoreChange: {
+                console.debug("minScore changed")
+                vizPage.minScore = minScore;
+            }
         }
 
         VerticalSeparator{
@@ -126,12 +137,21 @@ Page {
 
                 Population {
                     id: populationView
-                    visible: zoomValue <= zoomlimit
-                    selectedIndividual: selectedIndividual;
-                    selectedGeneration: selectedGeneration;
+                    visible: vizPage.zoomValue <= vizPage.zoomlimit
+
+                    zoomValue: vizPage.zoomValue
+                    minScore: vizPage.minScore
+
+                    selectedIndividual: vizPage.selectedIndividual;
+                    selectedGeneration: vizPage.selectedGeneration;
 
                     Layout.fillWidth: true
                     Layout.fillHeight: true
+
+                    onIndividualChanged: {
+                        vizPage.selectedGeneration = generation
+                        vizPage.selectedIndividual = individual
+                    }
                 }
 
                 AltPopulation {

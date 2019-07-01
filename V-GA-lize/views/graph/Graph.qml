@@ -21,7 +21,7 @@ Frame {
     Layout.fillWidth: true
     Layout.fillHeight: true
 
-    property bool fitToGeneration: false;/*graphToolBar.fitToGenerationCheckBox.checked*/
+    property bool fitToGeneration: graphToolBar.fitToGenerationCheckBox.checked
     property int axisWidth: 1
 
     property int selectedGeneration: 0
@@ -37,7 +37,7 @@ Frame {
     property real minFitness1:  gaviz.getMinFitness(selectedPopulation, selectedFitness1)
 
     onSelectedGenerationChanged: {
-        console.log('SelectedGeneration CallBack Triggered')
+        console.debug('SelectedGeneration CallBack Triggered')
         updateBounds()
     }
 

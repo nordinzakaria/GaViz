@@ -24,19 +24,17 @@ RowLayout {
 
 
     // The comboBox for selecting fitness
-    Tool{
+    ColumnLayout {
+        id: fitnesslist
 
         Label {
-            id: fitnesslist1Label
-
             text: "Function Choice :"
         }
 
         ComboBox {
-            id: fitnesslist1
+            model: gaviz.getObjectiveFunctions()
             currentIndex: 0
 
-            model: gaviz.getObjectiveFunctions()
             onCurrentIndexChanged: {
                 row.fitnessChange(currentIndex);
             }
@@ -49,20 +47,18 @@ RowLayout {
         Layout.leftMargin: 10
     }
 
-    Tool{
-        Label {
-            id: chartlistLabel
+    ColumnLayout {
+        id: chartlist
 
+        Label {
             text: "Graph Type :"
         }
 
         ComboBox {
-            id: chartlist
-
-            currentIndex: 0
             width: 150
 
             model:   ["SCATTERPLOT", "AVERAGE", "STDDEV", "MINMAX", "HISTOGRAM" ]
+            currentIndex: 0
 
             onCurrentIndexChanged: {
                 row.chartListIndexChange(currentIndex);
@@ -76,7 +72,8 @@ RowLayout {
         Layout.leftMargin: 10
     }
 
-    Tool {
+    ColumnLayout {
+        id: selectGeneration
 
         Label {
             text: "Generation Selection :"
@@ -85,14 +82,16 @@ RowLayout {
         Slider {
             Layout.fillWidth: true
             Layout.leftMargin: 20
+
             live: true
-            stepSize: 1
+
             from: 0
             value: selectedGeneration
             to: gaviz.getNbGenerations(selectedPopulation) - 1
+            stepSize: 1
 
             onValueChanged: {
-                var intValue =parseInt(value);
+                var intValue = parseInt(value);
                 row.selectedGenerationChange(intValue);
             }
         }
@@ -104,20 +103,19 @@ RowLayout {
         Layout.leftMargin: 10
     }
 
-    Tool {
-        RowLayout{
+    RowLayout{
+        id: fitToGeneration
 
-            Label {
-                text: "Fit to gen : "
-            }
-
-            CheckBox {
-                id: fitToGenerationCheckBox
-                onCheckStateChanged: {
-                    row.fitGenerationChange(checked);
-                }
-            }
-
+        Label {
+            text: "Fit to gen : "
         }
+
+        CheckBox {
+            id: fitToGenerationCheckBox
+            onCheckStateChanged: {
+                row.fitGenerationChange(checked);
+            }
+        }
+
     }
 }

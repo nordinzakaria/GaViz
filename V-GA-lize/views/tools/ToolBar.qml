@@ -17,51 +17,42 @@ import gaviz 1.0
       - An empty Item in order to keep all the Tools on the left
 */
 RowLayout {
+    id: toolBar
+
     Layout.maximumHeight: 0.07 * parent.height
     property alias zoomSlider: zoomSlider
-/*
-TextField {
-        id: generationSelector
 
-        text: "1"
 
-        inputMethodHints: Qt.ImhDigitsOnly
-
-        validator: IntValidator {
-            bottom: 1
-            top: population.getNbGenerations()
-        }
-
-        onTextEdited: {
-            selectedGeneration = parseInt(generationSelector.text)
-        }
-
-        onAccepted: {
-            populationView.forceActiveFocus()
-            populationView.repaintView()
-        }
-    }*/
+    signal minScoreChange(int minScore);
+    signal objectiveFunctionsChange(int index);
+    signal populationChange(int population);
+    signal zoomChange(double zoom);
 
     /* A RangeSlider allowing to select the Minimum and Maximum
          Score Limits in the Population
     */
-    Tool {
+    ColumnLayout {
+        id: boundsScore
+
+        property int min: rangeSlider.first.value
+        property int max: rangeSlider.second.value
 
         Label {
             text: "Min and Max Score Limits"
         }
 
         RangeSlider{
-            id: minScoreSelectorLimits
-            from:0
-            to:
-            second.value = 100
+            id: rangeSlider
+
+            from: 0
+            to: 100
+
+            first.value: from
+            second.value: to
+
             onHoveredChanged: {
                 ToolTip.visible = hovered
                 ToolTip.text = "From : " + first.value + " to :" + second.value
-
-                minLimit = first.value
-                maxLimit = second.value
             }
         }
     }
@@ -76,21 +67,23 @@ TextField {
          in the range given by the RangeSlider
          (if the RangeSlider is changed, this value is not)
     */
-    Tool{
+    ColumnLayout{
+        id: minScore
+
         Label {
             text: "Wanted Quality"
         }
 
 
         Slider {
-            id: minScoreSelector
-            from: minScoreSelectorLimits.first.value
-            to: minScoreSelectorLimits.second.value
+
+            from: boundsScore.min
+            value : from
+            to: boundsScore.max
 
             onValueChanged: {
-                populationView.forceActiveFocus()
-                populationView.repaintView()
-                minScore = value
+                var intValue = parseFloat(value);
+                toolBar.minScoreChange(intValue);   // notify that the minSocre has been modified
             }
             onHoveredChanged: {
                 ToolTip.visible = hovered
@@ -107,22 +100,20 @@ TextField {
     }
 
     // A ComboBox allowing the user to select the Objective Function used
-    Tool {
+    ColumnLayout {
 
         width: 500
         Label {
             text: "Performance type"
-            }
+        }
 
-    ComboBox {
+        ComboBox {
             id: popFitness
             currentIndex: 0
             model: gaviz.getObjectiveFunctions()
             width: parent.width
             onCurrentIndexChanged: {
-                selectedFitness = currentIndex
-                populationView.repaintView()
-
+                toolBar.objectiveFunctionsChange(currentIndex); // to notify that an objectiv function has been selected
             }
         }
 
@@ -135,21 +126,19 @@ TextField {
     }
 
     // A ComboBox allowing the user to select the population                <-------- Not Very clear yet
-    Tool {
+    ColumnLayout {
         width: 500
         Label {
             text: "Population"
-            }
+        }
 
-    ComboBox {
+        ComboBox {
             id: popIndex
             currentIndex: 0
             model: gaviz.getNbPopulations()
             width: parent.width
             onCurrentIndexChanged: {
-                selectedPopulation = currentIndex
-                populationView.repaintView()
-
+                toolBar.populationChange(currentIndex); // Notify that a new population has been selected.
             }
         }
 
@@ -162,7 +151,7 @@ TextField {
     }
 
     // A Slider allowing to select and view the Zoom Value more precisely
-    Tool{
+    ColumnLayout{
         Label {
             text: "Zoom Value"
         }
@@ -174,10 +163,9 @@ TextField {
             stepSize: 0.1
             to: 40
 
-            onValueChanged: {
-                populationView.forceActiveFocus()
-                populationView.repaintView()
-                zoomValue = value
+            onValueChanged:  {
+                var doubleValue = parseFloat(value);
+                toolBar.zoomChange(doubleValue);        // Notify that the zoom has been modified
             }
             onHoveredChanged: {
                 ToolTip.visible = hovered

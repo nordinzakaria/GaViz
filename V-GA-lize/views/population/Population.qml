@@ -19,7 +19,17 @@ Frame {
 
     property int selectedIndividual: 0
     property int selectedGeneration: 0
+    property int selectedPopulation: 0
+
     property int imagePerSeconds: 60
+
+    property int zoomValue: 1
+    property int minScore: 0
+
+    signal individualChanged(int generation,int individual);
+
+    // repaint because the Image is different when the state Change.
+    onStateChanged: repaintView();
 
     // The ScrollView Item allows to move on the frame by using the hotizontal and vertical ScrollBars
     ScrollView {
@@ -45,8 +55,6 @@ Frame {
             }
         }
 
-        //onMovementEnded: updateCanvasPosition()
-
         function updateCanvasPosition()
         {
             canvasParent.contentX -= canvasParent.contentX % zoomValue
@@ -62,7 +70,7 @@ Frame {
             width: gaviz.getMaxNbIndPerGeneration(selectedPopulation)
             height: gaviz.getNbGenerations(selectedPopulation)
 
-
+            // The image is automatically repainted if zoomValue change.
             transform: Scale { origin.x: 0; origin.y: 0; xScale: zoomValue; yScale: zoomValue }
 
             smooth: false   // to prevent a blurry effect when zooming
@@ -71,64 +79,67 @@ Frame {
             // to ensure that the imageProvider will always create a new image instead of getting it from
             // the cache, to prevent unwanted behavior when calling << source: "image://provider/id" >>
             // successively without changing the id while the internal state have changed .
-            //(exemple : when reloading datas)
+            //(exemple : when loading a new file.)
             cache : false
-        }
 
-        Canvas {
-            id: highlightCanvas
+            Canvas {
+                id: highlightCanvas
 
-            width: gaviz.getMaxNbIndPerGeneration(selectedPopulation)
-            height: gaviz.getNbGenerations(selectedPopulation)
-            z:2
+                anchors.fill: parent;
+                z: parent.z + 1
 
-            transform: Scale { origin.x: 0; origin.y: 0; xScale: zoomValue; yScale: zoomValue }
-            smooth: false
+                smooth: false
 
-
-            onPaint: {
-                var context = getContext("2d")
+                onPaint: {
+                    var context = getContext("2d")
 
 
-                var currentIndividual = selectedIndividual;
-                var currentGeneration = selectedGeneration;
+                    var currentIndividual = selectedIndividual;
+                    var currentGeneration = selectedGeneration;
 
-                context.beginPath()
-                context.clearRect(0, 0, width, height)
-                context.fill()
-                context.beginPath()
-                context.fillStyle = Qt.rgba(1.0, 1.0, 0.0, 1.0)
-                context.fillRect(selectedIndividual, selectedGeneration, 1, 1)
-                context.fill()
-            }
-        }
-
-
-        MouseArea {
-            anchors.fill: parent
-            acceptedButtons: Qt.LeftButton | Qt.RightButton
-
-            onWheel: {
-                if (wheel.modifiers & Qt.ControlModifier) {
-                    zoomValue += wheel.angleDelta.y / 120
+                    context.beginPath()
+                    context.clearRect(0, 0, width, height)
+                    context.fill()
+                    context.beginPath()
+                    context.fillStyle = Qt.rgba(1.0, 1.0, 0.0, 1.0) // yellow
+                    context.fillRect(currentIndividual, currentGeneration, 1, 1)
+                    context.fill()
                 }
             }
 
-            onClicked: {
-                individualView.selectIndividual(mouseY/zoomValue, mouseX/zoomValue)
-                selectedIndividual = mouseX/zoomValue
-                selectedGeneration = mouseY/zoomValue
-                individualView.mycanvas.requestPaint()
-                individualView.swipeV.currentIndex = 0
-                individualView.leftB.visible = false
-                individualView.rightB.visible = true
 
+            MouseArea {
+                anchors.fill: parent
+                acceptedButtons: Qt.LeftButton | Qt.RightButton
+
+                onWheel: {
+                    if (wheel.modifiers & Qt.ControlModifier) {
+                        zoomValue += wheel.angleDelta.y / 120
+                    }
+                }
+
+                onClicked: {
+                    /* C'est deguelasse
+                    individualView.selectIndividual(mouseY/zoomValue, mouseX/zoomValue)
+                    individualView.mycanvas.requestPaint()
+                    individualView.swipeV.currentIndex = 0
+                    individualView.leftB.visible = false
+                    individualView.rightB.visible = true
+                    */
+
+                    var selectedIndividual = mouseX/zoomValue;
+                    var selectedGeneration = mouseY/zoomValue;
+
+                    individualChange(selectedGeneration,selectedIndividual);
+                }
+
+                onPressAndHold: {
+                    populationDialog.open()
+                }
             }
 
-            onPressAndHold: {
-                populationDialog.open()
-            }
         }
+
 
         FileDialog {
             id: populationDialog
@@ -158,22 +169,9 @@ Frame {
         onTriggered: canvas.source = "image://provider/"+minScore;
     }
 
-    Timer {
-        id: altViewTimer
-        interval: 1000/imagePerSeconds
-        running: false
-        repeat: false
-        onTriggered: displayAltView()
-    }
-
     function repaintView()
     {
         repaintTimer.running = true
-        highlight()
-    }
-
-    function highlight()
-    {
         highlightCanvas.requestPaint()
     }
 

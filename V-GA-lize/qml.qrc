@@ -11,7 +11,6 @@
         <file>views/individual/Individual.qml</file>
         <file>views/graph/Graph.qml</file>
         <file>main/MainMenu.qml</file>
-        <file>views/tools/Tool.qml</file>
         <file>views/menu/VerticalSeparator.qml</file>
         <file>views/tools/ToolSeparator.qml</file>
         <file>views/tools/GraphToolBar.qml</file>
