@@ -37,7 +37,9 @@ Frame {
     // The ScrollView Item allows to move on the frame by using the hotizontal and vertical ScrollBars
     ScrollView {
         id: canvasParent
+
         anchors.fill: parent
+
         ScrollBar.horizontal.policy: ScrollBar.AlwaysOn
         ScrollBar.vertical.policy: ScrollBar.AlwaysOn
 
@@ -48,27 +50,6 @@ Frame {
         property double contentY: 0
 
         clip: true
-
-        Connections {
-            target: vizPage
-            onZoomValueChanged: {
-                canvasParent.contentX = firstIndividual * zoomValue
-                canvasParent.contentY = firstGeneration * zoomValue
-                canvasParent.updateCanvasPosition()
-            }
-        }
-
-        function updateCanvasPosition()
-        {
-            canvasParent.contentX -= canvasParent.contentX % zoomValue
-            canvasParent.contentY -= canvasParent.contentY % zoomValue
-            firstIndividual = canvasParent.contentX / zoomValue
-            firstGeneration = canvasParent.contentY / zoomValue
-
-            console.debug(firstGeneration);
-            console.debug(firstIndividual);
-        }
-
 
         Image {
             id: canvas
