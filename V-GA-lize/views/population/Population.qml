@@ -29,7 +29,10 @@ Frame {
     signal individualChanged(int generation,int individual);
 
     // repaint because the Image is different when the state Change.
-    onStateChanged: repaintView();
+    onMinScoreChanged: repaintView();
+    onSelectedPopulationChanged: repaintView();
+    onSelectedGenerationChanged: repaintView();
+    onSelectedIndividualChanged: repaintView();
 
     // The ScrollView Item allows to move on the frame by using the hotizontal and vertical ScrollBars
     ScrollView {
@@ -51,7 +54,7 @@ Frame {
             onZoomValueChanged: {
                 canvasParent.contentX = firstIndividual * zoomValue
                 canvasParent.contentY = firstGeneration * zoomValue
-                //canvasParent.updateCanvasPosition()
+                canvasParent.updateCanvasPosition()
             }
         }
 
@@ -61,6 +64,9 @@ Frame {
             canvasParent.contentY -= canvasParent.contentY % zoomValue
             firstIndividual = canvasParent.contentX / zoomValue
             firstGeneration = canvasParent.contentY / zoomValue
+
+            console.debug(firstGeneration);
+            console.debug(firstIndividual);
         }
 
 
@@ -119,18 +125,9 @@ Frame {
                 }
 
                 onClicked: {
-                    /* C'est deguelasse
-                    individualView.selectIndividual(mouseY/zoomValue, mouseX/zoomValue)
-                    individualView.mycanvas.requestPaint()
-                    individualView.swipeV.currentIndex = 0
-                    individualView.leftB.visible = false
-                    individualView.rightB.visible = true
-                    */
-
-                    var selectedIndividual = mouseX/zoomValue;
-                    var selectedGeneration = mouseY/zoomValue;
-
-                    individualChange(selectedGeneration,selectedIndividual);
+                    var selectedIndividual = mouseX;
+                    var selectedGeneration = mouseY;
+                    populationView.individualChanged(selectedGeneration,selectedIndividual);
                 }
 
                 onPressAndHold: {

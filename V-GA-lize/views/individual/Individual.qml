@@ -66,7 +66,6 @@ Frame {
 
         mycanvas.animationProgress = 0
 
-        populationView.highlight()
         graphView.selectedGeneration = selectedGeneration
         visible = true
     }

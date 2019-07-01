@@ -27,29 +27,25 @@ Page {
         source: "../../images/BlenderBackground3.png"
         opacity: 0.08
     }
-    property double zoomValue: 1.0
     property double minZoomValue: 1.0
+    property double zoomValue: 1.0
+    property double zoomlimit: 30.0
     property double maxZoomValue: 40.0
+
     property int firstGeneration: 1     // first row in view
-    property int firstIndividual: 0     // first column in view
+    property int firstIndividual: 1     // first column in view
+
     property double minLimit: 0.0
     property double maxLimit: 100.0
     property double minScore: 0.0
+
     property bool showClusters: false
+
     property int selectedGeneration: 0
     property int selectedIndividual: 0
     property int selectedPopulation: 0
-    property int selectedFitness: 0
-    property int zoomlimit: 30
 
-    /*
-    onZoomValueChanged: {
-        if (zoomValue < minZoomValue)
-            zoomValue = minZoomValue;
-        if (zoomValue > maxZoomValue)
-            zoomValue = maxZoomValue;
-        toolBar.zoomSlider.value = zoomValue
-    }*/
+    property int selectedFitness: 0
 
     // Main ColumnLayout, containing all the elements listed above
     ColumnLayout{
@@ -96,12 +92,10 @@ Page {
             Layout.topMargin: 0
 
             onZoomChange: {
-                console.debug("zoom changed: "+zoom)
                 zoomValue = zoom;
             }
 
             onMinScoreChange: {
-                console.debug("minScore changed")
                 vizPage.minScore = minScore;
             }
         }
@@ -151,6 +145,12 @@ Page {
                     onIndividualChanged: {
                         vizPage.selectedGeneration = generation
                         vizPage.selectedIndividual = individual
+
+                        individualView.selectIndividual(generation,individual)
+                        individualView.mycanvas.requestPaint()
+                        individualView.swipeV.currentIndex = 0
+                        individualView.leftB.visible = false
+                        individualView.rightB.visible = true
                     }
                 }
 

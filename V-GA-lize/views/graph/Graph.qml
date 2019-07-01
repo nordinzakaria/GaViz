@@ -37,7 +37,6 @@ Frame {
     property real minFitness1:  gaviz.getMinFitness(selectedPopulation, selectedFitness1)
 
     onSelectedGenerationChanged: {
-        console.debug('SelectedGeneration CallBack Triggered')
         updateBounds()
     }
 
@@ -121,18 +120,14 @@ Frame {
             Layout.maximumHeight: 0.1 * parent.height
 
             onFitnessChange: {
-                console.debug("FitnessChange Triggered")
                 graphView.selectedFitness = fitness
             }
 
             onSelectedGenerationChange: {
-                console.debug("SelectedGeneration Triggered")
                 graphView.selectedGeneration = generation
             }
 
             onChartListIndexChange: {
-                console.debug("ChartList Triggered")
-
                 var charts = [scatterplot, averageplot, stddevplot, minmaxplot0, minmaxplot1, histoplot, histoplot1]
                 for (var i=0; i<charts.length; i++)
                 {
@@ -156,7 +151,6 @@ Frame {
             }
 
             onFitGenerationChange: {
-                console.debug("Fit to generation triggered")
                 graphView.fitToGeneration = checked
             }
 

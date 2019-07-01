@@ -44,8 +44,8 @@ RowLayout {
         RangeSlider{
             id: rangeSlider
 
-            from: 0
-            to: 100
+            from: 0 // minimal value
+            to: 100 // maximal value
 
             first.value: from
             second.value: to
