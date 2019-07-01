@@ -131,7 +131,7 @@ Page {
                Displays info about the file and sends the user
                to the Visualization Page
             */
-            if(success)
+            if(true)
             {
                 console.debug("Population info:\n")
                 console.debug("Number of Generations : "+ gaviz.getNbGenerations())

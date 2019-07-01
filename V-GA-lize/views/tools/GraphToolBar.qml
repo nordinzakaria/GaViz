@@ -5,19 +5,41 @@ import QtQuick.Layouts 1.3
 import gaviz 1.0
 
 RowLayout {
+    id : row
+
     property alias fitToGenerationCheckBox: fitToGenerationCheckBox
+
+    property int selectedPopulation: 0
+    property int selectedGeneration: 0
+
+    /**
+      *
+      * Signals to notify exeternals elements.
+      *
+      */
+    signal fitnessChange(int fitness);                  // Emited when selecting a fitness.
+    signal selectedGenerationChange(int generation);    // Emited when selecting another generation.
+    signal fitGenerationChange(bool checked);           // Emited when the checkbox is checked/unchecked.
+    signal chartListIndexChange(int index);             // Emited when selecting a new chart.
+
+
+    // The comboBox for selecting fitness
     Tool{
+
         Label {
             id: fitnesslist1Label
+
             text: "Function Choice :"
         }
 
         ComboBox {
             id: fitnesslist1
             currentIndex: 0
+
             model: gaviz.getObjectiveFunctions()
-            width: 150
-            onCurrentIndexChanged: selectedFitness1 = currentIndex
+            onCurrentIndexChanged: {
+                row.fitnessChange(currentIndex);
+            }
         }
     }
 
@@ -30,36 +52,20 @@ RowLayout {
     Tool{
         Label {
             id: chartlistLabel
+
             text: "Graph Type :"
         }
 
         ComboBox {
             id: chartlist
+
             currentIndex: 0
             width: 150
 
             model:   ["SCATTERPLOT", "AVERAGE", "STDDEV", "MINMAX", "HISTOGRAM" ]
 
             onCurrentIndexChanged: {
-                    var charts = [scatterplot, averageplot, stddevplot, minmaxplot0, minmaxplot1, histoplot, histoplot1]
-                    for (var i=0; i<charts.length; i++)
-                    {
-                        charts[i].visible = false
-                    }
-                    if (currentIndex == 3)
-                    {
-                        charts[3].visible = true
-                        charts[4].visible = true
-                    }
-                    else
-                    if (currentIndex == 4)
-                    {
-                        charts[5].visible = true
-                        charts[6].visible = true
-                    }
-
-                    else
-                        charts[currentIndex].visible = true
+                row.chartListIndexChange(currentIndex);
             }
         }
     }
@@ -72,23 +78,24 @@ RowLayout {
 
     Tool {
 
-         Label {
-                 text: "Generation Selection :"
-             }
+        Label {
+            text: "Generation Selection :"
+        }
 
-         Slider {
-             Layout.fillWidth: true
-             Layout.leftMargin: 20
-             live: true
-             stepSize: 1
-             from: 0
-             value: selectedGeneration
-             to: gaviz.getNbGenerations(selectedPopulation) - 1
+        Slider {
+            Layout.fillWidth: true
+            Layout.leftMargin: 20
+            live: true
+            stepSize: 1
+            from: 0
+            value: selectedGeneration
+            to: gaviz.getNbGenerations(selectedPopulation) - 1
 
-             onValueChanged: {
-                     selectedGeneration = parseInt(value)
-             }
-         }
+            onValueChanged: {
+                var intValue =parseInt(value);
+                row.selectedGenerationChange(intValue);
+            }
+        }
     }
 
     ToolSeparator{
@@ -101,15 +108,15 @@ RowLayout {
         RowLayout{
 
             Label {
-                 text: "Fit to gen : "
-             }
+                text: "Fit to gen : "
+            }
 
             CheckBox {
-                  id: fitToGenerationCheckBox
-                  onCheckStateChanged: {
-                      updateBounds()
-                  }
-         }
+                id: fitToGenerationCheckBox
+                onCheckStateChanged: {
+                    row.fitGenerationChange(checked);
+                }
+            }
 
         }
     }

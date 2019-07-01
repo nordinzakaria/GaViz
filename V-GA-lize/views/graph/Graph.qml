@@ -20,25 +20,25 @@ Frame {
 
     Layout.fillWidth: true
     Layout.fillHeight: true
-    padding: 0
 
-    property alias toolBar: graphToolBar
-
-    property bool fitToGeneration : graphToolBar.fitToGenerationCheckBox.checked
+    property bool fitToGeneration: false;/*graphToolBar.fitToGenerationCheckBox.checked*/
     property int axisWidth: 1
+
     property int selectedGeneration: 0
+    property int selectedPopulation: 0
 
     property int selectedFitness0: 0
     property int selectedFitness1: 0
+    property int selectedFitness: selectedFitness0
+
     property real maxFitness0:  gaviz.getMaxFitness(selectedPopulation, selectedFitness0)
     property real maxFitness1:  gaviz.getMaxFitness(selectedPopulation, selectedFitness1)
     property real minFitness0:  gaviz.getMinFitness(selectedPopulation, selectedFitness0)
     property real minFitness1:  gaviz.getMinFitness(selectedPopulation, selectedFitness1)
-    property int selectedFitness: selectedFitness0
 
     onSelectedGenerationChanged: {
         console.log('SelectedGeneration CallBack Triggered')
-        //updateBounds()
+        updateBounds()
     }
 
     ColumnLayout {
@@ -113,9 +113,52 @@ Frame {
         GraphToolBar {
             id: graphToolBar
 
+            selectedPopulation: graphView.selectedPopulation
+            selectedGeneration: graphView.selectedGeneration
+
             Layout.leftMargin: 10
             Layout.rightMargin: 10
             Layout.maximumHeight: 0.1 * parent.height
+
+            onFitnessChange: {
+                console.debug("FitnessChange Triggered")
+                graphView.selectedFitness = fitness
+            }
+
+            onSelectedGenerationChange: {
+                console.debug("SelectedGeneration Triggered")
+                graphView.selectedGeneration = generation
+            }
+
+            onChartListIndexChange: {
+                console.debug("ChartList Triggered")
+
+                var charts = [scatterplot, averageplot, stddevplot, minmaxplot0, minmaxplot1, histoplot, histoplot1]
+                for (var i=0; i<charts.length; i++)
+                {
+                    charts[i].visible = false
+                }
+
+                switch(index){
+                case 3:
+                    charts[3].visible = true
+                    charts[4].visible = true
+                    break;
+
+                case 4:
+                    charts[5].visible = true
+                    charts[6].visible = true
+                    break;
+                default:
+                    charts[index].visible = true
+                    break;
+                }
+            }
+
+            onFitGenerationChange: {
+                console.debug("Fit to generation triggered")
+                graphView.fitToGeneration = checked
+            }
 
         }
 
