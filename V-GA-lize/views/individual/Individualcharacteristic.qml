@@ -17,7 +17,7 @@ Item {
 
     property int selectedPopulation: 0
     property int selectedGeneration: 0
-    property int individualIndex: 0
+    property int selectedIndividual: 0
     property int selectedFitness: 0
 
 
@@ -106,7 +106,7 @@ Item {
 
                 ColumnLayout{
                     Label{
-                        text: mFunctions[index] + ' : ' + gaviz.getIndividualProperty(selectedPopulation, selectedGeneration, 0, individualIndex, index, IndividualProperty.Rank) +'/100'
+                        text: mFunctions[index] + ' : ' + gaviz.getIndividualProperty(selectedPopulation, selectedGeneration, 0, selectedIndividual, index, IndividualProperty.Rank) +'/100'
                         color: myTextColor
                     }
 

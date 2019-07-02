@@ -26,36 +26,38 @@ Frame {
 
     Layout.fillWidth: true
     Layout.preferredHeight: 0.5 * parent.height
-    visible: true
 
     property int selectedFitness: 0
-    property int selectedGeneration
-    property int individualIndex: selectedIndividual
+
+    property int selectedPopulation: 0
+    property int selectedGeneration: 0
+    property int selectedIndividual: 0
+
     property double individualFitness: 0
     property int individualRank: 0
 
     property int parent1Index: -1
     property int parent2Index: -1
-    property double parent1Fitness: 0
     property int parent1Rank: 0
-    property double parent2Fitness: 0
     property int parent2Rank: 0
+    property double parent1Fitness: 0
+    property double parent2Fitness: 0
 
-    property alias mycanvas: individualcharacteristic.mycanvas
-    property alias swipeV: swipeView
-    property alias leftB: buttonLeft
-    property alias rightB: buttonRight
+    property var mycanvas: individualcharacteristic.mycanvas
+    property var swipeV: swipeView
+    property var leftB: buttonLeft
+    property var rightB: buttonRight
 
-    function selectIndividual(genIndex, indIndex)
+    signal individualChanged(int population, int generation, int individual);
+
+    onSelectedIndividualChanged :
     {
-        selectedGeneration = genIndex
-        individualIndex = indIndex
-        individualFitness = gaviz.getIndividualProperty(selectedPopulation, selectedGeneration, 0, individualIndex, selectedFitness, IndividualProperty.Fitness)
-        individualRank    = indIndex
+        individualFitness = gaviz.getIndividualProperty(selectedPopulation, selectedGeneration, 0, selectedIndividual, selectedFitness, IndividualProperty.Fitness)
+        individualRank    = selectedIndividual;
 
         if (selectedGeneration > 0) {
-            parent1Index = gaviz.getIndividualProperty(selectedPopulation, selectedGeneration, 0, individualIndex, selectedFitness, IndividualProperty.Parent1)
-            parent2Index = gaviz.getIndividualProperty(selectedPopulation, selectedGeneration, 0, individualIndex, selectedFitness, IndividualProperty.Parent2)
+            parent1Index = gaviz.getIndividualProperty(selectedPopulation, selectedGeneration, 0, selectedIndividual, selectedFitness, IndividualProperty.Parent1)
+            parent2Index = gaviz.getIndividualProperty(selectedPopulation, selectedGeneration, 0, selectedIndividual, selectedFitness, IndividualProperty.Parent2)
 
             parent1Fitness = gaviz.getIndividualProperty(selectedPopulation, selectedGeneration-1, 0, parent1Index, selectedFitness, IndividualProperty.Fitness)
             parent2Fitness = gaviz.getIndividualProperty(selectedPopulation, selectedGeneration-1, 0, parent2Index, selectedFitness, IndividualProperty.Fitness)
@@ -64,10 +66,7 @@ Frame {
             parent2Rank = parent2Index
         }
 
-        mycanvas.animationProgress = 0
-
-        graphView.selectedGeneration = selectedGeneration
-        visible = true
+        mycanvas.animationProgress = 0;
     }
 
     ColumnLayout {
@@ -118,7 +117,7 @@ Frame {
                     font.pixelSize: 24
                 }
                 Label {
-                    text: "Individual " + individualIndex
+                    text: "Individual " + selectedIndividual
                     font.pixelSize: 24
                 }
 
@@ -218,7 +217,11 @@ Frame {
                                                 cursorShape: Qt.PointingHandCursor
 
                                                 onClicked: {
-                                                    individualView.selectIndividual(selectedGeneration-1, parent1Index)
+                                                    var parentPopulation = individualView.selectedPopulation
+                                                    var parentGeneration = individualView.selectedGeneration - 1;
+                                                    var parentIndex = individualView.parent1Index;
+
+                                                    individualView.individualChanged(parentPopulation,parentGeneration,parentIndex)
                                                 }
                                             }
 
@@ -261,7 +264,12 @@ Frame {
                                                 cursorShape: Qt.PointingHandCursor
 
                                                 onClicked: {
-                                                    individualView.selectIndividual(selectedGeneration-1, parent2Index)
+
+                                                    var parentPopulation = individualView.selectedPopulation
+                                                    var parentGeneration = individualView.selectedGeneration - 1;
+                                                    var parentIndex = individualView.parent2Index;
+
+                                                    individualView.individualChanged(parentPopulation,parentGeneration,parentIndex)
                                                 }
                                             }
 
@@ -280,11 +288,11 @@ Frame {
                                         height: swipeframe.height / 4
 
                                         color: populationView.getFillStyle(selectedGeneration, 0,
-                                                                           individualIndex, selectedFitness)
+                                                                           selectedIndividual, selectedFitness)
                                         anchors.horizontalCenter: parent.horizontalCenter
                                         property int numgenes: gaviz.getIndividualProperty(selectedPopulation,
                                                                                            selectedGeneration, 0,
-                                                                                           individualIndex,
+                                                                                           selectedIndividual,
                                                                                            selectedFitness, IndividualProperty.NumGenes)
                                         property real gwidth : (numgenes > 0) ? width * 0.9 / numgenes : 0
 
@@ -299,7 +307,7 @@ Frame {
                                                     height: coloredInd.height * 0.9
                                                     color:altPopulationView.getGeneStyle(
                                                               selectedGeneration, 0,
-                                                              individualIndex, index)
+                                                              selectedIndividual, index)
                                                 }
                                             }
                                         }
@@ -349,7 +357,7 @@ Frame {
                                         // Resets the current path to a new path.
                                         ctx.beginPath();
                                         ctx.lineWidth= lineWidth;
-                                        ctx.strokeStyle = populationView.getFillStyle(selectedGeneration, 0, individualIndex, selectedFitness)
+                                        ctx.strokeStyle = populationView.getFillStyle(selectedGeneration, 0, selectedIndividual, selectedFitness)
                                         // object arc(real x, real y, real radius, real startAngle, real endAngle, bool anticlockwise)
                                         var min=minScore
                                         if(minScore === 0)
@@ -378,7 +386,7 @@ Frame {
                                                 Layout.fillWidth: true
                                             }
                                             Label {
-                                                text: gaviz.getIndividualProperty(selectedPopulation, selectedGeneration, 0, individualIndex, index, IndividualProperty.Fitness)
+                                                text: gaviz.getIndividualProperty(selectedPopulation, selectedGeneration, 0, selectedIndividual, index, IndividualProperty.Fitness)
                                             }
                                         }
                                     }
@@ -390,13 +398,14 @@ Frame {
                             Individualcharacteristic{
                                 id: individualcharacteristic
 
-                                individualIndex: individualView.individualIndex
                                 parent1 : individualView.parent1Index
                                 parent2 : individualView.parent2Index
 
                                 selectedFitness: individualView.selectedFitness
+
+                                selectedIndividual: individualView.selectedIndividual
                                 selectedGeneration: individualView.selectedGeneration
-                                //selectedPopulation: individualView.selectedPopulation
+                                selectedPopulation: individualView.selectedPopulation
 
                                 mNumberFunctions: gaviz.getNbObjectiveFunctions()
                                 mFunctions: gaviz.getObjectiveFunctions()
@@ -466,10 +475,10 @@ Frame {
                         id: rep1
                         model: gaviz.getNbObjectiveFunctions()
                         Label {
-                            //property int ng: gaviz.getIndividualProperty(selectedPopulation, selectedGeneration, 0, individualIndex, index, IndividualProperty.NumGenes)
+                            //property int ng: gaviz.getIndividualProperty(selectedPopulation, selectedGeneration, 0, selectedIndividual, index, IndividualProperty.NumGenes)
                             text: "Fitness " + index +": "+
-                                  gaviz.getIndividualProperty(selectedPopulation, selectedGeneration, 0, individualIndex, index, IndividualProperty.Fitness)
-                                  + '\n' + "Rank: " + individualIndex + '\n' + "Genes : " + coloredInd.numgenes
+                                  gaviz.getIndividualProperty(selectedPopulation, selectedGeneration, 0, selectedIndividual, index, IndividualProperty.Fitness)
+                                  + '\n' + "Rank: " + selectedIndividual + '\n' + "Genes : " + coloredInd.numgenes
                         }
                     }
 
@@ -521,10 +530,10 @@ Frame {
                                             width: swipeframe.width / 4; height: swipeframe.height / 4
 
                                             color: populationView.getFillStyle(selectedGeneration, 0,
-                                                                               individualIndex, selectedFitness)
+                                                                               selectedIndividual, selectedFitness)
                                             property int numgenes: gaviz.getIndividualProperty(selectedPopulation,
                                                                                                selectedGeneration, 0,
-                                                                                               individualIndex,
+                                                                                               selectedIndividual,
                                                                                                selectedFitness, IndividualProperty.NumGenes)
                                             property real gwidth : (numgenes > 0) ? width * 0.9 / numgenes : 0
 
@@ -539,7 +548,7 @@ Frame {
                                                         height: coloredInd.height * 0.9
                                                         color:altPopulationView.getGeneStyle(
                                                                   selectedGeneration, 0,
-                                                                  individualIndex, index)
+                                                                  selectedIndividual, index)
                                                     }
                                                 }
                                             }
@@ -549,8 +558,8 @@ Frame {
                                             model: gaviz.getNbObjectiveFunctions()
                                             Label {
                                                 text: "Fitness " + index +": "+
-                                                      gaviz.getIndividualProperty(selectedPopulation, selectedGeneration, 0, individualIndex, index, IndividualProperty.Fitness)
-                                                      + '\n' + "Rank: " + individualIndex + '\n' + "Genes : " + coloredInd.numgenes
+                                                      gaviz.getIndividualProperty(selectedPopulation, selectedGeneration, 0, selectedIndividual, index, IndividualProperty.Fitness)
+                                                      + '\n' + "Rank: " + selectedIndividual + '\n' + "Genes : " + coloredInd.numgenes
                                             }
                                         }
 
@@ -582,7 +591,7 @@ Frame {
                                             model: coloredInd.numgenes
                                             Label {
                                                 text: "Gene " + index + " : " +
-                                                      gaviz.getGene(selectedGeneration, 0, individualIndex, index)
+                                                      gaviz.getGene(selectedGeneration, 0, selectedIndividual, index)
                                             }
                                         }
                                     }
@@ -632,7 +641,7 @@ Frame {
                                             property var pointsArray : []
                                             property int numgenes: gaviz.getIndividualProperty(selectedPopulation,
                                                                                                selectedGeneration, 0,
-                                                                                               individualIndex,
+                                                                                               selectedIndividual,
                                                                                                selectedFitness, IndividualProperty.NumGenes)
                                             onPaint: {
                                                 pointsArray = []
@@ -643,7 +652,7 @@ Frame {
                                                 var gene, geneX, geneY;
 
                                                 for(var k = 0; k < numgenes; k++){
-                                                    gene = gaviz.getGene(selectedGeneration, 0, individualIndex, k)
+                                                    gene = gaviz.getGene(selectedGeneration, 0, selectedIndividual, k)
                                                     geneX = gene.slice(1).slice(0, gene.length-2).split(",")[0]
                                                     geneY = gene.slice(1).slice(0, gene.length-2).split(",")[1]
 
@@ -691,30 +700,6 @@ Frame {
                                         }
                                     }
                                 }
-
-                                /*
-                                Frame{
-                                    Layout.preferredHeight: 0.7*parent.height
-                                    Layout.preferredWidth: parent.width
-
-                                        GridLayout{
-                                            Layout.fillHeight: true
-                                            Layout.fillWidth: true
-                                            columns: 3
-                                            columnSpacing: 0.12*parent.width
-                                            rowSpacing: 10
-
-                                            Repeater{
-                                                model: coloredInd.numgenes
-                                                Label {
-                                                    text: "Gene " + index + " : " +
-                                                          gaviz.getGene(selectedGeneration, 0, index, index)
-                                                }
-                                            }
-                                        }
-                                    //}
-                                }
-                                */
                             }
                         }
 

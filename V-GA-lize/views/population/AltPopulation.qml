@@ -31,7 +31,7 @@ Frame {
     property int individualWidth: zoomValue
     property int individualRadius: individualWidth
 
-    signal individualChange(int population, int generation, int individual);
+    signal individualChanged(int population, int generation, int individual);
 
     MouseArea {
         anchors.fill: parent
@@ -148,8 +148,7 @@ Frame {
                             onClicked: {
                                 var population = altPopulationView.selectedPopulation;
 
-                                altPopulationView.individualChange(population, generation, individual)
-                                //individualView.selectIndividual(generationIndex, individualIndex)
+                                altPopulationView.individualChanged(population, generation, individual)
                             }
                         }
                     }

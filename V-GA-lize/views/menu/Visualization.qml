@@ -47,6 +47,10 @@ Page {
 
     property int selectedFitness: 0
 
+    onSelectedIndividualChanged: {
+        individualView.visible = true
+    }
+
     // Main ColumnLayout, containing all the elements listed above
     ColumnLayout{
         anchors.fill : parent
@@ -143,10 +147,10 @@ Page {
                     Layout.fillHeight: true
 
                     onIndividualChanged: {
-                        vizPage.selectedGeneration = generation
-                        vizPage.selectedIndividual = individual
+                        vizPage.selectedGeneration = generation;
+                        vizPage.selectedIndividual = individual;
 
-                        individualView.selectIndividual(generation,individual)
+                        //individualView.selectIndividual(generation,individual)
                         individualView.mycanvas.requestPaint()
                         individualView.swipeV.currentIndex = 0
                         individualView.leftB.visible = false
@@ -170,7 +174,7 @@ Page {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
 
-                    onIndividualChange: {
+                    onIndividualChanged: {
                         vizPage.selectedPopulation = population;
                         vizPage.selectedGeneration = generation;
                         vizPage.selectedIndividual = individual;
@@ -179,6 +183,19 @@ Page {
 
                 Individual {
                     id: individualView
+
+
+                    selectedPopulation: vizPage.selectedPopulation;
+                    selectedIndividual: vizPage.selectedIndividual;
+                    selectedGeneration: vizPage.selectedGeneration;
+
+                    onIndividualChanged: {
+                        vizPage.selectedPopulation = population;
+                        vizPage.selectedGeneration = generation;
+                        vizPage.selectedIndividual = individual;
+                    }
+
+
                     visible: false
                 }
 
