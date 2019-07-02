@@ -14,14 +14,24 @@ import gaviz 1.0
 Frame {
     id: altPopulationView
 
-    property int minZoomValue: 30.0
-    property int maxZoomValue: 40.0
+    property int selectedFitness: 0
+
+    property int selectedPopulation: 0
+    property int selectedGeneration: 0
+    property int selectedIndividual: 0
+
+    property double minZoomValue: 30.0
+    property double zoomValue : minZoomValue
+    property double maxZoomValue: 40.0
+
     property int nbGenerations: height / minZoomValue
     property int nbIndividuals: width / minZoomValue
 
     property int individualSpacing: 10
     property int individualWidth: zoomValue
     property int individualRadius: individualWidth
+
+    signal individualChange(int population, int generation, int individual);
 
     MouseArea {
         anchors.fill: parent
@@ -30,7 +40,7 @@ Frame {
         onWheel: {
             if (wheel.modifiers & Qt.ControlModifier) {
                 zoomValue += wheel.angleDelta.y / 120
-               }
+            }
         }
         onPressAndHold: {
             altpopulationDialog.open()
@@ -45,8 +55,6 @@ Frame {
 
         contentHeight: parent.height
         contentWidth: parent.width
-
-
 
         ListView {      // table
             id: poptable
@@ -67,11 +75,13 @@ Frame {
                 orientation: ListView.Horizontal
 
                 model: nbIndividuals
-                property int generationIndex: firstGeneration + index
+
+                property int generationIndex: 0 + index
 
                 delegate: Rectangle {
                     id: individualRect
-                    property int individualIndex: firstIndividual + index
+
+                    property int individualIndex: 0 + index
 
                     width: individualWidth - spacing/2
                     height: width
@@ -109,27 +119,41 @@ Frame {
                         }
 
                         Rectangle {
-                        id: highlightRect
-                        visible: (selectedGeneration == generationIndex && selectedIndividual == individualIndex)
-                        radius: width * (zoomValue - minZoomValue) / (maxZoomValue - minZoomValue)
-                        anchors.centerIn: parent
-                        width: (individualWidth - individualSpacing * (zoomValue - minZoomValue) / (maxZoomValue - minZoomValue))
-                        height: width
-                        color: "black"
+                            id: highlightRect
+                            visible:{
+                                var generation = altPopulationView.selectedGeneration;
+                                var individual = altPopulationView.selectedIndividual;
+
+                                var currentGeneration = generationRow.generationIndex;
+                                var currentIndividual = individualRect.individualIndex;
+
+                                return generation === currentGeneration && individual ===currentIndividual;
+                            }
+                            radius: width * (zoomValue - minZoomValue) / (maxZoomValue - minZoomValue)
+                            anchors.centerIn: parent
+                            width: (individualWidth - individualSpacing * (zoomValue - minZoomValue) / (maxZoomValue - minZoomValue))
+                            height: width
+                            color: "black"
                         }
 
                         MouseArea {
                             anchors.fill: parent
                             acceptedButtons: Qt.LeftButton | Qt.RightButton
                             cursorShape: Qt.PointingHandCursor
+
+                            property int generation : generationRow.generationIndex;
+                            property int individual: individualRect.individualIndex;
+
+
                             onClicked: {
-                                individualView.selectIndividual(generationIndex, individualIndex)
+                                var population = altPopulationView.selectedPopulation;
+
+                                altPopulationView.individualChange(population, generation, individual)
+                                //individualView.selectIndividual(generationIndex, individualIndex)
                             }
                         }
                     }
                 }
-
-
             }
         }
     }

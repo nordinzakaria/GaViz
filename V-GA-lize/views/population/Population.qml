@@ -46,9 +46,6 @@ Frame {
         contentWidth: gaviz.getMaxNbIndPerGeneration() * zoomValue
         contentHeight: gaviz.getNbGenerations(selectedPopulation) * zoomValue
 
-        property double contentX: 0
-        property double contentY: 0
-
         clip: true
 
         Image {

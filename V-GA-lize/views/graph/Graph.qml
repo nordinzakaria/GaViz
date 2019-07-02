@@ -123,11 +123,11 @@ Frame {
                 graphView.selectedFitness = fitness
             }
 
-            onSelectedGenerationChange: {
+            onGenerationChange: {
                 graphView.selectedGeneration = generation
             }
 
-            onChartListIndexChange: {
+            onChartChange: {
                 var charts = [scatterplot, averageplot, stddevplot, minmaxplot0, minmaxplot1, histoplot, histoplot1]
                 for (var i=0; i<charts.length; i++)
                 {

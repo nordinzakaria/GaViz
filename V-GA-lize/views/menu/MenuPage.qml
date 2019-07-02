@@ -13,7 +13,7 @@ Page {
 
     signal fileLoaded();
 
-    state: stateGroup.state = "idle";   //start in the idle state
+    state: stateGroup.state = "idle";   // idle is the 'default' state
 
     background : Image {
         source: "../../images/BlenderBackground3.png"
@@ -69,6 +69,7 @@ Page {
 
         ProgressBar {
             id: prg
+
             Layout.alignment: Qt.AlignHCenter | Qt.AlignBottom
             Layout.bottomMargin: 0.05 * parent.height
             Layout.preferredWidth: 0.8 * parent.width
@@ -78,6 +79,7 @@ Page {
 
             Label {
                 id: progressPercentage
+
                 anchors.bottom: parent.top
                 anchors.bottomMargin: parent.height
                 anchors.horizontalCenter: parent.horizontalCenter
@@ -91,8 +93,6 @@ Page {
 
             Connections {
                 target: gaviz
-
-
                 onProgressChanged: prg.value = gaviz.progress;
             }
         }
@@ -107,15 +107,11 @@ Page {
         modality: Qt.NonModal
 
         onAccepted: {
-            console.debug("Accepted");
-
             menuPage.state = stateGroup.state = "parsing";
             gaviz.readGAFile(fileDialog.fileUrl);
         }
 
         onRejected: {
-            console.degub("Canceled");
-
             menuPage.state = stateGroup.state = "idle";
         }
 
@@ -142,7 +138,7 @@ Page {
 
                 /**
                   * When the file is parsed successfully by gaviz we emit fileLoaded()
-                  *
+                  * to notify external Component.
                   */
                 fileLoaded();
 
@@ -151,10 +147,18 @@ Page {
             {
                 console.log("Failed to load file")
             }
+
+            // when the laoding is finished we go back to the ideal state
+            // no matter if it is a failure or a success
             menuPage.state = stateGroup.state = "idle";
         }
     }
 
+    /**
+      * The component have two states :
+      *     * idle -> nothing is appening, default state.
+      *     * parsing -> a file is been parsed by gaviz.
+      */
     StateGroup {
         id : stateGroup
 

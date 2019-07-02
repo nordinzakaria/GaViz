@@ -156,10 +156,25 @@ Page {
 
                 AltPopulation {
                     id: altPopulationView
-                    visible: zoomValue > zoomlimit
+
+                    visible: vizPage.zoomValue > vizPage.zoomlimit;
+
+                    selectedFitness: vizPage.selectedFitness
+
+                    zoomValue: vizPage.zoomValue;
+
+                    selectedPopulation: vizPage.selectedPopulation;
+                    selectedIndividual: vizPage.selectedIndividual;
+                    selectedGeneration: vizPage.selectedGeneration;
 
                     Layout.fillWidth: true
                     Layout.fillHeight: true
+
+                    onIndividualChange: {
+                        vizPage.selectedPopulation = population;
+                        vizPage.selectedGeneration = generation;
+                        vizPage.selectedIndividual = individual;
+                    }
                 }
 
                 Individual {

@@ -18,9 +18,9 @@ RowLayout {
       *
       */
     signal fitnessChange(int fitness);                  // Emited when selecting a fitness.
-    signal selectedGenerationChange(int generation);    // Emited when selecting another generation.
+    signal generationChange(int generation);    // Emited when selecting another generation.
     signal fitGenerationChange(bool checked);           // Emited when the checkbox is checked/unchecked.
-    signal chartListIndexChange(int index);             // Emited when selecting a new chart.
+    signal chartChange(int index);             // Emited when selecting a new chart.
 
 
     // The comboBox for selecting fitness
@@ -61,7 +61,7 @@ RowLayout {
             currentIndex: 0
 
             onCurrentIndexChanged: {
-                row.chartListIndexChange(currentIndex);
+                row.chartChange(currentIndex);
             }
         }
     }
@@ -92,7 +92,7 @@ RowLayout {
 
             onValueChanged: {
                 var intValue = parseInt(value);
-                row.selectedGenerationChange(intValue);
+                row.generationChange(intValue);
             }
         }
     }
