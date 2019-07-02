@@ -4,6 +4,7 @@ import QtQuick.Layouts 1.3
 import QtQuick.Shapes 1.0
 import QtQuick.Dialogs 1.0
 import "../individual"
+import "../../utils.js" as Utils
 import gaviz 1.0
 
 /* The AltPopulation Frame replaces the Population Frame when you zoom in enough
@@ -30,6 +31,8 @@ Frame {
     property int individualSpacing: 10
     property int individualWidth: zoomValue
     property int individualRadius: individualWidth
+
+    property double minScore: 0
 
     signal individualChanged(int population, int generation, int individual);
 
@@ -93,7 +96,18 @@ Frame {
                         anchors.centerIn: parent
                         width: individualWidth - individualSpacing * (zoomValue - minZoomValue) / (maxZoomValue - minZoomValue)
                         height: width
-                        color: populationView.getFillStyle(generationIndex, 0, individualIndex, selectedFitness)
+                        color: {
+                            var minScore = altPopulationView.minScore;
+
+                            var generation = generationRow.generationIndex;
+                            var cluster = 0;
+                            var individual = individualRect.individualIndex;
+                            var score = gaviz.getIndividualProperty(selectedPopulation, generation, cluster, individual, selectedFitness, IndividualProperty.Fitness)
+
+                            var maxScore = minScore+5
+
+                            return Utils.getFillStyle(minScore,score,maxScore);
+                        }
 
                         property int currgen: generationRow.generationIndex
                         property int currind: individualRect.individualIndex
@@ -112,8 +126,14 @@ Frame {
                                 Rectangle {
                                     width: coloredIndividualRect.gwidth
                                     height: coloredIndividualRect.height * 0.9
-                                    color: getGeneStyle(coloredIndividualRect.currgen, 0,
-                                                        coloredIndividualRect.currind, index)
+                                    color: {
+                                        var generation = generationRow.generationIndex;
+                                        var cluster = 0;
+                                        var individual = individualRect.individualIndex;
+
+
+                                        return Utils.getGeneStyle(generation, cluster,individual, index)
+                                    }
                                 }
                             }
                         }
@@ -156,18 +176,4 @@ Frame {
             }
         }
     }
-
-    function getGeneStyle(gen, clus, ind, gene)
-    {
-        var val = gaviz.getGene(gen, clus, ind, gene)
-        var maxval = gaviz.getGeneMax()
-        var minval = gaviz.getGeneMin()
-
-        var col = populationView.rgb(minval, maxval, val)
-
-        //console.log("min geneval is "+minval+", max is "+maxval)
-        //console.log("for val " + val + " from index "+gene+", rgb is "+col)
-        return col
-    }
-
 }

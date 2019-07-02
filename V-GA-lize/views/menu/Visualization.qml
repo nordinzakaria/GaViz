@@ -167,6 +167,8 @@ Page {
 
                     zoomValue: vizPage.zoomValue;
 
+                    minScore : vizPage.minScore
+
                     selectedPopulation: vizPage.selectedPopulation;
                     selectedIndividual: vizPage.selectedIndividual;
                     selectedGeneration: vizPage.selectedGeneration;

@@ -15,5 +15,6 @@
         <file>views/tools/ToolSeparator.qml</file>
         <file>views/tools/GraphToolBar.qml</file>
         <file>views/individual/Individualcharacteristic.qml</file>
+        <file>utils.js</file>
     </qresource>
 </RCC>

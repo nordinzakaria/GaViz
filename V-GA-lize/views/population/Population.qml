@@ -149,25 +149,4 @@ Frame {
         repaintTimer.running = true
         highlightCanvas.requestPaint()
     }
-
-    function getFillStyle(g, c, i, f)
-    {
-        var score = gaviz.getIndividualProperty(selectedPopulation, g, c, i, f, IndividualProperty.Fitness)
-        if (score >= minScore)
-        {
-            return rgb(minScore, minScore+5, score)
-        }
-
-        return Qt.rgba(0.0, 0.0, 0.0, 0.0)
-    }
-
-    function rgb(minimum, maximum, value)
-    {
-        var ratio = 2 * (value-minimum) / (maximum - minimum)
-        var b = Math.max(0, 255*(1 - ratio))
-        var r = Math.max(0, 255*(ratio - 1))
-        var g = 255 - b - r
-
-        return Qt.rgba(r/255.0, g/255.0, b/255.0, 1)
-    }
 }

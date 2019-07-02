@@ -698,8 +698,6 @@ Frame {
               is checked or not
         */
     function updateBounds ()    {
-        //console.log('minFitness0 was '+minFitness0+', maxFitness0 was '+maxFitness0)
-        //console.log('minFitness1 was '+minFitness1+', maxFitness1 was '+maxFitness1)
 
         if(fitToGeneration){
             minFitness0 = gaviz.getMinFitness(selectedPopulation, selectedGeneration, selectedFitness0)
@@ -715,9 +713,6 @@ Frame {
             maxFitness0 = gaviz.getMaxFitness(selectedPopulation, selectedFitness0)
             maxFitness1 = gaviz.getMaxFitness(selectedPopulation, selectedFitness1)
         }
-
-        //console.log('minFitness0 = '+minFitness0+', maxFitness0='+maxFitness0 +" for gen "+selectedGeneration+', for fitness '+selectedFitness0)
-        //console.log('minFitness1 = '+minFitness1+', maxFitness1='+maxFitness1)
 
         scatter1.clear()
         scatterplot.populate()

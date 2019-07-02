@@ -49,4 +49,5 @@ HEADERS += \
     models/stats.h
 
 DISTFILES += \
-    fonts/Mont-HeavyDEMO.otf
+    fonts/Mont-HeavyDEMO.otf \
+    utils.js

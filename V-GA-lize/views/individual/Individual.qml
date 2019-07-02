@@ -8,6 +8,7 @@ import QtQuick.Window 2.2
 
 import gaviz 1.0
 import "../menu"
+import "../../utils.js" as Utils
 
 /* The Individual Frame appears when you click on a square in the Population Frames
     It contains :
@@ -47,6 +48,8 @@ Frame {
     property var swipeV: swipeView
     property var leftB: buttonLeft
     property var rightB: buttonRight
+
+    property double minScore: 0
 
     signal individualChanged(int population, int generation, int individual);
 
@@ -185,8 +188,20 @@ Frame {
                                             visible: parent1Index > (-1)
 
                                             width: swipeframe.width / 4; height: swipeframe.height / 4
-                                            color: populationView.getFillStyle(selectedGeneration-1, 0,
-                                                                               parent1Index, selectedFitness)
+                                            color: {
+                                                var minScore = individualView.minScore;
+
+                                                var population = individualView.selectedPopulation;
+                                                var generation = individualView.selectedGeneration-1;
+                                                var cluster = 0;
+                                                var individual = parent1Index;
+                                                var fitness = individualView.selectedFitness;
+                                                var score = gaviz.getIndividualProperty(population, generation, cluster, individual, fitness, IndividualProperty.Fitness)
+
+                                                var maxScore = minScore+5
+
+                                                return Utils.getFillStyle(minScore,score,maxScore);
+                                            }
 
                                             property int numgenes: (parent1Index != -1) ? gaviz.getIndividualProperty(selectedPopulation,
                                                                                                                       selectedGeneration-1, 0,
@@ -203,9 +218,14 @@ Frame {
                                                     Rectangle {
                                                         width: coloredParent1.gwidth
                                                         height: coloredParent1.height * 0.9
-                                                        color:altPopulationView.getGeneStyle(
-                                                                  selectedGeneration-1, 0,
-                                                                  parent1Index, index)
+                                                        color:{
+                                                            var generation = individualView.selectedGeneration-1;
+                                                            var cluster = 0;
+                                                            var individual = individualView.parent1Index;
+
+
+                                                            return Utils.getGeneStyle(generation, cluster,individual, index)
+                                                        }
                                                     }
                                                 }
                                             }
@@ -232,8 +252,20 @@ Frame {
                                             visible: parent2Index > (-1)
 
                                             width: swipeframe.width / 4; height: swipeframe.height / 4
-                                            color: populationView.getFillStyle(selectedGeneration-1, 0,
-                                                                               parent2Index, selectedFitness)
+                                            color:{
+                                                var minScore = individualView.minScore;
+
+                                                var population = individualView.selectedPopulation;
+                                                var generation = individualView.selectedGeneration-1;
+                                                var cluster = 0;
+                                                var individual = parent2Index;
+                                                var fitness = individualView.selectedFitness;
+                                                var score = gaviz.getIndividualProperty(population, generation, cluster, individual, fitness, IndividualProperty.Fitness)
+
+                                                var maxScore = minScore+5
+
+                                                return Utils.getFillStyle(minScore,score,maxScore);
+                                            }
 
                                             property int numgenes: (parent2Index != -1) ? gaviz.getIndividualProperty(selectedPopulation,
                                                                                                                       selectedGeneration-1, 0,
@@ -250,9 +282,14 @@ Frame {
                                                     Rectangle {
                                                         width: coloredParent2.gwidth
                                                         height: coloredParent2.height * 0.9
-                                                        color:altPopulationView.getGeneStyle(
-                                                                  selectedGeneration-1, 0,
-                                                                  parent2Index, index)
+                                                        color:{
+                                                            var generation = individualView.selectedGeneration-1;
+                                                            var cluster = 0;
+                                                            var individual = individualView.parent2Index;
+
+
+                                                            return Utils.getGeneStyle(generation, cluster,individual, index)
+                                                        }
                                                     }
                                                 }
                                             }
@@ -287,8 +324,20 @@ Frame {
                                         width: swipeframe.width / 4;
                                         height: swipeframe.height / 4
 
-                                        color: populationView.getFillStyle(selectedGeneration, 0,
-                                                                           selectedIndividual, selectedFitness)
+                                        color: {
+                                            var minScore = individualView.minScore;
+
+                                            var population = individualView.selectedPopulation;
+                                            var generation = individualView.selectedGeneration;
+                                            var cluster = 0;
+                                            var individual = individualView.selectedIndividual;
+                                            var fitness = individualView.selectedFitness;
+                                            var score = gaviz.getIndividualProperty(population, generation, cluster, individual, fitness, IndividualProperty.Fitness)
+
+                                            var maxScore = minScore+5
+
+                                            return Utils.getFillStyle(minScore,score,maxScore);
+                                        }
                                         anchors.horizontalCenter: parent.horizontalCenter
                                         property int numgenes: gaviz.getIndividualProperty(selectedPopulation,
                                                                                            selectedGeneration, 0,
@@ -305,16 +354,18 @@ Frame {
                                                 Rectangle {
                                                     width: coloredInd.gwidth
                                                     height: coloredInd.height * 0.9
-                                                    color:altPopulationView.getGeneStyle(
-                                                              selectedGeneration, 0,
-                                                              selectedIndividual, index)
+                                                    color:{
+                                                        var generation = individualView.selectedGeneration;
+                                                        var cluster = 0;
+                                                        var individual = individualView.selectedIndividual;
+
+
+                                                        return Utils.getGeneStyle(generation, cluster,individual, index)
+                                                    }
                                                 }
                                             }
                                         }
                                     }
-
-
-
                                 }
                             }
                             /*
@@ -529,8 +580,20 @@ Frame {
                                             id: coloredIndBis
                                             width: swipeframe.width / 4; height: swipeframe.height / 4
 
-                                            color: populationView.getFillStyle(selectedGeneration, 0,
-                                                                               selectedIndividual, selectedFitness)
+                                            color: {
+                                                var minScore = individualView.minScore;
+
+                                                var population = individualView.selectedPopulation;
+                                                var generation = individualView.selectedGeneration;
+                                                var cluster = 0;
+                                                var individual = individualView.selectedIndividual;
+                                                var fitness = individualView.selectedFitness;
+                                                var score = gaviz.getIndividualProperty(population, generation, cluster, individual, fitness, IndividualProperty.Fitness)
+
+                                                var maxScore = minScore+5
+
+                                                return Utils.getFillStyle(minScore,score,maxScore);
+                                            }
                                             property int numgenes: gaviz.getIndividualProperty(selectedPopulation,
                                                                                                selectedGeneration, 0,
                                                                                                selectedIndividual,
@@ -546,9 +609,15 @@ Frame {
                                                     Rectangle {
                                                         width: coloredInd.gwidth
                                                         height: coloredInd.height * 0.9
-                                                        color:altPopulationView.getGeneStyle(
-                                                                  selectedGeneration, 0,
-                                                                  selectedIndividual, index)
+                                                        color:{
+
+                                                            var generation = individualView.selectedGeneration;
+                                                            var cluster = 0;
+                                                            var individual = individualView.selectedIndividual;
+
+
+                                                            return Utils.getGeneStyle(generation, cluster,individual, index)
+                                                        }
                                                     }
                                                 }
                                             }
