@@ -16,5 +16,6 @@
         <file>views/tools/GraphToolBar.qml</file>
         <file>views/individual/Individualcharacteristic.qml</file>
         <file>utils.js</file>
+        <file>views/individual/IndividualRectangle.qml</file>
     </qresource>
 </RCC>
