@@ -17,10 +17,10 @@ RowLayout {
       * Signals to notify exeternals elements.
       *
       */
-    signal fitnessChange(int fitness);                  // Emited when selecting a fitness.
-    signal generationChange(int generation);    // Emited when selecting another generation.
-    signal fitGenerationChange(bool checked);           // Emited when the checkbox is checked/unchecked.
-    signal chartChange(int index);             // Emited when selecting a new chart.
+    signal fitnessChanged(int fitness);                  // Emited when selecting a fitness.
+    signal generationChanged(int generation);    // Emited when selecting another generation.
+    signal fitGenerationChanged(bool checked);           // Emited when the checkbox is checked/unchecked.
+    signal chartChanged(int index);             // Emited when selecting a new chart.
 
 
     // The comboBox for selecting fitness
@@ -28,7 +28,7 @@ RowLayout {
         id: fitnesslist
 
         Label {
-            text: "Function Choice :"
+            text: qsTr("Function Choice :")
         }
 
         ComboBox {
@@ -36,7 +36,7 @@ RowLayout {
             currentIndex: 0
 
             onCurrentIndexChanged: {
-                row.fitnessChange(currentIndex);
+                row.fitnessChanged(currentIndex);
             }
         }
     }
@@ -51,7 +51,7 @@ RowLayout {
         id: chartlist
 
         Label {
-            text: "Graph Type :"
+            text: qsTr("Graph Type :")
         }
 
         ComboBox {
@@ -61,7 +61,7 @@ RowLayout {
             currentIndex: 0
 
             onCurrentIndexChanged: {
-                row.chartChange(currentIndex);
+                row.chartChanged(currentIndex);
             }
         }
     }
@@ -76,7 +76,7 @@ RowLayout {
         id: selectGeneration
 
         Label {
-            text: "Generation Selection :"
+            text: qsTr("Generation Selection :");
         }
 
         Slider {
@@ -92,7 +92,7 @@ RowLayout {
 
             onValueChanged: {
                 var intValue = parseInt(value);
-                row.generationChange(intValue);
+                row.generationChanged(intValue);
             }
         }
     }
@@ -107,13 +107,13 @@ RowLayout {
         id: fitToGeneration
 
         Label {
-            text: "Fit to gen : "
+            text: qsTr("Fit to gen : ");
         }
 
         CheckBox {
             id: fitToGenerationCheckBox
             onCheckStateChanged: {
-                row.fitGenerationChange(checked);
+                row.fitGenerationChanged(checked);
             }
         }
 

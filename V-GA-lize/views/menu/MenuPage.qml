@@ -44,7 +44,7 @@ Page {
             Layout.alignment: Qt.AlignRight
             Layout.rightMargin:  (0.15 * parent.width)
 
-            text: "Load file"
+            text: qsTr("Load file")
 
             onReleased: {
                 fileDialog.open();
@@ -56,7 +56,7 @@ Page {
             Layout.alignment: Qt.AlignRight
             Layout.rightMargin:  (0.15 * parent.width)
 
-            text: "Quit"
+            text: qsTr("Quit")
             onReleased: Qt.quit();
         }
 
@@ -88,99 +88,102 @@ Page {
                 color: "black"
                 font.bold: true
 
-                text: (prg.value * 100).toFixed(1) + "%"
+                text: {
+                    var floatValue = (parseFloat(prg.value) * 100).toFixed(1);
+                    return qsTr("%L1\%").arg(floatValue);
+                }
+
+                Connections {
+                    target: gaviz
+                    onProgressChanged: prg.value = gaviz.progress;
+                }
             }
 
-            Connections {
-                target: gaviz
-                onProgressChanged: prg.value = gaviz.progress;
+        }
+
+        // This FileDialog is open when you press the "Load File" Button
+        FileDialog {
+            id: fileDialog
+            title: qsTr("Please choose a file")
+            folder: shortcuts.home
+            modality: Qt.NonModal
+
+            onAccepted: {
+                menuPage.state = stateGroup.state = "parsing";
+                gaviz.readGAFile(fileDialog.fileUrl);
             }
+
+            onRejected: {
+                menuPage.state = stateGroup.state = "idle";
+            }
+
         }
 
-    }
+        // Connections displaying info about the loaded file in the console
+        Connections {
+            target: gaviz
 
-    // This FileDialog is open when you press the "Load File" Button
-    FileDialog {
-        id: fileDialog
-        title: "Please choose a file"
-        folder: shortcuts.home
-        modality: Qt.NonModal
+            onDoneLoadingFile: {
 
-        onAccepted: {
-            menuPage.state = stateGroup.state = "parsing";
-            gaviz.readGAFile(fileDialog.fileUrl);
-        }
-
-        onRejected: {
-            menuPage.state = stateGroup.state = "idle";
-        }
-
-    }
-
-    // Connections displaying info about the loaded file in the console
-    Connections {
-        target: gaviz
-
-        onDoneLoadingFile: {
-
-            /* If the loading is successful,
+                /* If the loading is successful,
                Displays info about the file and sends the user
                to the Visualization Page
             */
-            if(true)
-            {
-                console.debug("Population info:\n")
-                console.debug("Number of Generations : "+ gaviz.getNbGenerations())
-                console.debug("Max Num Individuals in a Generation : "+ gaviz.getMaxNbIndPerGeneration())
-                console.debug("Number of Objective Functions : " + gaviz.getNbObjectiveFunctions())
-                console.debug("Max fitness: " + gaviz.getMaxFitness(0))
-                console.debug("Min fitness: " + gaviz.getMinFitness(0))
+                if(true)
+                {
+                    console.debug("Population info:\n")
+                    console.debug("Number of Generations : "+ gaviz.getNbGenerations())
+                    console.debug("Max Num Individuals in a Generation : "+ gaviz.getMaxNbIndPerGeneration())
+                    console.debug("Number of Objective Functions : " + gaviz.getNbObjectiveFunctions())
+                    console.debug("Max fitness: " + gaviz.getMaxFitness(0))
+                    console.debug("Min fitness: " + gaviz.getMinFitness(0))
 
-                /**
+                    /**
                   * When the file is parsed successfully by gaviz we emit fileLoaded()
                   * to notify external Component.
                   */
-                fileLoaded();
+                    fileLoaded();
 
-            }
-            else
-            {
-                console.log("Failed to load file")
-            }
+                }
+                else
+                {
+                    console.log("Failed to load file")
+                }
 
-            // when the laoding is finished we go back to the ideal state
-            // no matter if it is a failure or a success
-            menuPage.state = stateGroup.state = "idle";
+                // when the laoding is finished we go back to the ideal state
+                // no matter if it is a failure or a success
+                menuPage.state = stateGroup.state = "idle";
+            }
         }
-    }
 
-    /**
+        /**
       * The component have two states :
       *     * idle -> nothing is appening, default state.
       *     * parsing -> a file is been parsed by gaviz.
       */
-    StateGroup {
-        id : stateGroup
+        StateGroup {
+            id : stateGroup
 
-        states: [
+            states: [
 
-            State {
-                name: "idle"
-                PropertyChanges {
-                    target: prg
+                State {
+                    name: "idle"
+                    PropertyChanges {
+                        target: prg
 
-                    value : 0;
-                    visible : false;
+                        value : 0;
+                        visible : false;
+                    }
+                },
+                State {
+                    name: "parsing"
+                    PropertyChanges {
+                        target: prg
+
+                        visible : true;
+                    }
                 }
-            },
-            State {
-                name: "parsing"
-                PropertyChanges {
-                    target: prg
-
-                    visible : true;
-                }
-            }
-        ]
+            ]
+        }
     }
 }

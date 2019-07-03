@@ -95,11 +95,11 @@ Page {
             Layout.preferredHeight: 0.07 * parent.height
             Layout.topMargin: 0
 
-            onZoomChange: {
+            onZoomChanged: {
                 zoomValue = zoom;
             }
 
-            onMinScoreChange: {
+            onMinScoreChanged: {
                 vizPage.minScore = minScore;
             }
         }
@@ -149,12 +149,6 @@ Page {
                     onIndividualChanged: {
                         vizPage.selectedGeneration = generation;
                         vizPage.selectedIndividual = individual;
-
-                        //individualView.selectIndividual(generation,individual)
-                        individualView.mycanvas.requestPaint()
-                        individualView.swipeV.currentIndex = 0
-                        individualView.leftB.visible = false
-                        individualView.rightB.visible = true
                     }
                 }
 

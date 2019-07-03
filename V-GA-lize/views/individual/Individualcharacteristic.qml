@@ -96,7 +96,7 @@ Item {
             id: variableLayout
 
             Label{
-                text: 'Ranking'
+                text: qsTr("Ranking")
                 font.pixelSize: 22
                 color: myTextColor
             }
@@ -123,8 +123,3 @@ Item {
     }
 
 }
-
-/*##^## Designer {
-    D{i:0;autoSize:true;height:480;width:640}
-}
- ##^##*/

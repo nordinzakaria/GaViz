@@ -81,7 +81,7 @@ Frame {
             Frame {
                 id: viewTitle
                 Label {
-                    text: "INDIVIDUAL VIEW"
+                    text: qsTr("INDIVIDUAL VIEW")
                     font.pixelSize: 24
                 }
             }
@@ -96,7 +96,7 @@ Frame {
 
                 onClicked: individualView.visible = false
                 ToolTip.visible: hovered
-                ToolTip.text: "Close Individual View"
+                ToolTip.text: qsTr("Close Individual View")
             }
         }
 
@@ -116,11 +116,11 @@ Frame {
                 Layout.preferredWidth: viewTitle.width
 
                 Label {
-                    text: "Generation " + selectedGeneration
+                    text: qsTr("Generation %1").arg(selectedGeneration)
                     font.pixelSize: 24
                 }
                 Label {
-                    text: "Individual " + selectedIndividual
+                    text: qsTr("Individual %1").arg(selectedIndividual)
                     font.pixelSize: 24
                 }
 
@@ -176,7 +176,7 @@ Frame {
                                     Text {
                                         color: "white"
                                         anchors.horizontalCenter: parent.horizontalCenter
-                                        text: "Parents"
+                                        text: qsTr("Parents")
                                         visible: parent1Index > -1
                                     }
                                     Row { /* inner row */
@@ -317,7 +317,7 @@ Frame {
                                     Text {
                                         color: "white"
                                         anchors.horizontalCenter: parent.horizontalCenter
-                                        text: "Individual"
+                                        text: qsTr("Individual")
                                     }
                                     Rectangle {
                                         id: coloredInd
@@ -469,7 +469,7 @@ Frame {
 
                             FileDialog {
                                 id: swipeDialog
-                                title: "Please choose a file"
+                                title: qsTr("Please choose a file")
                                 folder: shortcuts.home
                                 modality: Qt.NonModal
                                 selectExisting : false
@@ -518,7 +518,7 @@ Frame {
                     Layout.fillWidth:  true
 
                     Label {
-                        text: "Individual Statistics"
+                        text: qsTr("Individual Statistics")
                         font.pixelSize: 24
                     }
 
@@ -540,9 +540,10 @@ Frame {
                     // add popup window for gene
                     Button{
                         id : inspector
-                        text: "See Genes"
+                        text: qsTr("See Genes")
 
                         onClicked: {
+                            //TODO
                             if(menuBar.params.tsp === Qt.Unchecked)
                                 dialog.open()
                             else
@@ -573,7 +574,7 @@ Frame {
                                         Text {
                                             color: "white"
                                             anchors.horizontalCenter: parent.horizontalCenter
-                                            text: "Individual"
+                                            text: qsTr("Individual")
                                         }
 
                                         Rectangle {
@@ -695,7 +696,7 @@ Frame {
                                         Text {
                                             color: "white"
                                             anchors.horizontalCenter: parent.horizontalCenter
-                                            text: "Proposed Route :"
+                                            text: qsTr("Proposed Route :")
                                         }
 
                                         Canvas{

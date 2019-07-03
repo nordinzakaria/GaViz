@@ -59,13 +59,13 @@ Frame {
                 Layout.topMargin: 5
                 id: viewTitle
                 Label {
-                    text: "GRAPH VIEW"
+                    text: qsTr("GRAPH VIEW")
                     font.pixelSize: 24
                 }
             }
 
             Label {
-                text: "Generation "
+                text: qsTr("Generation")
                 font.pixelSize: 24
                 color: "white"
             }
@@ -90,7 +90,7 @@ Frame {
                         // and thus perform the updateBounds() function
                         selectedGeneration = newgen; //Also will naturally change the placeholderText as well
                     }
-                    text = ''
+                    text = ""
 
                 }
             }
@@ -119,15 +119,15 @@ Frame {
             Layout.rightMargin: 10
             Layout.maximumHeight: 0.1 * parent.height
 
-            onFitnessChange: {
+            onFitnessChanged: {
                 graphView.selectedFitness = fitness
             }
 
-            onGenerationChange: {
+            onGenerationChanged: {
                 graphView.selectedGeneration = generation
             }
 
-            onChartChange: {
+            onChartChanged: {
                 var charts = [scatterplot, averageplot, stddevplot, minmaxplot0, minmaxplot1, histoplot, histoplot1]
                 for (var i=0; i<charts.length; i++)
                 {
@@ -150,7 +150,7 @@ Frame {
                 }
             }
 
-            onFitGenerationChange: {
+            onFitGenerationChanged: {
                 graphView.fitToGeneration = checked
             }
 

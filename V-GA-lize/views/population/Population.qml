@@ -118,7 +118,7 @@ Frame {
 
         FileDialog {
             id: populationDialog
-            title: "Please choose a file"
+            title: qsTr("Please choose a file")
             folder: shortcuts.home
             modality: Qt.NonModal
             selectExisting : false
@@ -141,7 +141,7 @@ Frame {
         interval: 1000/imagePerSeconds   // 60 image per seconds
         running: true
         repeat: false
-        onTriggered: canvas.source = "image://provider/"+minScore;
+        onTriggered: canvas.source = "image://provider/"+minScore
     }
 
     function repaintView()

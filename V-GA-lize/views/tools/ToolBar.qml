@@ -23,10 +23,10 @@ RowLayout {
     property alias zoomSlider: zoomSlider
 
 
-    signal minScoreChange(int minScore);
-    signal objectiveFunctionsChange(int index);
-    signal populationChange(int population);
-    signal zoomChange(double zoom);
+    signal minScoreChanged(int minScore);
+    signal objectiveFunctionsChanged(int index);
+    signal populationChanged(int population);
+    signal zoomChanged(double zoom);
 
     /* A RangeSlider allowing to select the Minimum and Maximum
          Score Limits in the Population
@@ -38,7 +38,7 @@ RowLayout {
         property int max: rangeSlider.second.value
 
         Label {
-            text: "Min and Max Score Limits"
+            text: qsTr("Min and Max Score Limits");
         }
 
         RangeSlider{
@@ -52,7 +52,7 @@ RowLayout {
 
             onHoveredChanged: {
                 ToolTip.visible = hovered
-                ToolTip.text = "From : " + first.value + " to :" + second.value
+                ToolTip.text = qsTr("From : %L1 to %L2").arg(first.value).arg(second.value);
             }
         }
     }
@@ -71,7 +71,7 @@ RowLayout {
         id: minScore
 
         Label {
-            text: "Wanted Quality"
+            text: qsTr("Wanted Quality")
         }
 
 
@@ -83,11 +83,11 @@ RowLayout {
 
             onValueChanged: {
                 var intValue = parseFloat(value);
-                toolBar.minScoreChange(intValue);   // notify that the minSocre has been modified
+                toolBar.minScoreChanged(intValue);   // notify that the minSocre has been modified
             }
             onHoveredChanged: {
                 ToolTip.visible = hovered
-                ToolTip.text = "Value : " + value
+                ToolTip.text = qsTr("Value : %1").arg(value);
             }
         }
     }
@@ -104,7 +104,7 @@ RowLayout {
 
         width: 500
         Label {
-            text: "Performance type"
+            text: qsTr("Performance type")
         }
 
         ComboBox {
@@ -113,7 +113,7 @@ RowLayout {
             model: gaviz.getObjectiveFunctions()
             width: parent.width
             onCurrentIndexChanged: {
-                toolBar.objectiveFunctionsChange(currentIndex); // to notify that an objectiv function has been selected
+                toolBar.objectiveFunctionsChanged(currentIndex); // to notify that an objectiv function has been selected
             }
         }
 
@@ -129,7 +129,7 @@ RowLayout {
     ColumnLayout {
         width: 500
         Label {
-            text: "Population"
+            text: qsTr("Population")
         }
 
         ComboBox {
@@ -138,7 +138,7 @@ RowLayout {
             model: gaviz.getNbPopulations()
             width: parent.width
             onCurrentIndexChanged: {
-                toolBar.populationChange(currentIndex); // Notify that a new population has been selected.
+                toolBar.populationChanged(currentIndex); // Notify that a new population has been selected.
             }
         }
 
@@ -153,7 +153,7 @@ RowLayout {
     // A Slider allowing to select and view the Zoom Value more precisely
     ColumnLayout{
         Label {
-            text: "Zoom Value"
+            text: qsTr("Zoom Value")
         }
 
 
@@ -165,11 +165,11 @@ RowLayout {
 
             onValueChanged:  {
                 var doubleValue = parseFloat(value);
-                toolBar.zoomChange(doubleValue);        // Notify that the zoom has been modified
+                toolBar.zoomChanged(doubleValue);        // Notify that the zoom has been modified
             }
             onHoveredChanged: {
                 ToolTip.visible = hovered
-                ToolTip.text = "Value : " + value
+                ToolTip.text = qsTr("Value : %L1").arg(value);
             }
         }
     }

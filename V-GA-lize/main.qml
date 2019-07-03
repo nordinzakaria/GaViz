@@ -31,7 +31,7 @@ ApplicationWindow {
     id: window
 
     visible: true
-    visibility: qsTr("Maximized")
+    visibility: "Maximized"
     title: qsTr("V-GA-Lize")
 
     minimumWidth: 800

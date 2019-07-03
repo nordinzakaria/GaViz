@@ -173,7 +173,7 @@ RowLayout{
         }
 
         ToolTip.visible: hovered
-        ToolTip.text: "Visualization Parameters"
+        ToolTip.text: qsTr("Visualization Parameters")
     }
 
     // An empty Item in order to separate the Buttons on the left and those on the right
@@ -192,7 +192,7 @@ RowLayout{
         onClicked: pages.pop()
 
         ToolTip.visible: hovered
-        ToolTip.text: "New Visualization"
+        ToolTip.text: qsTr("New Visualization")
     }
 
     /* A MenuButton with a "X" icon
@@ -204,6 +204,6 @@ RowLayout{
 
         onClicked: Qt.quit()
         ToolTip.visible: hovered
-        ToolTip.text: "Exit Programm"
+        ToolTip.text: qsTr("Exit Programm")
     }
 }
