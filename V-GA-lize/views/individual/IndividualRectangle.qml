@@ -1,5 +1,7 @@
 import QtQuick 2.0
-import QtQuick.Layouts 1.13
+import QtQuick.Layouts 1.12
+import gaviz 1.0
+import "../../utils.js" as Utils
 
 Item {
     id: individualRectangle
@@ -10,7 +12,9 @@ Item {
     property int individual: 0
 
     property double minScore: 0
-    property int numGenes: 0
+    property int numGenes: gaviz.getIndividualProperty(population, generation, 0, individual, 0, IndividualProperty.NumGenes)
+
+    property alias mouseArea : mouseArea
 
     Rectangle {
         id: rectangle
@@ -40,10 +44,11 @@ Item {
             implicitWidth: rectangle.width * 0.9
             implicitHeight: rectangle.height * 0.9
 
-            RowLayout {
+            Row {
                 id: genesLayout
 
-                anchors.fill : parent
+                anchors.fill: parent
+                spacing: 0
 
                 Repeater {
                     id: genes
@@ -51,6 +56,9 @@ Item {
                     model: individualRectangle.numGenes
 
                     delegate: Rectangle {
+
+                        implicitHeight: genesLayout.height
+                        implicitWidth: genesLayout.width/genes.model
 
                         color: {
 
@@ -61,10 +69,15 @@ Item {
 
                             return Utils.getGeneStyle(generation, cluster,individual, index);
                         }
-
                     }
                 }
             }
         }
+
+    }
+
+    MouseArea {
+        id: mouseArea
+        anchors.fill: parent
     }
 }

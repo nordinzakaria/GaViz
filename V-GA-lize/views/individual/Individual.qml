@@ -184,70 +184,6 @@ Frame {
                                         spacing: 10
 
                                         Rectangle {
-                                            id: coloredParent1
-                                            visible: parent1Index > (-1)
-
-                                            width: swipeframe.width / 4; height: swipeframe.height / 4
-                                            color: {
-                                                var minScore = individualView.minScore;
-
-                                                var population = individualView.selectedPopulation;
-                                                var generation = individualView.selectedGeneration-1;
-                                                var cluster = 0;
-                                                var individual = parent1Index;
-                                                var fitness = individualView.selectedFitness;
-                                                var score = gaviz.getIndividualProperty(population, generation, cluster, individual, fitness, IndividualProperty.Fitness)
-
-                                                var maxScore = minScore+5
-
-                                                return Utils.getFillStyle(minScore,score,maxScore);
-                                            }
-
-                                            property int numgenes: (parent1Index != -1) ? gaviz.getIndividualProperty(selectedPopulation,
-                                                                                                                      selectedGeneration-1, 0,
-                                                                                                                      parent1Index,
-                                                                                                                      selectedFitness, IndividualProperty.NumGenes) : 0
-                                            property real gwidth : (numgenes > 0) ? width * 0.9 / numgenes : 0
-
-                                            Row {
-                                                anchors.horizontalCenter: parent.horizontalCenter
-                                                anchors.verticalCenter: parent.verticalCenter
-                                                Repeater {
-                                                    id: genesrect1
-                                                    model: coloredParent1.numgenes
-                                                    Rectangle {
-                                                        width: coloredParent1.gwidth
-                                                        height: coloredParent1.height * 0.9
-                                                        color:{
-                                                            var generation = individualView.selectedGeneration-1;
-                                                            var cluster = 0;
-                                                            var individual = individualView.parent1Index;
-
-
-                                                            return Utils.getGeneStyle(generation, cluster,individual, index)
-                                                        }
-                                                    }
-                                                }
-                                            }
-
-                                            MouseArea {
-                                                visible: parent1Index > (-1)
-                                                anchors.fill: coloredParent1
-                                                acceptedButtons: Qt.LeftButton
-                                                cursorShape: Qt.PointingHandCursor
-
-                                                onClicked: {
-                                                    var parentPopulation = individualView.selectedPopulation
-                                                    var parentGeneration = individualView.selectedGeneration - 1;
-                                                    var parentIndex = individualView.parent1Index;
-
-                                                    individualView.individualChanged(parentPopulation,parentGeneration,parentIndex)
-                                                }
-                                            }
-
-                                        }
-
-                                        Rectangle {
                                             id: coloredParent2
                                             visible: parent2Index > (-1)
 
@@ -312,6 +248,35 @@ Frame {
 
                                         }
 
+                                        IndividualRectangle{
+                                            id: parent1
+
+                                            population : individualView.selectedPopulation
+                                            generation : individualView.selectedGeneration - 1
+                                            cluster : 0
+                                            individual: individualView.parent1Index
+
+                                            minScore: individualView.minScore
+
+
+                                            visible: parent1Index > (-1)
+
+                                            width: swipeframe.width / 4;
+                                            height: swipeframe.height / 4
+
+                                            mouseArea {
+                                                onReleased: {
+                                                    var population = parent1.population
+                                                    var generation = parent1.generation
+                                                    var individual = parent1.individual
+
+                                                    individualView.individualChanged(population, generation, individual)
+                                                }
+                                                cursorShape: Qt.PointingHandCursor
+                                            }
+
+                                        }
+
                                     }
 
                                     Text {
@@ -368,83 +333,6 @@ Frame {
                                     }
                                 }
                             }
-                            /*
-                            Item {
-                                id: scoresPage
-
-                                Label {
-                                    text: "Scores view"
-                                }
-
-                                Canvas {
-                                    id: mycanvas
-                                    anchors.centerIn: parent
-                                    anchors.leftMargin: 0.5 * parent.width
-                                    width: parent.width
-                                    height: parent.height
-
-                                    // animation based on the value of this
-                                    property real animationProgress: 0
-
-                                    states: State {
-                                        when: (buttonRight.visible === false || buttonLeft.visible === true)
-                                        PropertyChanges { animationProgress: 1; target: mycanvas }
-                                    }
-                                    transitions: Transition {
-                                        NumberAnimation {
-                                            property: "animationProgress"
-                                            easing.type: Easing.OutExpo
-                                            duration: 4000
-                                        }
-                                    }
-
-                                    onAnimationProgressChanged: requestPaint()
-
-                                    onPaint: {
-                                        var radius = 0.4*parent.height;
-                                        var lineWidth = 0.1*radius;
-                                        var ctx = getContext("2d");
-                                        ctx.reset();
-                                        // Resets the current path to a new path.
-                                        ctx.beginPath();
-                                        ctx.lineWidth= lineWidth;
-                                        ctx.strokeStyle = populationView.getFillStyle(selectedGeneration, 0, selectedIndividual, selectedFitness)
-                                        // object arc(real x, real y, real radius, real startAngle, real endAngle, bool anticlockwise)
-                                        var min=minScore
-                                        if(minScore === 0)
-                                            ctx.arc(width/2, height/2, radius, 1.5*Math.PI, 1.5*Math.PI-2*Math.PI*animationProgress*((individualFitness)-0.2), true);
-                                        else
-                                            ctx.arc(width/2, height/2, radius, 1.5*Math.PI, 1.5*Math.PI-2*Math.PI*animationProgress*((individualFitness/minScore)-0.2), true);
-                                        // Strokes the subpaths with the current stroke style.
-                                        ctx.stroke();
-                                    }
-                                }
-
-                                ColumnLayout {
-                                    anchors.verticalCenter: parent.verticalCenter
-                                    anchors.right: parent.horizontalCenter
-                                    anchors.rightMargin: mycanvas.width * 0.01
-
-                                    Repeater
-                                    {
-                                        model: gaviz.getNbObjectiveFunctions()
-
-                                        RowLayout {
-                                            Label {
-                                                text: "Fitness: "+gaviz.getObjectiveFunction(index)
-                                            }
-                                            Item {
-                                                Layout.fillWidth: true
-                                            }
-                                            Label {
-                                                text: gaviz.getIndividualProperty(selectedPopulation, selectedGeneration, 0, selectedIndividual, index, IndividualProperty.Fitness)
-                                            }
-                                        }
-                                    }
-
-                                }
-                            }
-*/
 
                             Individualcharacteristic{
                                 id: individualcharacteristic
