@@ -174,6 +174,16 @@ Page {
                         value : 0;
                         visible : false;
                     }
+                    PropertyChanges {
+                        target: dialogButton
+
+                        enabled : true
+                    }
+                    PropertyChanges {
+                        target: quitButton
+
+                        enabled : true
+                    }
                 },
                 State {
                     name: "parsing"
@@ -181,6 +191,16 @@ Page {
                         target: prg
 
                         visible : true;
+                    }
+                    PropertyChanges {
+                        target: dialogButton
+
+                        enabled : false
+                    }
+                    PropertyChanges {
+                        target: quitButton
+
+                        enabled : false
                     }
                 }
             ]

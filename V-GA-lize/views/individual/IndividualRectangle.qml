@@ -12,9 +12,13 @@ Item {
     property int individual: 0
 
     property double minScore: 0
-    property int numGenes: gaviz.getIndividualProperty(population, generation, 0, individual, 0, IndividualProperty.NumGenes)
 
+    property int numGenes: 0
     property alias mouseArea : mouseArea
+
+    Component.onCompleted: {
+        numGenes = gaviz.getIndividualProperty(population, generation, cluster, individual, 0, IndividualProperty.NumGenes)
+    }
 
     Rectangle {
         id: rectangle

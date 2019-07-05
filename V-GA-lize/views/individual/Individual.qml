@@ -25,6 +25,7 @@ import "../../utils.js" as Utils
 Frame {
     id: individualView
 
+    //TODO make an assumtion of the size of the object
     Layout.fillWidth: true
     Layout.preferredHeight: 0.5 * parent.height
 
@@ -275,7 +276,7 @@ Frame {
                                 }
                             }
 
-                            Individualcharacteristic{
+                            IndividualCharacteristic{
                                 id: individualcharacteristic
 
                                 parent1 : individualView.parent1Index
@@ -387,80 +388,17 @@ Frame {
                             anchors.centerIn: Overlay.overlay
                             width: 800
                             height: 600
-                            modal : false
+                            modal : true
 
-                            standardButtons: Dialog.Ok
+                            standardButtons: Dialog.Quit
 
-                            contentItem: ColumnLayout {
-                                Frame{
-                                    Layout.preferredHeight: 0.3*parent.height
-                                    Layout.preferredWidth: parent.width
+                            contentItem: IndividualGeneInspector {
+                                population: individualView.selectedPopulation
+                                generation: individualView.selectedGeneration
+                                cluster: 0
+                                individual: individualView.selectedIndividual
 
-                                    Column { /* inner column */
-                                        anchors.horizontalCenter: parent.horizontalCenter
-                                        spacing: 10
-
-                                        Text {
-                                            color: "white"
-                                            anchors.horizontalCenter: parent.horizontalCenter
-                                            text: qsTr("Individual")
-                                        }
-
-                                        IndividualRectangle{
-                                            id: coloredIndBis
-
-                                            population : individualView.selectedPopulation
-                                            generation : individualView.selectedGeneration
-                                            cluster : 0
-                                            individual: individualView.selectedIndividual
-
-                                            minScore: individualView.minScore
-
-
-                                            visible: parent1Index > (-1)
-
-                                            width: swipeframe.width / 4;
-                                            height: swipeframe.height / 4
-
-                                            property int numgenes: gaviz.getIndividualProperty(selectedPopulation, selectedGeneration, 0, selectedIndividual, selectedFitness, IndividualProperty.NumGenes)
-
-                                        }
-
-                                        Repeater {
-                                            id: labelRepeater
-                                            model: gaviz.getNbObjectiveFunctions()
-                                            Label {
-                                                text: "Fitness " + index +": "+
-                                                      gaviz.getIndividualProperty(selectedPopulation, selectedGeneration, 0, selectedIndividual, index, IndividualProperty.Fitness)
-                                                      + '\n' + "Rank: " + selectedIndividual + '\n' + "Genes : " + coloredInd.numgenes
-                                            }
-                                        }
-
-                                    }
-                                }
-
-                                Frame{
-                                    implicitWidth: parent.width
-                                    Layout.preferredHeight: 0.7*parent.height
-                                    Layout.preferredWidth: parent.width
-
-                                    GridLayout{
-                                        Layout.fillHeight: true
-                                        Layout.fillWidth: true
-                                        columns: 3
-                                        columnSpacing: 0.12*parent.width
-                                        rowSpacing: 10
-
-                                        Repeater{
-                                            model: coloredInd.numgenes
-                                            Label {
-                                                text: "Gene " + index + " : " +
-                                                      gaviz.getGene(selectedGeneration, 0, selectedIndividual, index)
-                                            }
-                                        }
-                                    }
-                                    //}
-                                }
+                                minScore: individualView.minScore
                             }
                         }
 
