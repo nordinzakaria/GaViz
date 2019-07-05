@@ -183,70 +183,6 @@ Frame {
                                         anchors.horizontalCenter: parent.horizontalCenter
                                         spacing: 10
 
-                                        Rectangle {
-                                            id: coloredParent2
-                                            visible: parent2Index > (-1)
-
-                                            width: swipeframe.width / 4; height: swipeframe.height / 4
-                                            color:{
-                                                var minScore = individualView.minScore;
-
-                                                var population = individualView.selectedPopulation;
-                                                var generation = individualView.selectedGeneration-1;
-                                                var cluster = 0;
-                                                var individual = parent2Index;
-                                                var fitness = individualView.selectedFitness;
-                                                var score = gaviz.getIndividualProperty(population, generation, cluster, individual, fitness, IndividualProperty.Fitness)
-
-                                                var maxScore = minScore+5
-
-                                                return Utils.getFillStyle(minScore,score,maxScore);
-                                            }
-
-                                            property int numgenes: (parent2Index != -1) ? gaviz.getIndividualProperty(selectedPopulation,
-                                                                                                                      selectedGeneration-1, 0,
-                                                                                                                      parent2Index,
-                                                                                                                      selectedFitness, IndividualProperty.NumGenes) : 0
-                                            property real gwidth : (numgenes > 0) ? width * 0.9 / numgenes : 0
-
-                                            Row {
-                                                anchors.horizontalCenter: parent.horizontalCenter
-                                                anchors.verticalCenter: parent.verticalCenter
-                                                Repeater {
-                                                    id: genesrect2
-                                                    model: coloredParent2.numgenes
-                                                    Rectangle {
-                                                        width: coloredParent2.gwidth
-                                                        height: coloredParent2.height * 0.9
-                                                        color:{
-                                                            var generation = individualView.selectedGeneration-1;
-                                                            var cluster = 0;
-                                                            var individual = individualView.parent2Index;
-
-
-                                                            return Utils.getGeneStyle(generation, cluster,individual, index)
-                                                        }
-                                                    }
-                                                }
-                                            }
-
-                                            MouseArea {
-                                                visible: parent2Index > (-1)
-                                                anchors.fill: coloredParent2
-                                                acceptedButtons: Qt.LeftButton
-                                                cursorShape: Qt.PointingHandCursor
-
-                                                onClicked: {
-
-                                                    var parentPopulation = individualView.selectedPopulation
-                                                    var parentGeneration = individualView.selectedGeneration - 1;
-                                                    var parentIndex = individualView.parent2Index;
-
-                                                    individualView.individualChanged(parentPopulation,parentGeneration,parentIndex)
-                                                }
-                                            }
-
-                                        }
 
                                         IndividualRectangle{
                                             id: parent1
@@ -277,6 +213,35 @@ Frame {
 
                                         }
 
+                                        IndividualRectangle{
+                                            id: parent2
+
+                                            population : individualView.selectedPopulation
+                                            generation : individualView.selectedGeneration - 1
+                                            cluster : 0
+                                            individual: individualView.parent2Index
+
+                                            minScore: individualView.minScore
+
+
+                                            visible: parent2Index > (-1)
+
+                                            width: swipeframe.width / 4;
+                                            height: swipeframe.height / 4
+
+                                            mouseArea {
+                                                onReleased: {
+                                                    var population = parent2.population
+                                                    var generation = parent2.generation
+                                                    var individual = parent2.individual
+
+                                                    individualView.individualChanged(population, generation, individual)
+                                                }
+                                                cursorShape: Qt.PointingHandCursor
+                                            }
+
+                                        }
+
                                     }
 
                                     Text {
@@ -284,53 +249,29 @@ Frame {
                                         anchors.horizontalCenter: parent.horizontalCenter
                                         text: qsTr("Individual")
                                     }
-                                    Rectangle {
+
+
+                                    IndividualRectangle{
                                         id: coloredInd
+
+                                        population : individualView.selectedPopulation
+                                        generation : individualView.selectedGeneration
+                                        cluster : 0
+                                        individual: individualView.selectedIndividual
+
+                                        minScore: individualView.minScore
+
+
+                                        visible: parent1Index > (-1)
+
                                         width: swipeframe.width / 4;
                                         height: swipeframe.height / 4
-
-                                        color: {
-                                            var minScore = individualView.minScore;
-
-                                            var population = individualView.selectedPopulation;
-                                            var generation = individualView.selectedGeneration;
-                                            var cluster = 0;
-                                            var individual = individualView.selectedIndividual;
-                                            var fitness = individualView.selectedFitness;
-                                            var score = gaviz.getIndividualProperty(population, generation, cluster, individual, fitness, IndividualProperty.Fitness)
-
-                                            var maxScore = minScore+5
-
-                                            return Utils.getFillStyle(minScore,score,maxScore);
-                                        }
                                         anchors.horizontalCenter: parent.horizontalCenter
-                                        property int numgenes: gaviz.getIndividualProperty(selectedPopulation,
-                                                                                           selectedGeneration, 0,
-                                                                                           selectedIndividual,
-                                                                                           selectedFitness, IndividualProperty.NumGenes)
-                                        property real gwidth : (numgenes > 0) ? width * 0.9 / numgenes : 0
 
-                                        Row {
-                                            anchors.horizontalCenter: parent.horizontalCenter
-                                            anchors.verticalCenter: parent.verticalCenter
-                                            Repeater {
-                                                id: genesrectInd
-                                                model: coloredInd.numgenes
-                                                Rectangle {
-                                                    width: coloredInd.gwidth
-                                                    height: coloredInd.height * 0.9
-                                                    color:{
-                                                        var generation = individualView.selectedGeneration;
-                                                        var cluster = 0;
-                                                        var individual = individualView.selectedIndividual;
+                                        property int numgenes: gaviz.getIndividualProperty(selectedPopulation, selectedGeneration, 0, selectedIndividual, selectedFitness, IndividualProperty.NumGenes)
 
-
-                                                        return Utils.getGeneStyle(generation, cluster,individual, index)
-                                                    }
-                                                }
-                                            }
-                                        }
                                     }
+
                                 }
                             }
 
@@ -465,52 +406,26 @@ Frame {
                                             text: qsTr("Individual")
                                         }
 
-                                        Rectangle {
+                                        IndividualRectangle{
                                             id: coloredIndBis
-                                            width: swipeframe.width / 4; height: swipeframe.height / 4
 
-                                            color: {
-                                                var minScore = individualView.minScore;
+                                            population : individualView.selectedPopulation
+                                            generation : individualView.selectedGeneration
+                                            cluster : 0
+                                            individual: individualView.selectedIndividual
 
-                                                var population = individualView.selectedPopulation;
-                                                var generation = individualView.selectedGeneration;
-                                                var cluster = 0;
-                                                var individual = individualView.selectedIndividual;
-                                                var fitness = individualView.selectedFitness;
-                                                var score = gaviz.getIndividualProperty(population, generation, cluster, individual, fitness, IndividualProperty.Fitness)
-
-                                                var maxScore = minScore+5
-
-                                                return Utils.getFillStyle(minScore,score,maxScore);
-                                            }
-                                            property int numgenes: gaviz.getIndividualProperty(selectedPopulation,
-                                                                                               selectedGeneration, 0,
-                                                                                               selectedIndividual,
-                                                                                               selectedFitness, IndividualProperty.NumGenes)
-                                            property real gwidth : (numgenes > 0) ? width * 0.9 / numgenes : 0
-
-                                            Row {
-                                                anchors.horizontalCenter: parent.horizontalCenter
-                                                anchors.verticalCenter: parent.verticalCenter
-                                                Repeater {
-                                                    id: genesrectIndBis
-                                                    model: coloredInd.numgenes
-                                                    Rectangle {
-                                                        width: coloredInd.gwidth
-                                                        height: coloredInd.height * 0.9
-                                                        color:{
-
-                                                            var generation = individualView.selectedGeneration;
-                                                            var cluster = 0;
-                                                            var individual = individualView.selectedIndividual;
+                                            minScore: individualView.minScore
 
 
-                                                            return Utils.getGeneStyle(generation, cluster,individual, index)
-                                                        }
-                                                    }
-                                                }
-                                            }
+                                            visible: parent1Index > (-1)
+
+                                            width: swipeframe.width / 4;
+                                            height: swipeframe.height / 4
+
+                                            property int numgenes: gaviz.getIndividualProperty(selectedPopulation, selectedGeneration, 0, selectedIndividual, selectedFitness, IndividualProperty.NumGenes)
+
                                         }
+
                                         Repeater {
                                             id: labelRepeater
                                             model: gaviz.getNbObjectiveFunctions()
@@ -528,15 +443,6 @@ Frame {
                                     implicitWidth: parent.width
                                     Layout.preferredHeight: 0.7*parent.height
                                     Layout.preferredWidth: parent.width
-                                    /*
-                                    ScrollView{
-                                        ScrollBar.horizontal.policy: ScrollBar.AsNeeded
-                                        ScrollBar.vertical.policy: ScrollBar.AlwaysOn
-
-                                        contentHeight: parent.height
-                                        contentWidth: parent.width
-                                        clip: true
-                                        */
 
                                     GridLayout{
                                         Layout.fillHeight: true

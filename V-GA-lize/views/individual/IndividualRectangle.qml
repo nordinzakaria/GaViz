@@ -41,13 +41,16 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
 
-            implicitWidth: rectangle.width * 0.9
+            width: rectangle.width * 0.9
             implicitHeight: rectangle.height * 0.9
+
+
 
             Row {
                 id: genesLayout
 
                 anchors.fill: parent
+
                 spacing: 0
 
                 Repeater {
@@ -57,8 +60,8 @@ Item {
 
                     delegate: Rectangle {
 
-                        implicitHeight: genesLayout.height
-                        implicitWidth: genesLayout.width/genes.model
+                        height: genesLayout.height
+                        width: genesLayout.width/genes.model
 
                         color: {
 
