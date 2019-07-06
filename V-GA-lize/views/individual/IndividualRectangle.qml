@@ -22,11 +22,11 @@ Item {
         color: {
             var minScore = individualRectangle.minScore;
 
-            var population = individualRectangle.population
-            var generation = individualRectangle.generation;
-            var cluster = individualRectangle.cluster;
-            var individual = individualRectangle.individual;
-            var score = gaviz.getIndividualProperty(population, generation, cluster, individual, selectedFitness, IndividualProperty.Fitness)
+            var score = gaviz.getIndividualProperty(individualRectangle.population,
+                                                    individualRectangle.generation,
+                                                    individualRectangle.cluster,
+                                                    individualRectangle.individual,
+                                                    0, IndividualProperty.Fitness)
 
             var maxScore = minScore+5
 
@@ -68,13 +68,9 @@ Item {
                         width: genesLayout.width/genes.model
 
                         color: {
-
-                            var generation = individualRectangle.generation;
-                            var cluster = individualRectangle.cluster;
-                            var individual = individualRectangle.individual;
-
-
-                            return Utils.getGeneStyle(generation, cluster,individual, index);
+                            return Utils.getGeneStyle(individualRectangle.generation,
+                                                      individualRectangle.cluster,
+                                                      individualRectangle.individual, index);
                         }
                     }
                 }
