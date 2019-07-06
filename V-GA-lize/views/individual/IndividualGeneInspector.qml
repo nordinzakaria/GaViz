@@ -123,7 +123,7 @@ Item {
                     delegate: Text {
                         text: {
                             var fitness = gaviz.getGene(root.generation, root.cluster, root.individual, index)
-                            qsTr("Gene n°%1: %L2").arg(index).arg(fitness)
+                            return qsTr("Gene n°%1: %L2").arg(index).arg(fitness)
                         }
 
                         color: "white"
