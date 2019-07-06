@@ -373,7 +373,7 @@ Frame {
                         text: qsTr("See Genes")
 
                         onClicked: {
-                            //TODO
+                            //TODO unwanted dependencie
                             if(menuBar.params.tsp === Qt.Unchecked)
                                 dialog.open()
                             else
@@ -390,7 +390,6 @@ Frame {
                             height: 600
                             modal : true
 
-                            standardButtons: Dialog.Quit
 
                             contentItem: IndividualGeneInspector {
                                 population: individualView.selectedPopulation
@@ -400,6 +399,9 @@ Frame {
 
                                 minScore: individualView.minScore
                             }
+
+
+                            standardButtons: Dialog.Close
                         }
 
                         Dialog {

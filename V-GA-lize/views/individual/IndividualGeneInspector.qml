@@ -97,10 +97,14 @@ Item {
             Layout.fillWidth: true;
             Layout.fillHeight: true;
 
-            GridLayout {
+            GridView {
                 id: grid
 
                 anchors.fill: parent
+                clip: true
+
+                cellWidth: 150  //TODO hardcoded
+                cellHeight: 50  //TODO hardcoded
 
                 anchors.margins: {
                     left: genes.width*0.05      // 5% of the parent width
@@ -109,26 +113,23 @@ Item {
                     top: genes.height*0.05      // 5% of the parent height
                 }
 
-                columns: 4 // TODO :hardcoded
-
-                Repeater {
-                    model : {
-                        return gaviz.getIndividualProperty(root.population,
-                                                           root.generation,
-                                                           root.cluster,
-                                                           root.individual,
-                                                           0, IndividualProperty.NumGenes)
-                    }
-
-                    delegate: Text {
-                        text: {
-                            var fitness = gaviz.getGene(root.generation, root.cluster, root.individual, index)
-                            return qsTr("Gene n°%1: %L2").arg(index).arg(fitness)
-                        }
-
-                        color: "white"
-                    }
+                model : {
+                    return gaviz.getIndividualProperty(root.population,
+                                                       root.generation,
+                                                       root.cluster,
+                                                       root.individual,
+                                                       0, IndividualProperty.NumGenes)
                 }
+
+                delegate: Text {
+                    text: {
+                        var fitness = gaviz.getGene(root.generation, root.cluster, root.individual, index)
+                        return qsTr("Gene n°%1: %L2").arg(index).arg(fitness)
+                    }
+
+                    color: "white"
+                }
+
             }
         }
     }
