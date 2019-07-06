@@ -10,13 +10,8 @@ Item {
     property int generation: 0
     property int cluster: 0
     property int individual: 0
+
     property double minScore: 0.0
-
-    property int numGenes: 0
-
-    Component.onCompleted: {
-        numGenes = gaviz.getIndividualProperty(population, generation, cluster, individual, 0, IndividualProperty.NumGenes)
-    }
 
     ColumnLayout {
         anchors.fill: parent
@@ -42,16 +37,22 @@ Item {
 
                 anchors.fill:parent
 
+                anchors.margins: {
+                    left: idcard.width*0.05     // 5% of the parent width
+                    right: idcard.width*0.05    // 5% of the parent width
+                    top: idcard.height*0.05     // 5% of the parent height
+                    bottom: idcard.height*0.05  // 5% of the parent height
+                }
+
 
                 ColumnLayout{
                     Layout.fillHeight: true
 
-                    Layout.margins: {
-                        left : 5
-                    }
-
                     Text {
-                        text: qsTr("Fitness: 0.095956612242")
+                        text: {
+                            var fitness = gaviz.getIndividualProperty(population, generation, cluster, individual, 0, IndividualProperty.Fitness);
+                            return qsTr("Fitness: %L1").arg(fitness)
+                        }
                         color: "white"
                     }
 
@@ -60,7 +61,10 @@ Item {
                         color: "white"
                     }
                     Text {
-                        text: qsTr("Genes: %1").arg(numGenes)
+                        text: {
+                            var numGenes = gaviz.getIndividualProperty(population, generation, cluster, individual, 0, IndividualProperty.NumGenes);
+                            qsTr("Genes: %1").arg(numGenes)
+                        }
                         color: "white"
                     }
                 }
@@ -75,8 +79,6 @@ Item {
                     generation: root.generation
                     cluster: root.cluster
                     individual : root.individual
-
-                    numGenes: root.numGenes
 
                     minScore: root.minScore
 
@@ -101,13 +103,22 @@ Item {
                 anchors.fill: parent
 
                 anchors.margins: {
-                    left: 5
+                    left: genes.width*0.05      // 5% of the parent width
+                    right: genes.width*0.05     // 5% of the parent width
+                    bottom: genes.height*0.05   // 5% of the parent height
+                    top: genes.height*0.05      // 5% of the parent height
                 }
 
-                columns: 4  // TODO :hardcoded
+                columns: 4 // TODO :hardcoded
 
                 Repeater {
-                    model : root.numGenes
+                    model : {
+                        return gaviz.getIndividualProperty(root.population,
+                                                           root.generation,
+                                                           root.cluster,
+                                                           root.individual,
+                                                           0, IndividualProperty.NumGenes)
+                    }
 
                     delegate: Text {
                         text: {
@@ -119,8 +130,6 @@ Item {
                     }
                 }
             }
-
-
         }
     }
 }

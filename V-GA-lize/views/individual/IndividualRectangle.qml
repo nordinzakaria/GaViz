@@ -12,13 +12,7 @@ Item {
     property int individual: 0
 
     property double minScore: 0
-
-    property int numGenes: 0
     property alias mouseArea : mouseArea
-
-    Component.onCompleted: {
-        numGenes = gaviz.getIndividualProperty(population, generation, cluster, individual, 0, IndividualProperty.NumGenes)
-    }
 
     Rectangle {
         id: rectangle
@@ -60,7 +54,13 @@ Item {
                 Repeater {
                     id: genes
 
-                    model: individualRectangle.numGenes
+                    model : {
+                       return gaviz.getIndividualProperty(individualRectangle.population,
+                                                          individualRectangle.generation,
+                                                          individualRectangle.cluster,
+                                                          individualRectangle.individual,
+                                                          0, IndividualProperty.NumGenes)
+                    }
 
                     delegate: Rectangle {
 
