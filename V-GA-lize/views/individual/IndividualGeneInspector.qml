@@ -104,7 +104,7 @@ Item {
                 clip: true
 
                 cellWidth: 150  //TODO hardcoded
-                cellHeight: 50  //TODO hardcoded
+                cellHeight: 40  //TODO hardcoded
 
                 anchors.margins: {
                     left: genes.width*0.05      // 5% of the parent width
