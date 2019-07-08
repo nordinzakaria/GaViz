@@ -102,8 +102,8 @@ Item {
             GridView {
                 id: grid
 
-                cellWidth: grid.width/4
-                cellHeight: 40
+                cellWidth: grid.width/4 //TODO hardcoded
+                cellHeight: 40          //TODO hardcoded
 
 
                 anchors.fill: parent
