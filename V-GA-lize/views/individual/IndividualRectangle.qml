@@ -62,7 +62,9 @@ Item {
 
                 delegate: Rectangle {
 
-                    implicitHeight: genesView.height
+                    anchors.top: parent.top
+                    anchors.bottom : parent.bottom
+
                     implicitWidth: genesView.width/genesView.model
 
                     color: {
