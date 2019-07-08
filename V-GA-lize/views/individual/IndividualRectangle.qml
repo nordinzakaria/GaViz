@@ -44,34 +44,31 @@ Item {
 
 
 
-            Row {
-                id: genesLayout
+            ListView {
+                id: genesView
 
                 anchors.fill: parent
 
+                orientation : ListView.Horizontal
                 spacing: 0
 
-                Repeater {
-                    id: genes
+                model : {
+                    return gaviz.getIndividualProperty(individualRectangle.population,
+                                                       individualRectangle.generation,
+                                                       individualRectangle.cluster,
+                                                       individualRectangle.individual,
+                                                       0, IndividualProperty.NumGenes)
+                }
 
-                    model : {
-                       return gaviz.getIndividualProperty(individualRectangle.population,
-                                                          individualRectangle.generation,
-                                                          individualRectangle.cluster,
-                                                          individualRectangle.individual,
-                                                          0, IndividualProperty.NumGenes)
-                    }
+                delegate: Rectangle {
 
-                    delegate: Rectangle {
+                    implicitHeight: genesView.height
+                    implicitWidth: genesView.width/genesView.model
 
-                        height: genesLayout.height
-                        width: genesLayout.width/genes.model
-
-                        color: {
-                            return Utils.getGeneStyle(individualRectangle.generation,
-                                                      individualRectangle.cluster,
-                                                      individualRectangle.individual, index);
-                        }
+                    color: {
+                        return Utils.getGeneStyle(individualRectangle.generation,
+                                                  individualRectangle.cluster,
+                                                  individualRectangle.individual, index);
                     }
                 }
             }
