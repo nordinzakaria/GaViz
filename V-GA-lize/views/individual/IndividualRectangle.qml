@@ -39,7 +39,7 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
 
-            width: rectangle.width * 0.9
+            implicitWidth: rectangle.width * 0.9
             implicitHeight: rectangle.height * 0.9
 
 
@@ -74,6 +74,7 @@ Item {
                     }
                 }
             }
+
         }
 
     }

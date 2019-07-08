@@ -70,6 +70,8 @@ Item {
                 }
 
                 IndividualRectangle {
+                    id: indiviualRectangle
+
                     Layout.fillHeight: true
                     Layout.fillWidth: true
 
@@ -81,7 +83,6 @@ Item {
                     individual : root.individual
 
                     minScore: root.minScore
-
                 }
             }
         }
@@ -101,6 +102,8 @@ Item {
             // TODO : find a way to make cells dimension to fit the content.
             GridView {
                 id: grid
+
+                property int hovered: -1
 
                 cellWidth: grid.width/4 //TODO hardcoded
                 cellHeight: 40          //TODO hardcoded
@@ -132,7 +135,7 @@ Item {
                             var gene = gaviz.getGene(root.generation, root.cluster, root.individual, index)
                             return qsTr("Gene n°%1: %L2").arg(index).arg(gene)
                         }
-                        color: "white"
+                        color: grid.currentIndex === grid.hovered ? "red" : "white"
                     }
 
                 }
