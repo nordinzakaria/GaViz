@@ -178,11 +178,12 @@ Frame {
                                         color: "white"
                                         anchors.horizontalCenter: parent.horizontalCenter
                                         text: qsTr("Parents")
-                                        visible: parent1Index > -1
+                                        visible: individualView.selectedGeneration > 0
                                     }
                                     Row { /* inner row */
                                         anchors.horizontalCenter: parent.horizontalCenter
                                         spacing: 10
+                                        visible: individualView.selectedGeneration > 0
 
 
                                         IndividualRectangle{
@@ -194,9 +195,6 @@ Frame {
                                             individual: individualView.parent1Index
 
                                             minScore: individualView.minScore
-
-
-                                            visible: parent1Index > (-1)
 
                                             width: swipeframe.width / 4;
                                             height: swipeframe.height / 4
@@ -223,9 +221,6 @@ Frame {
                                             individual: individualView.parent2Index
 
                                             minScore: individualView.minScore
-
-
-                                            visible: parent2Index > (-1)
 
                                             width: swipeframe.width / 4;
                                             height: swipeframe.height / 4
@@ -261,9 +256,6 @@ Frame {
                                         individual: individualView.selectedIndividual
 
                                         minScore: individualView.minScore
-
-
-                                        visible: parent1Index > (-1)
 
                                         width: swipeframe.width / 4;
                                         height: swipeframe.height / 4

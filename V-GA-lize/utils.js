@@ -1,6 +1,5 @@
 function getFillStyle(minScore,score,maxScore)
 {
-    //var score = gaviz.getIndividualProperty(population, generation, cluster, individual, fitness, IndividualProperty.Fitness)
     if (score >= minScore)
     {
         return rgb(minScore, maxScore, score)

@@ -97,14 +97,17 @@ Item {
             Layout.fillWidth: true;
             Layout.fillHeight: true;
 
+
+            // TODO : find a way to make cells dimension to fit the content.
             GridView {
                 id: grid
 
+                cellWidth: grid.width/4
+                cellHeight: 40
+
+
                 anchors.fill: parent
                 clip: true
-
-                cellWidth: 150  //TODO hardcoded
-                cellHeight: 40  //TODO hardcoded
 
                 anchors.margins: {
                     left: genes.width*0.05      // 5% of the parent width
@@ -121,13 +124,17 @@ Item {
                                                        0, IndividualProperty.NumGenes)
                 }
 
-                delegate: Text {
-                    text: {
-                        var fitness = gaviz.getGene(root.generation, root.cluster, root.individual, index)
-                        return qsTr("Gene n°%1: %L2").arg(index).arg(fitness)
+                delegate: Item
+                {
+                    Text {
+                        clip: true
+                        text: {
+                            var gene = gaviz.getGene(root.generation, root.cluster, root.individual, index)
+                            return qsTr("Gene n°%1: %L2").arg(index).arg(gene)
+                        }
+                        color: "white"
                     }
 
-                    color: "white"
                 }
 
             }
