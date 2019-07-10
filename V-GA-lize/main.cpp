@@ -6,6 +6,7 @@
 
 #include "./models/vgalize.h"
 #include "./models/qimageprovider.h"
+#include "./models/customtablemodel.h"
 
 int main(int argc, char *argv[])
 {
@@ -20,8 +21,7 @@ int main(int argc, char *argv[])
 
     qmlRegisterType<Individual>("gaviz", 1, 0, "IndividualProperty");
     qmlRegisterType<Stats>("gaviz", 1, 0, "StatsProperty");
-
-    //qmlRegisterType<Stats>("gaviz", 1, 0, "Stats");
+    qmlRegisterType<CustomTableModel>("gaviz", 1, 0, "CustomTableModel");
 
     /**
       *

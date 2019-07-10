@@ -160,8 +160,8 @@ RowLayout {
         Slider {
             id: zoomSlider
             from: 1
-            stepSize: 0.1
-            to: 40
+            stepSize: 1
+            to: 100
 
             onValueChanged:  {
                 var doubleValue = parseFloat(value);

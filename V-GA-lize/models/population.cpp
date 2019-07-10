@@ -267,7 +267,7 @@ void Population::fillImageIndividuals(QImage *image,float minScore)
         int r,g,b;
 
 
-        //! To ensure that we will never go further than the image bounds, resulting in a exception.
+        //! To ensure that we will never go further than the image bounds.
         int pixelsHeight = qMin(imageHeight,generationSize);
         int pixelsWidth;
 
@@ -276,7 +276,7 @@ void Population::fillImageIndividuals(QImage *image,float minScore)
             currentGeneration = generations[i];
             currentIndividuals = currentGeneration.getIndividuals();
 
-            //! To ensure that we will never go further than the image bounds, resulting in a exception.
+            //! To ensure that we will never go further than the image bounds.
             pixelsWidth = qMin(imageWidth,currentIndividuals.size());
 
             for (int j = 0; j < pixelsWidth;j++) {

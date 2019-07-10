@@ -157,20 +157,20 @@ Page {
 
                     visible: vizPage.zoomValue > vizPage.zoomlimit;
 
-                    selectedFitness: vizPage.selectedFitness
+                    fitness: vizPage.selectedFitness
 
                     zoomValue: vizPage.zoomValue;
 
                     minScore : vizPage.minScore
 
-                    selectedPopulation: vizPage.selectedPopulation;
-                    selectedIndividual: vizPage.selectedIndividual;
-                    selectedGeneration: vizPage.selectedGeneration;
+                    population: vizPage.selectedPopulation;
+                    individual: vizPage.selectedIndividual;
+                    generation: vizPage.selectedGeneration;
 
                     Layout.fillWidth: true
                     Layout.fillHeight: true
 
-                    onIndividualChanged: {
+                    onIndividualSelected: {
                         vizPage.selectedPopulation = population;
                         vizPage.selectedGeneration = generation;
                         vizPage.selectedIndividual = individual;
@@ -191,6 +191,7 @@ Page {
                         vizPage.selectedIndividual = individual;
                     }
 
+                    minScore: vizPage.minScore
 
                     visible: false
                 }

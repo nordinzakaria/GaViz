@@ -1,9 +1,11 @@
-import QtQuick 2.0
-import QtQuick.Controls 2.3
+import QtQuick 2.12
+import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.3
 import QtQuick.Shapes 1.0
-import QtQuick.Dialogs 1.0
+
 import "../../utils.js" as Utils
+import "../individual/"
+
 import gaviz 1.0
 
 /* The AltPopulation Frame replaces the Population Frame when you zoom in enough
@@ -14,165 +16,59 @@ import gaviz 1.0
 Frame {
     id: altPopulationView
 
-    property int selectedFitness: 0
+    property int fitness: 0
 
-    property int selectedPopulation: 0
-    property int selectedGeneration: 0
-    property int selectedIndividual: 0
+    property int population: 0
+    property int generation: 0
+    property int cluster: 0
+    property int individual: 0
 
-    property double minZoomValue: 30.0
-    property double zoomValue : minZoomValue
-    property double maxZoomValue: 40.0
-
-    property int nbGenerations: height / minZoomValue
-    property int nbIndividuals: width / minZoomValue
-
-    property int individualSpacing: 10
-    property int individualWidth: zoomValue
-    property int individualRadius: individualWidth
+    property double zoomValue : 0
 
     property double minScore: 0
 
-    signal individualChanged(int population, int generation, int individual);
+    signal individualSelected(int population, int generation, int cluster, int individual);
 
-    MouseArea {
-        anchors.fill: parent
-        acceptedButtons: Qt.LeftButton | Qt.RightButton
+    TableView {
+        id: generations
 
-        onWheel: {
-            if (wheel.modifiers & Qt.ControlModifier) {
-                zoomValue += wheel.angleDelta.y / 120
-            }
-        }
-        onPressAndHold: {
-            altpopulationDialog.open()
-        }
-    }
-
-    ScrollView {
         anchors.fill: parent
 
-        ScrollBar.horizontal.policy: ScrollBar.AlwaysOn
-        ScrollBar.vertical.policy: ScrollBar.AlwaysOn
+        model : CustomTableModel {
+            rows: gaviz.getNbGenerations()
+            columns: gaviz.getMaxNbIndPerGeneration()
+        }
 
-        contentHeight: parent.height
-        contentWidth: parent.width
+        ScrollBar.horizontal: ScrollBar {}
+        ScrollBar.vertical: ScrollBar {}
 
-        ListView {      // table
-            id: poptable
-            anchors.fill: parent
-            interactive: false
-            orientation: ListView.Vertical
+        clip: true
 
-            model: nbGenerations
+        rowSpacing: 10
+        columnSpacing: 10
 
-            clip: true
+        delegate: IndividualRectangle {
 
-            delegate: ListView {    // table row
-                id: generationRow
-                width: parent.width
-                height: individualWidth
+            implicitHeight: zoomValue
+            implicitWidth: zoomValue
 
-                interactive: false
-                orientation: ListView.Horizontal
+            population: 0
+            generation: index%gaviz.getNbGenerations();
+            cluster: 0
+            individual: index/gaviz.getNbGenerations();
 
-                model: nbIndividuals
+            minScore: altPopulationView.minScore
 
-                property int generationIndex: 0 + index
-
-                delegate: Rectangle {
-                    id: individualRect
-
-                    property int individualIndex: 0 + index
-
-                    width: individualWidth - spacing/2
-                    height: width
-                    color: "black"
-
-                    Rectangle {
-                        id: coloredIndividualRect
-
-                        anchors.centerIn: parent
-                        width: individualWidth - individualSpacing * (zoomValue - minZoomValue) / (maxZoomValue - minZoomValue)
-                        height: width
-                        color: {
-                            var minScore = altPopulationView.minScore;
-
-                            var generation = generationRow.generationIndex;
-                            var cluster = 0;
-                            var individual = individualRect.individualIndex;
-                            var score = gaviz.getIndividualProperty(selectedPopulation, generation, cluster, individual, selectedFitness, IndividualProperty.Fitness)
-
-                            var maxScore = minScore+5
-
-                            return Utils.getFillStyle(minScore,score,maxScore);
-                        }
-
-                        property int currgen: generationRow.generationIndex
-                        property int currind: individualRect.individualIndex
-                        property int numgenes: gaviz.getIndividualProperty(selectedPopulation,
-                                                                           currgen, 0,
-                                                                           currind,
-                                                                           selectedFitness, IndividualProperty.NumGenes)
-                        property real gwidth : width * 0.9 / numgenes
-
-                        Row {
-                            anchors.horizontalCenter: parent.horizontalCenter
-                            anchors.verticalCenter: parent.verticalCenter
-                            Repeater {
-                                id: genesrect
-                                model: coloredIndividualRect.numgenes
-                                Rectangle {
-                                    width: coloredIndividualRect.gwidth
-                                    height: coloredIndividualRect.height * 0.9
-                                    color: {
-                                        var generation = generationRow.generationIndex;
-                                        var cluster = 0;
-                                        var individual = individualRect.individualIndex;
-
-
-                                        return Utils.getGeneStyle(generation, cluster,individual, index)
-                                    }
-                                }
-                            }
-                        }
-
-                        Rectangle {
-                            id: highlightRect
-                            visible:{
-                                var generation = altPopulationView.selectedGeneration;
-                                var individual = altPopulationView.selectedIndividual;
-
-                                var currentGeneration = generationRow.generationIndex;
-                                var currentIndividual = individualRect.individualIndex;
-
-                                return generation === currentGeneration && individual ===currentIndividual;
-                            }
-                            radius: width * (zoomValue - minZoomValue) / (maxZoomValue - minZoomValue)
-                            anchors.centerIn: parent
-                            width: (individualWidth - individualSpacing * (zoomValue - minZoomValue) / (maxZoomValue - minZoomValue))
-                            height: width
-                            color: "black"
-                        }
-
-                        MouseArea {
-                            anchors.fill: parent
-                            acceptedButtons: Qt.LeftButton | Qt.RightButton
-                            cursorShape: Qt.PointingHandCursor
-
-                            property int generation : generationRow.generationIndex;
-                            property int individual: individualRect.individualIndex;
-
-
-                            onClicked: {
-                                var population = altPopulationView.selectedPopulation;
-
-                                altPopulationView.individualChanged(population, generation, individual)
-                            }
-                        }
-                    }
+            mouseArea {
+                onClicked: {
+                    altPopulationView.individualSelected(population,
+                                                        generation,
+                                                        cluster,
+                                                        individual)
                 }
             }
         }
+
+
     }
 }

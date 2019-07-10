@@ -50,6 +50,7 @@ Item {
                 anchors.fill: parent
 
                 orientation : ListView.Horizontal
+                interactive: false
                 spacing: 0
 
                 model : {
