@@ -13,7 +13,7 @@ import gaviz 1.0
       - The square's border's colour corresponds to the one in the Population Frame
       - Inside are to vertical rectangles representing each gene of the Individual
 */
-Frame {
+Item {
     id: altPopulationView
 
     property int fitness: 0
@@ -24,8 +24,9 @@ Frame {
     property int individual: 0
 
     property double zoomValue : 0
-
     property double minScore: 0
+
+    property alias view : generations
 
     signal individualSelected(int population, int generation, int cluster, int individual);
 
@@ -47,7 +48,10 @@ Frame {
         rowSpacing: 10
         columnSpacing: 10
 
-        delegate: IndividualRectangle {
+        contentX: 0 // TODO
+        contentY: 0 // TODO
+
+        delegate: IndividualRectangleZoom {
 
             implicitHeight: zoomValue
             implicitWidth: zoomValue

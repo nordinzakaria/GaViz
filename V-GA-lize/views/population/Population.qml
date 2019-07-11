@@ -14,25 +14,28 @@ import gaviz 1.0
       - If the square is blue, it is really close from the Minimum ;
       - All the part that are not visible are in fact transparent squares, meaning that their value is below the Minimum.
 */
-Frame {
+Item {
     id: populationView
 
-    property int selectedIndividual: 0
-    property int selectedGeneration: 0
-    property int selectedPopulation: 0
+    property int population: 0
+    property int generation: 0
+    property int cluster : 0
+    property int individual: 0
 
     property int imagePerSeconds: 60
 
     property int zoomValue: 1
     property int minScore: 0
 
-    signal individualChanged(int generation,int individual);
+    property int  fitness: 0
+
+    signal individualSelected(int population,int generation,int cluster,int individual);
 
     // repaint because the Image is different when the state Change.
     onMinScoreChanged: repaintView();
-    onSelectedPopulationChanged: repaintView();
-    onSelectedGenerationChanged: repaintView();
-    onSelectedIndividualChanged: repaintView();
+    onPopulationChanged: repaintView();
+    onGenerationChanged: repaintView();
+    onIndividualChanged: repaintView();
 
     // The ScrollView Item allows to move on the frame by using the hotizontal and vertical ScrollBars
     ScrollView {
@@ -43,16 +46,16 @@ Frame {
         ScrollBar.horizontal.policy: ScrollBar.AlwaysOn
         ScrollBar.vertical.policy: ScrollBar.AlwaysOn
 
-        contentWidth: gaviz.getMaxNbIndPerGeneration() * zoomValue
-        contentHeight: gaviz.getNbGenerations(selectedPopulation) * zoomValue
+        contentHeight: gaviz.getNbGenerations(population) * zoomValue
+        contentWidth: gaviz.getMaxNbIndPerGeneration(population) * zoomValue
 
         clip: true
 
         Image {
             id: canvas
 
-            width: gaviz.getMaxNbIndPerGeneration(selectedPopulation)
-            height: gaviz.getNbGenerations(selectedPopulation)
+            width: gaviz.getMaxNbIndPerGeneration(population)
+            height: gaviz.getNbGenerations(population)
 
             // The image is automatically repainted if zoomValue change.
             transform: Scale { origin.x: 0; origin.y: 0; xScale: zoomValue; yScale: zoomValue }
@@ -78,8 +81,8 @@ Frame {
                     var context = getContext("2d")
 
 
-                    var currentIndividual = selectedIndividual;
-                    var currentGeneration = selectedGeneration;
+                    var currentIndividual = individual;
+                    var currentGeneration = generation;
 
                     context.beginPath()
                     context.clearRect(0, 0, width, height)
@@ -105,7 +108,10 @@ Frame {
                 onClicked: {
                     var selectedIndividual = mouseX;
                     var selectedGeneration = mouseY;
-                    populationView.individualChanged(selectedGeneration,selectedIndividual);
+                    populationView.individualSelected(populationView.population,
+                                                      selectedGeneration,
+                                                      populationView.cluster,
+                                                      selectedIndividual);
                 }
 
                 onPressAndHold: {

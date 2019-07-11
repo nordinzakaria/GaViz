@@ -69,7 +69,7 @@ Item {
                     }
                 }
 
-                IndividualRectangle {
+                IndividualRectangleZoom {
                     id: indiviualRectangle
 
                     Layout.fillHeight: true

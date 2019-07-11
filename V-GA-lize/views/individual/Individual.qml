@@ -186,7 +186,7 @@ Frame {
                                         visible: individualView.selectedGeneration > 0
 
 
-                                        IndividualRectangle{
+                                        IndividualRectangleZoom{
                                             id: parent1
 
                                             population : individualView.selectedPopulation
@@ -212,7 +212,7 @@ Frame {
 
                                         }
 
-                                        IndividualRectangle{
+                                        IndividualRectangleZoom{
                                             id: parent2
 
                                             population : individualView.selectedPopulation
@@ -247,7 +247,7 @@ Frame {
                                     }
 
 
-                                    IndividualRectangle{
+                                    IndividualRectangleZoom{
                                         id: coloredInd
 
                                         population : individualView.selectedPopulation

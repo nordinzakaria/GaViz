@@ -32,52 +32,6 @@ Item {
 
             return Utils.getFillStyle(minScore,score,maxScore);
         }
-
-        Item {
-            id: centeredRectangle
-
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-
-            implicitWidth: rectangle.width * 0.9
-            implicitHeight: rectangle.height * 0.9
-
-
-
-            ListView {
-                id: genesView
-
-                anchors.fill: parent
-
-                orientation : ListView.Horizontal
-                interactive: false
-                spacing: 0
-
-                model : {
-                    return gaviz.getIndividualProperty(individualRectangle.population,
-                                                       individualRectangle.generation,
-                                                       individualRectangle.cluster,
-                                                       individualRectangle.individual,
-                                                       0, IndividualProperty.NumGenes)
-                }
-
-                delegate: Rectangle {
-
-                    anchors.top: parent.top
-                    anchors.bottom : parent.bottom
-
-                    implicitWidth: genesView.width/genesView.model
-
-                    color: {
-                        return Utils.getGeneStyle(individualRectangle.generation,
-                                                  individualRectangle.cluster,
-                                                  individualRectangle.individual, index);
-                    }
-                }
-            }
-
-        }
-
     }
 
     MouseArea {

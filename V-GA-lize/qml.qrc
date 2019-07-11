@@ -18,5 +18,7 @@
         <file>views/individual/IndividualRectangle.qml</file>
         <file>views/individual/IndividualGeneInspector.qml</file>
         <file>views/individual/IndividualCharacteristic.qml</file>
+        <file>views/individual/IndividualRectangleZoom.qml</file>
+        <file>views/population/PopulationDisplayer.qml</file>
     </qresource>
 </RCC>

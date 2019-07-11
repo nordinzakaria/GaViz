@@ -133,33 +133,13 @@ Page {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
 
-                Population {
-                    id: populationView
-                    visible: vizPage.zoomValue <= vizPage.zoomlimit
-
-                    zoomValue: vizPage.zoomValue
-                    minScore: vizPage.minScore
-
-                    selectedIndividual: vizPage.selectedIndividual;
-                    selectedGeneration: vizPage.selectedGeneration;
-
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-
-                    onIndividualChanged: {
-                        vizPage.selectedGeneration = generation;
-                        vizPage.selectedIndividual = individual;
-                    }
-                }
-
-                AltPopulation {
+                PopulationDisplayer {
                     id: altPopulationView
-
-                    visible: vizPage.zoomValue > vizPage.zoomlimit;
 
                     fitness: vizPage.selectedFitness
 
                     zoomValue: vizPage.zoomValue;
+                    zoomLimit: vizPage.zoomlimit;
 
                     minScore : vizPage.minScore
 

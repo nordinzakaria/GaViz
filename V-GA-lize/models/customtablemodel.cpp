@@ -47,8 +47,3 @@ int CustomTableModel::columnCount(const QModelIndex &parent) const {
 QVariant CustomTableModel::data(const QModelIndex &index, int role) const {
     return QVariant();
 }
-
-Qt::ItemFlags CustomTableModel::flags(const QModelIndex &index) const {
-    return Qt::NoItemFlags;
-}
-

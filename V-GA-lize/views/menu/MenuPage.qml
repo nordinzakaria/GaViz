@@ -152,7 +152,7 @@ Page {
 
                 // when the laoding is finished we go back to the ideal state
                 // no matter if it is a failure or a success
-                menuPage.state = stateGroup.state = "idle";
+                menuPage.state = (stateGroup.state = "idle");
             }
         }
 
@@ -205,5 +205,6 @@ Page {
                 }
             ]
         }
+
     }
 }
