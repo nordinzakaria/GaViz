@@ -26,7 +26,7 @@ Item {
     property double zoomValue : 0
     property double minScore: 0
 
-    property alias view : generations
+    property alias flickable : generations
 
     signal individualSelected(int population, int generation, int cluster, int individual);
 
@@ -45,16 +45,15 @@ Item {
 
         clip: true
 
-        rowSpacing: 10
-        columnSpacing: 10
+        rowSpacing: 1.1 + 20
+        columnSpacing: 1.1 + 20
 
-        contentX: 0 // TODO
-        contentY: 0 // TODO
+        transform: Scale { origin.x: 0; origin.y: 0; xScale: zoomValue; yScale: zoomValue }
 
         delegate: IndividualRectangleZoom {
 
-            implicitHeight: zoomValue
-            implicitWidth: zoomValue
+            implicitHeight: 1
+            implicitWidth: 1
 
             population: 0
             generation: index%gaviz.getNbGenerations();
@@ -62,6 +61,9 @@ Item {
             individual: index/gaviz.getNbGenerations();
 
             minScore: altPopulationView.minScore
+
+            highlight: altPopulationView.individual == individual &&
+                       altPopulationView.generation == generation
 
             mouseArea {
                 onClicked: {

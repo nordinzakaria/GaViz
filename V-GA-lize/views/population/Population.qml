@@ -28,6 +28,7 @@ Item {
     property int minScore: 0
 
     property int  fitness: 0
+    property alias flickable : canvasParent
 
     signal individualSelected(int population,int generation,int cluster,int individual);
 
@@ -38,18 +39,23 @@ Item {
     onIndividualChanged: repaintView();
 
     // The ScrollView Item allows to move on the frame by using the hotizontal and vertical ScrollBars
-    ScrollView {
+    Flickable {
         id: canvasParent
 
         anchors.fill: parent
 
-        ScrollBar.horizontal.policy: ScrollBar.AlwaysOn
-        ScrollBar.vertical.policy: ScrollBar.AlwaysOn
+        ScrollBar.horizontal: ScrollBar{}
+        ScrollBar.vertical: ScrollBar{}
 
         contentHeight: gaviz.getNbGenerations(population) * zoomValue
         contentWidth: gaviz.getMaxNbIndPerGeneration(population) * zoomValue
 
         clip: true
+
+        onContentXChanged: {
+            console.debug("newX: "+contentX)
+
+        }
 
         Image {
             id: canvas

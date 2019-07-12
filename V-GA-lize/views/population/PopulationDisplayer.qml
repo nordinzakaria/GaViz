@@ -1,5 +1,7 @@
-import QtQuick 2.0
-
+import QtQuick 2.12
+import QtQuick.Controls 2.12
+import QtQuick.Layouts 1.3
+import QtQuick.Shapes 1.0
 Item {
     id: populationDisplayer
 
@@ -20,6 +22,7 @@ Item {
     signal individualSelected(int population, int generation, int cluster, int individual);
 
     onZoomValueChanged: zoomCheck()
+
 
     Population {
         id : population
@@ -54,7 +57,7 @@ Item {
         cluster : populationDisplayer.cluster
         individual : populationDisplayer.individual
 
-        zoomValue: 30
+        zoomValue: 50
         minScore: 0
 
         onIndividualSelected: {
@@ -62,8 +65,6 @@ Item {
         }
 
     }
-
-
 
     StateGroup {
         id : stateGroup
@@ -75,16 +76,17 @@ Item {
                 PropertyChanges {
                     target: population
 
-                    visible : true;
                     zoomValue :  populationDisplayer.zoomValue
                     minScore : populationDisplayer.minScore
+
+                    visible : true;
 
                 }
                 PropertyChanges {
                     target: altPopulation
 
                     visible: false
-                    zoomValue : 1
+                    zoomValue : zoomLimit
                     minScore : 0
                 }
             },
@@ -103,21 +105,32 @@ Item {
                     visible: true;
                     zoomValue :  populationDisplayer.zoomValue
                     minScore : populationDisplayer.minScore
+
                 }
             }
         ]
     }
 
     function zoomCheck(){
+        var ratioX;
+        var ratioY;
         if (zoomValue > zoomLimit && populationDisplayer.state == "population"){
-            populationDisplayer.state = (stateGroup.state = "altPopulation")
-            console.debug("change")
-        }else if(zoomValue <= zoomLimit && populationDisplayer.state == "altPopulation"){
-            populationDisplayer.state = (stateGroup.state = "population")
-            console.debug("change")
-        }
+            ratioX = population.flickable.contentX/population.flickable.contentWidth
+            ratioY = population.flickable.contentY/population.flickable.contentHeight
 
-        console.debug(populationDisplayer.state)
+            altPopulation.flickable.contentX = altPopulation.flickable.contentWidth * ratioX
+            altPopulation.flickable.contentY = altPopulation.flickable.contentHeight * ratioY
+
+            populationDisplayer.state = (stateGroup.state = "altPopulation")
+        }else if(zoomValue <= zoomLimit && populationDisplayer.state == "altPopulation"){
+            ratioX = altPopulation.flickable.contentX/altPopulation.flickable.contentWidth
+            ratioY = altPopulation.flickable.contentY/altPopulation.flickable.contentHeight
+
+            population.flickable.contentX = population.flickable.contentWidth * ratioX
+            population.flickable.contentY = population.flickable.contentHeight * ratioY
+
+            populationDisplayer.state = (stateGroup.state = "population")
+        }
     }
 
 }

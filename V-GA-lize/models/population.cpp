@@ -95,7 +95,7 @@ QVariant Population::getIndividualProperty(int gen, int clus, int index, int fin
     case Individual::Parent2:
         return cluster->getIndividual(index)->getParent2();
     case Individual::NumGenes:
-        qDebug() << "returning numgenes = "<< cluster->getIndividual(index)->getNumGenes() << "\n";
+        //qDebug() << "returning numgenes = "<< cluster->getIndividual(index)->getNumGenes() << "\n";
         return cluster->getIndividual(index)->getNumGenes();
     default:
         qDebug() << "Invalid request for gen " << gen << ", index = "<< index << ", findex " << findex << ", prop " << property << "\n";

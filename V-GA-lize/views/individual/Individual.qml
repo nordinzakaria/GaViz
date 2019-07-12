@@ -53,6 +53,7 @@ Frame {
     property double minScore: 0
 
     signal individualChanged(int population, int generation, int individual);
+    signal exitAsked();
 
     onSelectedIndividualChanged :
     {
@@ -95,7 +96,7 @@ Frame {
                 id : exitIndividual
                 trueIcon.source: "../../images/icons/image_part_004.png"
 
-                onClicked: individualView.visible = false
+                onClicked: individualView.exitAsked()
                 ToolTip.visible: hovered
                 ToolTip.text: qsTr("Close Individual View")
             }

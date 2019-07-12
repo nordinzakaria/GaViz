@@ -14,23 +14,29 @@ Item {
     property double minScore: 0
     property alias mouseArea : mouseArea
 
+    property bool highlight: false
+
     Rectangle {
         id: rectangle
 
         anchors.fill: parent
 
         color: {
-            var minScore = individualRectangle.minScore;
+            if (!highlight) {
+                var minScore = individualRectangle.minScore;
 
-            var score = gaviz.getIndividualProperty(individualRectangle.population,
-                                                    individualRectangle.generation,
-                                                    individualRectangle.cluster,
-                                                    individualRectangle.individual,
-                                                    0, IndividualProperty.Fitness)
+                var score = gaviz.getIndividualProperty(individualRectangle.population,
+                                                        individualRectangle.generation,
+                                                        individualRectangle.cluster,
+                                                        individualRectangle.individual,
+                                                        0, IndividualProperty.Fitness)
 
-            var maxScore = minScore+5
+                var maxScore = minScore+5
 
-            return Utils.getFillStyle(minScore,score,maxScore);
+                return Utils.getFillStyle(minScore,score,maxScore);
+            }else{
+                return "yellow"
+            }
         }
 
         Item {

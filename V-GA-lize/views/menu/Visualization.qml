@@ -29,8 +29,8 @@ Page {
     }
     property double minZoomValue: 1.0
     property double zoomValue: 1.0
-    property double zoomlimit: 30.0
-    property double maxZoomValue: 40.0
+    property double zoomlimit: 50.0
+    property double maxZoomValue: 100.0
 
     property int firstGeneration: 1     // first row in view
     property int firstIndividual: 1     // first column in view
