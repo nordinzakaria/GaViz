@@ -38,6 +38,11 @@ Item {
     onGenerationChanged: repaintView();
     onIndividualChanged: repaintView();
 
+    onZoomValueChanged: {
+        console.debug(canvasParent.contentWidth)
+        console.debug(canvasParent.contentHeight)
+    }
+
     // The ScrollView Item allows to move on the frame by using the hotizontal and vertical ScrollBars
     Flickable {
         id: canvasParent
@@ -47,24 +52,19 @@ Item {
         ScrollBar.horizontal: ScrollBar{}
         ScrollBar.vertical: ScrollBar{}
 
-        contentHeight: gaviz.getNbGenerations(population) * zoomValue
-        contentWidth: gaviz.getMaxNbIndPerGeneration(population) * zoomValue
-
         clip: true
 
-        onContentXChanged: {
-            console.debug("newX: "+contentX)
-
-        }
+        contentWidth: zoomValue * 1024
+        contentHeight: zoomValue * 1000
 
         Image {
             id: canvas
 
-            width: gaviz.getMaxNbIndPerGeneration(population)
-            height: gaviz.getNbGenerations(population)
+            //width: gaviz.getMaxNbIndPerGeneration(population)
+            //height: gaviz.getNbGenerations(population)
 
             // The image is automatically repainted if zoomValue change.
-            transform: Scale { origin.x: 0; origin.y: 0; xScale: zoomValue; yScale: zoomValue }
+            transform: Scale { origin.x: canvasParent.contentX; origin.y: canvasParent.contentY; xScale: zoomValue; yScale: zoomValue }
 
             smooth: false   // to prevent a blurry effect when zooming
 
@@ -72,7 +72,7 @@ Item {
             // to ensure that the imageProvider will always create a new image instead of getting it from
             // the cache, to prevent unwanted behavior when calling << source: "image://provider/id" >>
             // successively without changing the id while the internal state have changed .
-            //(exemple : when loading a new file.)
+            //(i.e , when loading a new file.)
             cache : false
 
             Canvas {

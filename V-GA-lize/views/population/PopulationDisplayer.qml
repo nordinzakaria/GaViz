@@ -12,8 +12,8 @@ Item {
     property int cluster: 0
     property int individual: 0
 
-    property double zoomValue : 0
-    property double zoomLimit : 0
+    property double zoomValue: 0
+    property double zoomLimit: 0
 
     property double minScore: 0
 
@@ -22,7 +22,6 @@ Item {
     signal individualSelected(int population, int generation, int cluster, int individual);
 
     onZoomValueChanged: zoomCheck()
-
 
     Population {
         id : population
@@ -58,6 +57,7 @@ Item {
         individual : populationDisplayer.individual
 
         zoomValue: 50
+        zoomLimit: populationDisplayer.zoomLimit
         minScore: 0
 
         onIndividualSelected: {
@@ -86,7 +86,7 @@ Item {
                     target: altPopulation
 
                     visible: false
-                    zoomValue : zoomLimit
+                    zoomValue : 1
                     minScore : 0
                 }
             },
@@ -115,20 +115,8 @@ Item {
         var ratioX;
         var ratioY;
         if (zoomValue > zoomLimit && populationDisplayer.state == "population"){
-            ratioX = population.flickable.contentX/population.flickable.contentWidth
-            ratioY = population.flickable.contentY/population.flickable.contentHeight
-
-            altPopulation.flickable.contentX = altPopulation.flickable.contentWidth * ratioX
-            altPopulation.flickable.contentY = altPopulation.flickable.contentHeight * ratioY
-
             populationDisplayer.state = (stateGroup.state = "altPopulation")
         }else if(zoomValue <= zoomLimit && populationDisplayer.state == "altPopulation"){
-            ratioX = altPopulation.flickable.contentX/altPopulation.flickable.contentWidth
-            ratioY = altPopulation.flickable.contentY/altPopulation.flickable.contentHeight
-
-            population.flickable.contentX = population.flickable.contentWidth * ratioX
-            population.flickable.contentY = population.flickable.contentHeight * ratioY
-
             populationDisplayer.state = (stateGroup.state = "population")
         }
     }

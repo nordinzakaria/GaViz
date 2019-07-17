@@ -174,6 +174,8 @@ Page {
                     minScore: vizPage.minScore
 
                     visible: false
+
+                    onExitAsked: visible = false
                 }
 
             }

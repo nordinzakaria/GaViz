@@ -33,6 +33,7 @@ Frame {
 
     property int selectedPopulation: 0
     property int selectedGeneration: 0
+    property int selectedCluster: 0
     property int selectedIndividual: 0
 
     property double individualFitness: 0

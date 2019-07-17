@@ -24,11 +24,16 @@ Item {
     property int individual: 0
 
     property double zoomValue : 0
+    property double zoomLimit : 0
     property double minScore: 0
+
+    property int imagePerSeconds: 60
 
     property alias flickable : generations
 
     signal individualSelected(int population, int generation, int cluster, int individual);
+
+    onZoomValueChanged: visible ? repaintTimer.running = true : repaintTimer.running = false ;
 
     TableView {
         id: generations
@@ -45,15 +50,13 @@ Item {
 
         clip: true
 
-        rowSpacing: 1.1 + 20
-        columnSpacing: 1.1 + 20
-
-        transform: Scale { origin.x: 0; origin.y: 0; xScale: zoomValue; yScale: zoomValue }
+        rowSpacing: 10
+        columnSpacing: 10
 
         delegate: IndividualRectangleZoom {
 
-            implicitHeight: 1
-            implicitWidth: 1
+            implicitHeight: visible ? zoomValue : zoomLimit
+            implicitWidth: visible ? zoomValue : zoomLimit
 
             population: 0
             generation: index%gaviz.getNbGenerations();
@@ -77,4 +80,13 @@ Item {
 
 
     }
+
+    Timer {
+        id: repaintTimer
+        interval: 1000/imagePerSeconds   // 60 image per seconds
+        running: false
+        repeat: false
+        onTriggered: generations.forceLayout()
+    }
+
 }

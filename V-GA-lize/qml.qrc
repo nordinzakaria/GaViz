@@ -15,7 +15,6 @@
         <file>views/tools/ToolSeparator.qml</file>
         <file>views/tools/GraphToolBar.qml</file>
         <file>utils.js</file>
-        <file>views/individual/IndividualRectangle.qml</file>
         <file>views/individual/IndividualGeneInspector.qml</file>
         <file>views/individual/IndividualCharacteristic.qml</file>
         <file>views/individual/IndividualRectangleZoom.qml</file>

@@ -42,8 +42,7 @@ Item {
         Item {
             id: centeredRectangle
 
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
+            anchors.centerIn: parent
 
             implicitWidth: rectangle.width * 0.9
             implicitHeight: rectangle.height * 0.9
@@ -53,7 +52,7 @@ Item {
             ListView {
                 id: genesView
 
-                anchors.fill: parent
+                anchors.fill: centeredRectangle
 
                 orientation : ListView.Horizontal
                 interactive: false
