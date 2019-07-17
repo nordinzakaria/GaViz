@@ -175,7 +175,7 @@ Page {
 
                     visible: false
 
-                    onExitAsked: visible = false
+                    onExitAsked: individualView.visible = false
                 }
 
             }

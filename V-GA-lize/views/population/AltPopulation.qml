@@ -88,5 +88,4 @@ Item {
         repeat: false
         onTriggered: generations.forceLayout()
     }
-
 }
