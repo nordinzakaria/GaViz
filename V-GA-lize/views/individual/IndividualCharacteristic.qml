@@ -71,9 +71,9 @@ Item {
                     ratio  = Math.random();
                     x = width/2;
                     y = height/2;
-                    radius = radiusmin+(scaling*i);
-                    beginAngle = 1.5*Math.PI;
-                    endAngle = beginAngle + (2*Math.PI * ratio);
+                    radius = radiusmin + (scaling * i);
+                    beginAngle = 1.5 * Math.PI;
+                    endAngle = beginAngle + (2 * Math.PI * ratio);
 
                     ctx.arc(x, y, radius, beginAngle, endAngle, false);
 
