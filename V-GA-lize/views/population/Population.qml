@@ -34,34 +34,26 @@ Item {
 
     // repaint because the Image is different when the state Change.
     onMinScoreChanged: repaintView();
-    onPopulationChanged: repaintView();
-    onGenerationChanged: repaintView();
-    onIndividualChanged: repaintView();
-
-    onZoomValueChanged: {
-        console.debug(canvasParent.contentWidth)
-        console.debug(canvasParent.contentHeight)
-    }
+    onPopulationChanged: highlightCanvas.requestPaint();
+    onGenerationChanged: highlightCanvas.requestPaint();
+    onIndividualChanged: highlightCanvas.requestPaint();
 
     // The ScrollView Item allows to move on the frame by using the hotizontal and vertical ScrollBars
-    Flickable {
+    ScrollView {
         id: canvasParent
 
         anchors.fill: parent
 
-        ScrollBar.horizontal: ScrollBar{}
-        ScrollBar.vertical: ScrollBar{}
-
         clip: true
 
-        contentWidth: zoomValue * 1024
-        contentHeight: zoomValue * 1000
+        contentWidth: zoomValue * gaviz.getMaxNbIndPerGeneration(population)
+        contentHeight: zoomValue * gaviz.getNbGenerations(population)
 
         Image {
             id: canvas
 
-            //width: gaviz.getMaxNbIndPerGeneration(population)
-            //height: gaviz.getNbGenerations(population)
+            width: gaviz.getMaxNbIndPerGeneration(population)
+            height: gaviz.getNbGenerations(population)
 
             // The image is automatically repainted if zoomValue change.
             transform: Scale { origin.x: canvasParent.contentX; origin.y: canvasParent.contentY; xScale: zoomValue; yScale: zoomValue }

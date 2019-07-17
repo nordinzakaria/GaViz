@@ -35,9 +35,6 @@ Item {
         cluster : populationDisplayer.cluster
         individual : populationDisplayer.individual
 
-        zoomValue: 1
-        minScore: 0
-
         onIndividualSelected: {
             populationDisplayer.individualSelected(population, generation, cluster, individual);
         }
@@ -56,9 +53,7 @@ Item {
         cluster : populationDisplayer.cluster
         individual : populationDisplayer.individual
 
-        zoomValue: 50
         zoomLimit: populationDisplayer.zoomLimit
-        minScore: 0
 
         onIndividualSelected: {
             populationDisplayer.individualSelected(population, generation, cluster, individual);
