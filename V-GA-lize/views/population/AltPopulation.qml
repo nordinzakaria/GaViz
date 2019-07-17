@@ -50,8 +50,8 @@ Item {
 
         clip: true
 
-        rowSpacing: 10
-        columnSpacing: 10
+        rowSpacing: 0
+        columnSpacing: 0
 
         delegate: IndividualRectangleZoom {
 
@@ -63,7 +63,7 @@ Item {
             cluster: 0
             individual: index/gaviz.getNbGenerations();
 
-            minScore: altPopulationView.minScore
+            minScore: altPopulationView.minScore;
 
             highlight: altPopulationView.individual == individual &&
                        altPopulationView.generation == generation

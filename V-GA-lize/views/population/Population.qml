@@ -39,7 +39,7 @@ Item {
     onIndividualChanged: highlightCanvas.requestPaint();
 
     // The ScrollView Item allows to move on the frame by using the hotizontal and vertical ScrollBars
-    ScrollView {
+    Flickable {
         id: canvasParent
 
         anchors.fill: parent
@@ -49,14 +49,17 @@ Item {
         contentWidth: zoomValue * gaviz.getMaxNbIndPerGeneration(population)
         contentHeight: zoomValue * gaviz.getNbGenerations(population)
 
+        ScrollBar.vertical: ScrollBar{
+        }
+
+        ScrollBar.horizontal: ScrollBar {
+        }
+
         Image {
             id: canvas
 
-            width: gaviz.getMaxNbIndPerGeneration(population)
-            height: gaviz.getNbGenerations(population)
-
             // The image is automatically repainted if zoomValue change.
-            transform: Scale { origin.x: canvasParent.contentX; origin.y: canvasParent.contentY; xScale: zoomValue; yScale: zoomValue }
+            transform: Scale { origin.x: 0; origin.y: 0; xScale: zoomValue; yScale: zoomValue }
 
             smooth: false   // to prevent a blurry effect when zooming
 
@@ -111,35 +114,11 @@ Item {
                                                       populationView.cluster,
                                                       selectedIndividual);
                 }
-
-                onPressAndHold: {
-                    populationDialog.open()
-                }
-            }
-
-        }
-
-
-        FileDialog {
-            id: populationDialog
-            title: qsTr("Please choose a file")
-            folder: shortcuts.home
-            modality: Qt.NonModal
-            selectExisting : false
-            nameFilters: [ "Image files (*.jpg *.png)", "All files (*)" ]
-
-            onAccepted: {
-
-                /**
-                  * What is result ?
-                  */
-                populationView.grabToImage(function(result) {
-                    result.saveToFile(populationDialog.fileUrl);
-                });
             }
         }
 
     }
+
     Timer {
         id: repaintTimer
         interval: 1000/imagePerSeconds   // 60 image per seconds

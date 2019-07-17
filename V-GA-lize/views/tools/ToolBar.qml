@@ -160,7 +160,6 @@ RowLayout {
         Slider {
             id: zoomSlider
             from: 1
-            stepSize: 1
             to: 100
 
             onValueChanged:  {

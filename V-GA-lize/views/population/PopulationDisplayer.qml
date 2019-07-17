@@ -81,7 +81,7 @@ Item {
                     target: altPopulation
 
                     visible: false
-                    zoomValue : 1
+                    zoomValue : zoomLimit
                     minScore : 0
                 }
             },
@@ -91,7 +91,7 @@ Item {
                     target: population
 
                     visible: false
-                    zoomValue : 1
+                    zoomValue : zoomLimit
                     minScore : 0
                 }
                 PropertyChanges {
