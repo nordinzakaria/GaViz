@@ -50,8 +50,8 @@ Item {
 
         clip: true
 
-        rowSpacing: 0
-        columnSpacing: 0
+        rowSpacing: visible ? (zoomValue - zoomLimit)/2 : 0
+        columnSpacing: visible ? (zoomValue - zoomLimit)/2 : 0
 
         delegate: IndividualRectangleZoom {
 
